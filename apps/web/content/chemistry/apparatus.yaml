@@ -1,0 +1,186 @@
+# NEEDS TEACHER REVIEW: uses, how-to steps, tips and safety notes follow standard school laboratory practice.
+- id: beaker
+  name: Beaker
+  use: Holding, mixing and heating liquids. Volume marks are only approximate.
+  howTo:
+    - "Set the beaker on a level bench and check its approximate volume marks."
+    - "Add the liquid or solid slowly and keep the outside of the beaker dry."
+    - "When heating, use a tripod and gauze and point the mouth away from people."
+  tip: "Beaker graduations are approximate; use a measuring cylinder when accuracy matters."
+  review: NEEDS_TEACHER_REVIEW
+- id: conical-flask
+  name: Conical flask
+  use: Holding the solution in a titration; the narrow neck reduces splashing when swirled.
+  howTo:
+    - "Support the flask on a white tile during a titration."
+    - "Add the measured solution, then add a few drops of indicator."
+    - "Swirl gently while adding titrant from the burette."
+  tip: "The narrow neck reduces splashing and makes the colour change easier to see."
+  review: NEEDS_TEACHER_REVIEW
+- id: burette
+  name: Burette
+  use: Delivering variable, accurately measured volumes of liquid (read to 0.05 cm3).
+  howTo:
+    - "Close the tap and rinse the burette with the solution it will contain."
+    - "Fill below eye level using a funnel, then remove the funnel."
+    - "Record the starting reading at eye level, then open the tap slowly."
+    - "Read the bottom of the meniscus to 0.05 cm3."
+  tip: "Remove air bubbles from the jet before taking the initial reading."
+  safety: Fill below eye level using a funnel, then remove the funnel before titrating.
+  review: NEEDS_TEACHER_REVIEW
+- id: pipette
+  name: Pipette
+  use: Measuring and delivering a fixed, accurate volume of liquid (for example 25.0 cm3).
+  howTo:
+    - "Attach a pipette filler and rinse the pipette with the liquid."
+    - "Draw liquid above the mark, then release slowly to the mark at eye level."
+    - "Deliver the fixed volume and touch the tip to the vessel wall."
+  tip: "A pipette delivers one fixed volume; do not blow out the last drop."
+  safety: Always use a pipette filler. Never suck by mouth.
+  review: NEEDS_TEACHER_REVIEW
+- id: measuring-cylinder
+  name: Measuring cylinder
+  use: Measuring volumes of liquid less accurately than a pipette or burette.
+  howTo:
+    - "Choose a cylinder with a range close to the volume you need."
+    - "Pour slowly and place the cylinder on a level surface."
+    - "Read the bottom of the meniscus at eye level."
+  tip: "A narrower cylinder usually gives a more precise reading."
+  review: NEEDS_TEACHER_REVIEW
+- id: test-tube
+  name: Test tube
+  use: Holding small amounts of substances for tests and reactions.
+  howTo:
+    - "Add only a small amount of substance, about one-third full."
+    - "Use a test-tube holder when heating."
+    - "Point the mouth away from yourself and others."
+  tip: "Heat gently and move the tube in and out of the flame."
+  safety: When heating, point the mouth away from yourself and others.
+  review: NEEDS_TEACHER_REVIEW
+- id: filter-funnel
+  name: Filter funnel
+  use: Holding filter paper to separate an insoluble solid from a liquid.
+  howTo:
+    - "Fold the filter paper and fit it into the funnel."
+    - "Wet the paper so it sticks to the funnel."
+    - "Place the funnel stem against the receiving vessel and pour slowly down a glass rod."
+  tip: "The filter paper should sit below the rim of the funnel."
+  review: NEEDS_TEACHER_REVIEW
+- id: bunsen-burner
+  name: Bunsen burner
+  use: Heating. The blue (non-luminous) flame is used for heating.
+  howTo:
+    - "Check the tubing and place the burner on a heat-proof mat."
+    - "Close the air hole, light the gas, then adjust the collar for a blue flame."
+    - "Use the blue flame for heating and turn off the gas when finished."
+  tip: "The yellow safety flame is easier to see but is not used for heating."
+  safety: Tie back long hair; never leave a lit burner unattended.
+  review: NEEDS_TEACHER_REVIEW
+- id: evaporating-dish
+  name: Evaporating dish
+  use: Evaporating a solvent from a solution to obtain the dissolved solid.
+  howTo:
+    - "Place the dish on a tripod and gauze."
+    - "Add the solution, using only a small amount."
+    - "Heat gently until the solvent evaporates, then allow the dish to cool."
+  tip: "Do not heat to dryness if the solid may spit or decompose."
+  review: NEEDS_TEACHER_REVIEW
+- id: separating-funnel
+  name: Separating funnel
+  use: Separating two immiscible liquids, such as oil and water.
+  howTo:
+    - "Close the tap and add the mixture through the top."
+    - "Let the layers settle, then place a beaker under the stem."
+    - "Open the tap slowly and run off the lower layer; close it before the upper layer reaches the tap."
+  tip: "Remove the stopper before running off a layer so the liquid flows smoothly."
+  review: NEEDS_TEACHER_REVIEW
+- id: retort-stand
+  name: Retort stand and clamp
+  use: Holding apparatus such as a burette firmly in position.
+  howTo:
+    - "Place the heavy base on a level bench."
+    - "Attach the boss and clamp to the upright."
+    - "Clamp the apparatus firmly, but not so tightly that it cannot be adjusted."
+  tip: "Keep the heavy base under the side that carries the load."
+  review: NEEDS_TEACHER_REVIEW
+- id: white-tile
+  name: White tile
+  use: Placed under the conical flask so the colour change at the end point is easy to see.
+  howTo:
+    - "Place the tile under the conical flask before starting the titration."
+    - "Keep the tile still so the colour change is easy to compare."
+    - "Wipe the tile clean after use."
+  tip: "A white background makes the first permanent colour change easier to see."
+  review: NEEDS_TEACHER_REVIEW
+- id: wash-bottle
+  name: Wash bottle
+  use: Rinsing apparatus with distilled water.
+  howTo:
+    - "Check the label and loosen the cap slightly."
+    - "Squeeze the bottle gently to direct a thin stream of distilled water."
+    - "Rinse the inside walls of apparatus and collect the washings."
+  tip: "Use distilled water, not tap water, for rinsing in quantitative work."
+  review: NEEDS_TEACHER_REVIEW
+- id: condenser
+  name: Liebig condenser
+  use: Cooling vapour back into liquid during distillation. Cold water enters at the bottom.
+  howTo:
+    - "Clamp the condenser securely and connect the water tubes."
+    - "Let cold water enter at the lower end and leave at the upper end."
+    - "Start the water before heating and keep it running during distillation."
+  tip: "Water must flow against the direction of the vapour for efficient cooling."
+  review: NEEDS_TEACHER_REVIEW
+- id: distillation-flask
+  name: Distillation flask
+  use: Holding the mixture being heated during distillation.
+  howTo:
+    - "Add the mixture and a few anti-bumping granules."
+    - "Fit the thermometer and connect the condenser."
+    - "Heat gently and collect the distillate in a clean receiver."
+  tip: "The thermometer bulb should sit at the side arm to read the vapour temperature."
+  review: NEEDS_TEACHER_REVIEW
+- id: chromatography-paper
+  name: Chromatography paper
+  use: Separating dissolved substances (such as dyes in ink) as the solvent moves up the paper.
+  howTo:
+    - "Draw a pencil baseline and place a small spot of the mixture on it."
+    - "Dip the bottom edge in solvent, keeping the spot above the solvent."
+    - "Allow the solvent to rise, then remove the paper and mark the solvent front."
+  tip: "Use pencil, not ink, for the baseline so it does not run."
+  review: NEEDS_TEACHER_REVIEW
+- id: thermometer
+  name: Thermometer
+  use: Measuring temperature, for example of the vapour during distillation.
+  howTo:
+    - "Check the range and that the liquid column is unbroken."
+    - "Place the bulb where the temperature is to be measured."
+    - "Read at eye level and wait for the reading to stabilise."
+  tip: "Do not use a thermometer as a stirrer."
+  review: NEEDS_TEACHER_REVIEW
+- id: spatula
+  name: Spatula
+  use: Transferring small amounts of solid.
+  howTo:
+    - "Use a clean, dry spatula for each solid."
+    - "Take a small amount and transfer it slowly."
+    - "Tap the spatula gently to release the solid, then clean it after use."
+  tip: "Never use the same spatula for different chemicals without cleaning it."
+  review: NEEDS_TEACHER_REVIEW
+- id: dropper
+  name: Dropper
+  use: Adding a liquid drop by drop, for example an indicator or a test reagent.
+  howTo:
+    - "Squeeze the bulb before placing the tip in the liquid."
+    - "Release the bulb to draw up a small amount."
+    - "Add drops one at a time and keep the tip clear of the vessel."
+  tip: "Hold the dropper vertically so the drops are consistent."
+  review: NEEDS_TEACHER_REVIEW
+- id: tripod-gauze
+  name: Tripod stand and wire gauze
+  use: Supporting a beaker or dish over a Bunsen burner for even heating.
+  howTo:
+    - "Place the tripod on a heat-proof mat."
+    - "Put the gauze on top and centre the apparatus on it."
+    - "Use the tripod only with a suitable heat source and allow it to cool before moving."
+  tip: "The gauze spreads the heat so glassware is heated more evenly."
+  review: NEEDS_TEACHER_REVIEW

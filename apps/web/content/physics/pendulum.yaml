@@ -1,0 +1,116 @@
+review: NEEDS_TEACHER_REVIEW
+lab:
+  title: Simple pendulum and oscillations
+  subtitle: Time the swing. Plot the square. Find g.
+  aim: Use a simple pendulum to investigate how period depends on length, amplitude and mass, then determine the acceleration of free fall from a graph of T squared against effective length.
+  summary: Set up a pendulum, measure its effective length, time repeated oscillations and build a T squared against L graph. The simulation integrates the full nonlinear pendulum equation, so large-amplitude and damping effects are visible.
+  hints:
+    - Measure the length from the pivot to the centre of the bob, not to the bottom of the bob.
+    - Time 10 or 20 oscillations and divide by the number of oscillations to reduce reaction-time error.
+    - Use a small release angle when testing how length affects period.
+    - Keep the same gravity setting while collecting the five lengths used to find g.
+    - The gradient of a T squared against L graph is 4 pi squared divided by g.
+  criteria:
+    - Measure the effective length and release angle before timing.
+    - Record at least five distinct lengths at the same gravity setting.
+    - Time repeated oscillations rather than a single swing.
+    - Plot T squared against L and calculate g from the best-fit gradient.
+    - Compare the experimental g with the selected gravity value.
+    - Explain at least one source of uncertainty.
+  review: NEEDS_TEACHER_REVIEW
+defaultBobId: brass-100
+defaultGravityId: earth
+bobs:
+  - id: steel-50
+    name: Steel bob, 50 g
+    massKg: 0.05
+    radiusM: 0.02
+    colour: "#64748b"
+    review: NEEDS_TEACHER_REVIEW
+  - id: brass-100
+    name: Brass bob, 100 g
+    massKg: 0.1
+    radiusM: 0.02
+    colour: "#d4a72c"
+    review: NEEDS_TEACHER_REVIEW
+  - id: steel-100
+    name: Steel bob, 100 g
+    massKg: 0.1
+    radiusM: 0.026
+    colour: "#94a3b8"
+    review: NEEDS_TEACHER_REVIEW
+  - id: lead-150
+    name: Lead bob, 150 g
+    massKg: 0.15
+    radiusM: 0.024
+    colour: "#52525b"
+    review: NEEDS_TEACHER_REVIEW
+gravityPresets:
+  - id: earth
+    name: Earth
+    accelerationMS2: 9.81
+    review: NEEDS_TEACHER_REVIEW
+  - id: moon
+    name: Moon
+    accelerationMS2: 1.62
+    review: NEEDS_TEACHER_REVIEW
+  - id: mars
+    name: Mars
+    accelerationMS2: 3.71
+    review: NEEDS_TEACHER_REVIEW
+length:
+  minM: 0.2
+  maxM: 1.5
+  stepM: 0.01
+  resolutionM: 0.001
+  defaultM: 0.98
+  smallAngleLimitDeg: 15
+  review: NEEDS_TEACHER_REVIEW
+angle:
+  minDeg: 2
+  maxDeg: 30
+  stepDeg: 1
+  resolutionDeg: 0.5
+  defaultDeg: 5
+  largeAngleThresholdDeg: 15
+  review: NEEDS_TEACHER_REVIEW
+damping:
+  offCoefficient: 0
+  onCoefficient: 0.12
+  defaultEnabled: false
+  review: NEEDS_TEACHER_REVIEW
+stopwatch:
+  resolutionS: 0.01
+  reactionMinS: 0.12
+  reactionMaxS: 0.32
+  review: NEEDS_TEACHER_REVIEW
+timing:
+  timeStepS: 0.004166666666666667
+  speed: 4
+  maxSwingS: 150
+  maxCatchUpS: 0.5
+  oscillationOptions: [1, 10, 20]
+  defaultOscillations: 10
+  review: NEEDS_TEACHER_REVIEW
+analysis:
+  minRows: 5
+  minDistinctLengths: 5
+  targetErrorPercent: 8
+  review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: mass
+    title: Does mass matter?
+    description: Time two bobs of the same radius but different mass at the same length and angle. Compare the periods.
+    review: NEEDS_TEACHER_REVIEW
+  - id: amplitude
+    title: Large-amplitude effect
+    description: Compare a small release angle with a much larger one at the same length. Look for a measurable change in period.
+    review: NEEDS_TEACHER_REVIEW
+  - id: gravity
+    title: Gravity changes the swing
+    description: Repeat the same pendulum on Earth, the Moon and Mars. Compare the measured periods.
+    review: NEEDS_TEACHER_REVIEW
+  - id: damping
+    title: Damping removes energy
+    description: Switch damping on and observe the amplitude decreasing while the period stays nearly the same.
+    review: NEEDS_TEACHER_REVIEW

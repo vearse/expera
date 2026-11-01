@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Expera chemistry flask">
+  <rect width="64" height="64" rx="14" fill="#0c4a6e"/>
+  <path d="M26 12h12v6h-2v10l12 22a5 5 0 0 1-4.4 7.4H20.4A5 5 0 0 1 16 50l12-22V18h-2z" fill="#e0f2fe"/>
+  <path d="M22.8 38h18.4l7 13a3 3 0 0 1-2.6 4.4H18.4a3 3 0 0 1-2.6-4.4z" fill="#0ea5e9"/>
+  <circle cx="28" cy="44" r="2.2" fill="#bae6fd"/>
+  <circle cx="36" cy="49" r="1.8" fill="#bae6fd"/>
+  <circle cx="38" cy="41" r="1.4" fill="#bae6fd"/>
+  <rect x="30" y="8" width="4" height="5" rx="1.5" fill="#e0f2fe"/>
+</svg>

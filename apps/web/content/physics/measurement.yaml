@@ -1,0 +1,156 @@
+review: NEEDS_TEACHER_REVIEW
+defaultStationId: vernier
+lab:
+  title: Measurement and errors
+  subtitle: Measure it, test it, prove it.
+  aim: Use Vernier calipers, a micrometer screw gauge, a metre rule and a stopwatch to take readings, correct zero error and determine the density of a solid and a liquid.
+  summary: Work through six precision-measurement stations. Every displayed reading is derived from the simulated apparatus, and the notebook only records readings you choose to take.
+  hints:
+    - Read a Vernier scale at the mark where a vernier division coincides with a main-scale division.
+    - For a positive zero error, subtract the zero error from the observed reading.
+    - Read a metre rule between two marks when the zero end is worn.
+    - Align your eye with the pointer before taking a parallax-sensitive reading.
+    - Density is mass divided by volume. Convert g/cm3 to kg/m3 by multiplying by 1000.
+  criteria:
+    - Take and record readings from each instrument.
+    - Correct the micrometer reading for zero error.
+    - Use a metre rule between two marks, not from the worn end.
+    - Eliminate parallax by aligning the eye.
+    - Determine the density of the solid and the liquid.
+    - Record observations and a conclusion in the laboratory notebook.
+  review: NEEDS_TEACHER_REVIEW
+instruments:
+  vernier:
+    name: Vernier calipers
+    mainScaleDivisionMm: 1
+    vernierDivisions: 10
+    leastCountMm: 0.1
+    rangeMm: 150
+    zeroErrorMm: 0
+    review: NEEDS_TEACHER_REVIEW
+  micrometer:
+    name: Micrometer screw gauge
+    pitchMm: 0.5
+    thimbleDivisions: 50
+    leastCountMm: 0.01
+    rangeMm: 25
+    zeroErrorMm: 0.02
+    review: NEEDS_TEACHER_REVIEW
+  metreRule:
+    name: Metre rule
+    lengthCm: 100
+    smallestDivisionMm: 1
+    wornZeroOffsetCm: 2
+    review: NEEDS_TEACHER_REVIEW
+  stopwatch:
+    name: Stopwatch
+    resolutionS: 0.01
+    review: NEEDS_TEACHER_REVIEW
+  balance:
+    name: Digital balance
+    resolutionG: 0.1
+    review: NEEDS_TEACHER_REVIEW
+  measuringCylinder:
+    name: Measuring cylinder
+    capacityMl: 100
+    smallestDivisionMl: 1
+    review: NEEDS_TEACHER_REVIEW
+  parallax:
+    name: Parallax scale
+    trueReadingMm: 48
+    parallaxFactor: 0.18
+    toleranceMm: 0.5
+    review: NEEDS_TEACHER_REVIEW
+samples:
+  vernier:
+    id: aluminium-rod
+    name: Aluminium rod
+    description: A short metal rod placed between the jaws. Close the jaws gently so the rod is not compressed.
+    actualLengthMm: 23.4
+    review: NEEDS_TEACHER_REVIEW
+  micrometer:
+    id: steel-feeler
+    name: Steel feeler gauge
+    description: A thin steel gauge. Use the ratchet until the spindle just touches it.
+    actualThicknessMm: 5.76
+    review: NEEDS_TEACHER_REVIEW
+  metreRule:
+    id: copper-wire
+    name: Copper wire
+    description: The zero end of the rule is worn. Place the wire between two readable marks and subtract the start reading.
+    actualLengthCm: 12.3
+    placementStartCm: 2
+    review: NEEDS_TEACHER_REVIEW
+  stopwatch:
+    id: timed-interval
+    name: Timed interval
+    description: Start and stop the stopwatch, then read the digital display to the nearest hundredth of a second.
+    targetSeconds: 4.2
+    review: NEEDS_TEACHER_REVIEW
+  solid:
+    id: aluminium-cylinder
+    name: Aluminium cylinder
+    description: Measure the diameter with the Vernier calipers, the height with the micrometer and the mass with the digital balance.
+    massG: 54
+    diameterMm: 20
+    heightMm: 63.7
+    acceptedDensityGCm3: 2.7
+    review: NEEDS_TEACHER_REVIEW
+  liquid:
+    id: glycerol-sample
+    name: Glycerol sample
+    description: Measure the empty cylinder, then the cylinder filled to the 40 cm3 mark.
+    emptyMassG: 48.2
+    filledMassG: 98.6
+    volumeMl: 40
+    acceptedDensityGCm3: 1.26
+    review: NEEDS_TEACHER_REVIEW
+stations:
+  - id: vernier
+    order: 1
+    title: Vernier calipers
+    short: Vernier
+    summary: Close the jaws on the rod, identify the main-scale and Vernier readings, and record the length.
+    hint: The Vernier scale reads to 0.1 mm. Find the coinciding division and add it to the main-scale reading.
+    icon: straighten
+    review: NEEDS_TEACHER_REVIEW
+  - id: micrometer
+    order: 2
+    title: Micrometer screw gauge
+    short: Micrometer
+    summary: Measure the feeler gauge, then correct the observed reading for the positive zero error.
+    hint: The thimble has 50 divisions and the pitch is 0.5 mm, so each thimble division is 0.01 mm.
+    icon: precision_manufacturing
+    review: NEEDS_TEACHER_REVIEW
+  - id: metre-rule
+    order: 3
+    title: Metre rule and worn zero
+    short: Metre rule
+    summary: Measure the copper wire between two marks because the zero end of the rule is worn.
+    hint: Length = end mark minus start mark. Do not measure from the damaged zero end.
+    icon: straighten
+    review: NEEDS_TEACHER_REVIEW
+  - id: stopwatch
+    order: 4
+    title: Stopwatch
+    short: Stopwatch
+    summary: Start and stop the stopwatch, read the digital display and record the time interval.
+    hint: Read the large seconds and the hundredths digits together. The display is in seconds.
+    icon: timer
+    review: NEEDS_TEACHER_REVIEW
+  - id: parallax
+    order: 5
+    title: Parallax and eye position
+    short: Parallax
+    summary: Move your eye until the pointer lines up with the scale, then take the corrected scale reading.
+    hint: Parallax disappears when your eye is level with the pointer and the scale is viewed straight on.
+    icon: visibility
+    review: NEEDS_TEACHER_REVIEW
+  - id: density
+    order: 6
+    title: Density of solids and liquids
+    short: Density
+    summary: Measure the solid and the liquid, calculate both densities, and record the results with units.
+    hint: For the solid, volume = pi x (diameter / 2)^2 x height. For the liquid, density = (filled mass - empty mass) / volume.
+    icon: scale
+    review: NEEDS_TEACHER_REVIEW

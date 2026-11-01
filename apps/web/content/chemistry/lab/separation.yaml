@@ -1,0 +1,143 @@
+id: separation
+title: Separation of mixtures and purification
+scope: "Filtration, evaporation and crystallisation, simple and fractional distillation, chromatography, sublimation, decantation and separating funnel"
+wave: 1
+aim: To choose and justify the right separation method for a given mixture, and to measure purity by chromatography.
+apparatus: [filter-funnel, beaker, evaporating-dish, distillation-flask, condenser, thermometer, separating-funnel, chromatography-paper, bunsen-burner, tripod-gauze]
+reagents: [mixtures, ink, distilled-water]
+safety:
+  - Never heat a distillation flask to dryness; add anti-bumping granules.
+  - Ethanol is flammable; heat it with a water bath, not a naked flame.
+  - Sublime iodine or ammonium chloride only in a fume cupboard or a well-ventilated area.
+keyIdea: Each method uses a difference in a physical property, such as particle size, solubility, boiling point, density or the ability to sublime.
+reviseTopic: Separation techniques and criteria of purity.
+learnLinks: ["Periodic Table explorer"]
+review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: sand-water
+    type: choice
+    prompt: Which method separates sand from water?
+    options:
+      - { id: a, text: Filtration }
+      - { id: b, text: Evaporation }
+      - { id: c, text: Simple distillation }
+      - { id: d, text: Chromatography }
+    answer: a
+    explain: Sand is insoluble, so its particles are trapped by the filter paper (the residue) while water passes through (the filtrate).
+  - id: salt-solution
+    type: choice
+    prompt: Which method obtains common salt from salt solution?
+    options:
+      - { id: a, text: Filtration }
+      - { id: b, text: Evaporation }
+      - { id: c, text: Separating funnel }
+      - { id: d, text: Sublimation }
+    answer: b
+    explain: The salt is dissolved. Evaporating the water leaves the salt behind.
+  - id: cuso4-crystals
+    type: choice
+    prompt: Which method gives well-formed crystals of copper(II) tetraoxosulphate(VI) from its solution?
+    options:
+      - { id: a, text: Evaporation to dryness }
+      - { id: b, text: Crystallisation (heat to the point of crystallisation and allow to cool) }
+      - { id: c, text: Decantation }
+    answer: b
+    explain: Heating to dryness would drive off the water of crystallisation. Concentrate the solution, then let crystals form as it cools.
+  - id: sea-water
+    type: choice
+    prompt: Which method obtains pure water from sea water?
+    options:
+      - { id: a, text: Filtration }
+      - { id: b, text: Simple distillation }
+      - { id: c, text: Fractional distillation }
+      - { id: d, text: Chromatography }
+    answer: b
+    explain: Water boils off, is condensed and collected as the distillate; the salt stays in the flask.
+  - id: ethanol-water
+    type: choice
+    prompt: Which method separates ethanol from water?
+    options:
+      - { id: a, text: Separating funnel }
+      - { id: b, text: Simple distillation }
+      - { id: c, text: Fractional distillation }
+      - { id: d, text: Evaporation }
+    answer: c
+    explain: The liquids are miscible and their boiling points are close, so a fractionating column is needed.
+  - id: crude-oil
+    type: choice
+    prompt: Crude oil from the Niger Delta is separated into petrol, kerosene and diesel at a refinery. Which method is used?
+    options:
+      - { id: a, text: Fractional distillation }
+      - { id: b, text: Filtration }
+      - { id: c, text: Sublimation }
+    answer: a
+    explain: The fractions have different boiling ranges and are collected at different heights of the fractionating column.
+  - id: oil-water
+    type: choice
+    prompt: Which method separates palm oil from water?
+    options:
+      - { id: a, text: Filtration }
+      - { id: b, text: Separating funnel }
+      - { id: c, text: Fractional distillation }
+    answer: b
+    explain: Oil and water are immiscible and form two layers. The lower (denser) layer is run off through the tap.
+  - id: iodine-sand
+    type: choice
+    prompt: Which method separates iodine (or ammonium chloride) from sand?
+    options:
+      - { id: a, text: Sublimation }
+      - { id: b, text: Filtration }
+      - { id: c, text: Decantation }
+    answer: a
+    explain: On heating, iodine changes directly from solid to vapour and collects on a cold surface; sand does not sublime.
+  - id: muddy-water
+    type: choice
+    prompt: Garri has been washed in water, and the solid has settled at the bottom of the bowl. What is the quickest way to remove most of the water?
+    options:
+      - { id: a, text: Decantation }
+      - { id: b, text: Distillation }
+      - { id: c, text: Chromatography }
+    answer: a
+    explain: Once the solid has settled, the liquid can be poured off carefully.
+  - id: ink-dyes
+    type: choice
+    prompt: Which method separates the dyes in black ink?
+    options:
+      - { id: a, text: Chromatography }
+      - { id: b, text: Filtration }
+      - { id: c, text: Evaporation }
+    answer: a
+    explain: The dyes have different solubilities in the solvent and different attractions to the paper, so they travel different distances.
+  - id: filtration-order
+    type: order
+    prompt: Put the steps for filtration in order.
+    items:
+      - Fold a filter paper into a cone and place it in the funnel
+      - Place the funnel over a beaker or conical flask
+      - Pour the mixture slowly into the filter paper
+      - Collect the filtrate; the solid residue stays on the paper
+    explain: The filter paper lets dissolved particles and water through but traps insoluble particles.
+  - id: condenser-water
+    type: choice
+    image: condenser
+    prompt: In a Liebig condenser, where does the cooling water enter?
+    options:
+      - { id: a, text: At the lower end }
+      - { id: b, text: At the upper end }
+    answer: a
+    explain: Water enters at the bottom so the jacket stays full of cold water and cools the vapour efficiently.
+  - id: chromatogram
+    type: bench
+    bench: rf
+    prompt: Calculate the Rf values of the dyes.
+    hint: Measure both distances from the baseline, not from the bottom of the paper.
+    explain: Rf = distance moved by the substance ÷ distance moved by the solvent front.
+  - id: purity
+    type: choice
+    prompt: How does chromatography show that a substance is pure?
+    options:
+      - { id: a, text: It gives a single spot }
+      - { id: b, text: It gives many spots }
+      - { id: c, text: The spot stays on the baseline }
+    answer: a
+    explain: A pure substance gives only one spot. A sharp melting point or boiling point is another test of purity.

@@ -1,0 +1,13 @@
+tips:
+  - id: default
+    context: default
+    text: Explore each view, then try the linked lab bench when you are ready.
+  - id: periodic
+    context: learn:periodic-table
+    text: Use Trends to colour the table by atomic radius or electronegativity. NEEDS_TEACHER_REVIEW
+  - id: atom
+    context: learn:atom-builder
+    text: Complete a mission to earn XP. Switch between 2D and 3D without losing your counts.
+  - id: lab
+    context: lab
+    text: Unsafe actions show a warning and count on your summary card.

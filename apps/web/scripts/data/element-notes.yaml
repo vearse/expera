@@ -1,0 +1,50 @@
+# Curated uses and Nigerian examples. All NEED TEACHER REVIEW.
+# Quote any entry that contains a comma.
+H: { uses: ["Manufacture of ammonia (Haber process)", "Hydrogenation of vegetable oils to make margarine"] }
+He: { uses: ["Filling weather balloons"] }
+Li: { uses: ["Rechargeable batteries in phones"] }
+C:
+  uses: ["Fuels such as coal and charcoal", "Graphite in pencils"]
+  nigerian: ["Coal deposits at Enugu"]
+N:
+  uses: ["Manufacture of ammonia and nitrogen fertilisers such as urea"]
+  nigerian: ["Urea fertiliser production at Eleme, Rivers State"]
+O: { uses: ["Respiration", "Oxygen cylinders in hospitals", "Oxy-acetylene welding"] }
+F: { uses: ["Fluoride in toothpaste"] }
+Ne: { uses: ["Advertising signs"] }
+Na: { uses: ["Sodium chloride (common salt) for food and preservation", "Sodium hydroxide for soap making"] }
+Mg: { uses: ["Light alloys", "Flares and fireworks"] }
+Al:
+  uses: ["Cooking pots", "Roofing sheets and window frames"]
+  nigerian: ["Aluminium smelter at Ikot Abasi, Akwa Ibom State"]
+Si: { uses: ["Glass making", "Computer chips"] }
+P: { uses: ["Fertilisers", "Matches"] }
+S: { uses: ["Manufacture of sulphuric acid", "Vulcanisation of rubber"] }
+Cl: { uses: ["Treatment of drinking water", "Household bleach"] }
+Ar: { uses: ["Filling electric light bulbs"] }
+K: { uses: ["Potash fertilisers"] }
+Ca:
+  uses: ["Limestone (calcium carbonate) for cement"]
+  nigerian: ["Limestone quarried for cement at Obajana, Kogi State"]
+Mn: { uses: ["Steel alloys", "Dry cells (as manganese(IV) oxide)"] }
+Fe:
+  uses: ["Steel for buildings, bridges and vehicles"]
+  nigerian: ["Iron ore at Itakpe, Kogi State", "Ajaokuta Steel Complex, Kogi State"]
+Cu: { uses: ["Electrical wiring", "Brass (with zinc)"] }
+Zn:
+  uses: ["Galvanising iron roofing sheets", "Dry cell casings"]
+  nigerian: ["Lead-zinc ore at Enyigba, Ebonyi State"]
+Nb:
+  nigerian: ["Columbite (niobium ore) mined on the Jos Plateau"]
+Ag: { uses: ["Jewellery", "Mirrors"] }
+Sn:
+  uses: ["Tin plating of food cans", "Solder"]
+  nigerian: ["Tin mining on the Jos Plateau"]
+I: { uses: ["Tincture of iodine (antiseptic)", "Iodised salt"] }
+Au:
+  uses: ["Jewellery"]
+  nigerian: ["Gold deposits in Zamfara and Osun States"]
+Pb:
+  uses: ["Lead-acid car batteries"]
+  nigerian: ["Lead-zinc ore at Enyigba, Ebonyi State"]
+U: { uses: ["Nuclear fuel"] }

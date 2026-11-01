@@ -1,0 +1,42 @@
+id: titration
+title: Acid-base titration
+scope: Volumetric analysis (acid-base titration)
+wave: 1
+aim: To find the concentration of a sodium hydroxide solution B by titrating it with an acid A of known concentration.
+apparatus: [burette, pipette, conical-flask, retort-stand, white-tile, filter-funnel, wash-bottle]
+reagents: [hcl, h2so4-dilute, naoh, methyl-orange, phenolphthalein, distilled-water]
+safety:
+  - Use a pipette filler; never pipette by mouth.
+  - Fill the burette below eye level using a funnel, then remove the funnel.
+  - Wipe up spills of acid or alkali at once and wash skin with plenty of water.
+keyIdea: At the end point, the acid and the base have reacted exactly in the mole ratio of the balanced equation, so the known concentration and the titre give the unknown concentration.
+reviseTopic: Mole concept and mole ratios in volumetric analysis.
+learnLinks: ["Acids, bases and the pH scale", "Compound builder (molar mass)"]
+review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: why-white-tile
+    type: choice
+    image: white-tile
+    prompt: Why is a white tile placed under the conical flask?
+    options:
+      - { id: a, text: To make the colour change at the end point easier to see }
+      - { id: b, text: To keep the flask warm }
+      - { id: c, text: To stop the flask from breaking }
+    answer: a
+    explain: A white background makes a small colour change easy to see.
+  - id: bench
+    type: bench
+    bench: titration
+    prompt: Carry out the titration.
+    hint: Do a quick rough titration first, then add acid drop by drop near the rough end point.
+    explain: Set up, titrate, record and calculate.
+  - id: precaution
+    type: choice
+    prompt: Which of these is a correct precaution for this titration?
+    options:
+      - { id: a, text: Remove the air bubble from the burette tip before taking the initial reading }
+      - { id: b, text: Read the burette at the top of the meniscus }
+      - { id: c, text: Rinse the conical flask with solution B }
+      - { id: d, text: Add the indicator after the end point }
+    answer: a
+    explain: An air bubble below the tap makes the volume delivered wrong. Read the bottom of the meniscus, rinse the flask with distilled water only, and add the indicator before titrating.

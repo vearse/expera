@@ -1,0 +1,20 @@
+{
+  "name": "expera",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @expera/web",
+    "dev:api": "npm run dev -w @expera/api",
+    "build": "npm run build -w @expera/web",
+    "build:api": "npm run build -w @expera/api",
+    "start": "npm run start -w @expera/web",
+    "validate": "npm run validate -w @expera/web",
+    "test": "npm run test -w @expera/web",
+    "test:e2e": "npm run test:e2e -w @expera/web",
+    "typecheck": "npm run typecheck -w @expera/web && npm run typecheck -w @expera/api"
+  }
+}

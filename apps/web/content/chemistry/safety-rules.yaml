@@ -1,0 +1,19 @@
+version: 2
+rules:
+  - id: pipette-mouth
+    pattern: pipette_by_mouth
+    message: Never pipette by mouth. Use a pipette filler or bulb.
+    safeProcedure: Fit a pipette filler, draw the solution to the mark, and transfer it into the flask.
+    severity: error
+  - id: heat-closed
+    pattern: heat_closed_system
+    message: Do not heat a closed system. The pressure can burst glassware.
+    severity: error
+  - id: acid-water
+    pattern: water_to_conc_acid
+    message: Never add water to concentrated acid. Add acid to water slowly with stirring.
+    severity: error
+  - id: heated-tube
+    pattern: point_heated_tube
+    message: Never point a heated test tube at anyone.
+    severity: error

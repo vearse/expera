@@ -1,0 +1,65 @@
+# West African (NERDC / WAEC / NECO) conventions used by all Chemistry content.
+# NEEDS TEACHER REVIEW against the current WAEC/NECO syllabus before release.
+review: NEEDS_TEACHER_REVIEW
+contentVersion: 2
+
+units:
+  volume: cm3 (small volumes), dm3 (large volumes)
+  concentration: mol dm-3
+  massConcentration: g dm-3
+  temperature: degrees Celsius
+  amount: mol
+
+spelling:
+  - sulphate, sulphite, sulphur, sulphuric (syllabus spelling)
+  - neutralisation, crystallisation, standardise
+  - colour, vapour, litre is not used (use dm3)
+
+# Rounded relative atomic masses used in WAEC/NECO calculations.
+examAtomicMasses:
+  H: 1
+  He: 4
+  Li: 7
+  C: 12
+  N: 14
+  O: 16
+  F: 19
+  Ne: 20
+  Na: 23
+  Mg: 24
+  Al: 27
+  Si: 28
+  P: 31
+  S: 32
+  Cl: 35.5
+  Ar: 40
+  K: 39
+  Ca: 40
+  Mn: 55
+  Fe: 56
+  Cu: 63.5
+  Zn: 65
+  Br: 80
+  Ag: 108
+  I: 127
+  Ba: 137
+  Pb: 207
+
+titration:
+  readingDecimalPlaces: 2
+  # Burette readings are recorded to the nearest 0.05 cm3, e.g. 23.45.
+  readingResolution: 0.05
+  # NEEDS TEACHER REVIEW: confirm whether WAEC/NECO accept 0.10 or 0.20 cm3.
+  concordanceTolerance: 0.20
+  pipetteVolume: 25.0
+  tableRows:
+    - Final burette reading (cm3)
+    - Initial burette reading (cm3)
+    - Volume of acid used (cm3)
+  tableColumns: [Rough, "1st", "2nd", "3rd"]
+
+qual:
+  tableColumns: [Test, Observation, Inference]
+
+equations:
+  stateSymbols: ["(s)", "(l)", "(g)", "(aq)"]

@@ -1,0 +1,38 @@
+missions:
+  - id: mystery-element-h
+    title: Mystery element (hydrogen)
+    section: learn
+    target: periodic-table
+    condition: element.selected:H
+    xp: 5
+    badgeId: null
+  - id: build-na-23
+    title: Build sodium-23
+    section: learn
+    target: atom-builder
+    condition: atom.built:Na:23
+    xp: 10
+    badgeId: builder-na
+  - id: titration-complete
+    title: Complete a titration
+    section: lab
+    target: titration
+    condition: lab.titration.complete
+    xp: 20
+    badgeId: titration-star
+
+badges:
+  - id: builder-na
+    title: Sodium builder
+    icon: atom
+  - id: titration-star
+    title: Titration star
+    icon: flask
+
+levels:
+  - level: 1
+    xp: 0
+  - level: 2
+    xp: 30
+  - level: 3
+    xp: 80

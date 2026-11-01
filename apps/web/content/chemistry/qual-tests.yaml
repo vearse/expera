@@ -1,0 +1,226 @@
+# Qualitative analysis tables (SS chemistry, WAEC/NECO style).
+# The ion lists follow the scope PDF exactly. All observations NEED TEACHER REVIEW,
+# as the PDF itself asks for the cation and anion lists to be checked.
+
+tests:
+  - id: naoh-drops
+    for: cation
+    name: NaOH(aq) in drops
+    procedure: To 2 cm3 of a solution of X, add sodium hydroxide solution drop by drop.
+    noChange: { observation: No precipitate, inference: "Na+, K+ or NH4+ may be present" }
+  - id: naoh-excess
+    for: cation
+    name: NaOH(aq) in excess
+    procedure: Continue adding sodium hydroxide solution until it is in excess.
+    noChange: { observation: No precipitate, inference: "Na+, K+ or NH4+ may be present" }
+  - id: naoh-warm
+    for: cation
+    name: NaOH(aq), then warm
+    procedure: Warm the mixture with excess sodium hydroxide solution and hold damp red litmus paper at the mouth of the test tube.
+    noChange: { observation: No gas evolved, inference: NH4+ absent }
+  - id: nh3-drops
+    for: cation
+    name: NH3(aq) in drops
+    procedure: To a fresh 2 cm3 of the solution of X, add aqueous ammonia drop by drop.
+    noChange: { observation: No precipitate, inference: "Ca2+, Na+, K+ or NH4+ may be present" }
+  - id: nh3-excess
+    for: cation
+    name: NH3(aq) in excess
+    procedure: Continue adding aqueous ammonia until it is in excess.
+    noChange: { observation: No precipitate, inference: "Ca2+, Na+, K+ or NH4+ may be present" }
+  - id: flame
+    for: cation
+    name: Flame test
+    procedure: Dip a clean platinum or nichrome wire moistened with concentrated HCl into solid X and hold it in a non-luminous flame.
+    noChange: { observation: No characteristic flame colour, inference: "Na+, K+ and Ca2+ absent" }
+  - id: dil-hcl
+    for: anion
+    name: Dilute HCl, then warm
+    procedure: To a portion of solid X, add dilute hydrochloric acid and warm gently. Test any gas given off.
+    noChange: { observation: No effervescence; no gas evolved, inference: "CO3 2-, HCO3- and SO3 2- absent" }
+  - id: agno3
+    for: anion
+    name: Dilute HNO3 + AgNO3(aq), then NH3(aq)
+    procedure: To 2 cm3 of a solution of X, add dilute trioxonitrate(V) acid, then silver trioxonitrate(V) solution. Add excess aqueous ammonia to any precipitate.
+    noChange: { observation: No precipitate, inference: Cl- absent }
+  - id: bacl2
+    for: anion
+    name: BaCl2(aq), then dilute HCl
+    procedure: To 2 cm3 of a solution of X, add barium chloride solution, then excess dilute hydrochloric acid.
+    noChange: { observation: No precipitate, inference: "SO4 2-, SO3 2- and CO3 2- absent" }
+  - id: brown-ring
+    for: anion
+    name: Brown ring test
+    procedure: To 2 cm3 of a solution of X, add freshly prepared FeSO4 solution, then carefully pour concentrated H2SO4 down the side of the tilted test tube.
+    noChange: { observation: No brown ring, inference: NO3- absent }
+  - id: mgso4
+    for: anion
+    name: MgSO4(aq), cold then boiled
+    procedure: To 2 cm3 of a solution of X, add magnesium tetraoxosulphate(VI) solution in the cold, then boil.
+    noChange: { observation: No precipitate in the cold or on boiling, inference: "CO3 2- and HCO3- absent" }
+
+cations:
+  - id: na
+    ion: Na+
+    name: Sodium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      flame: { observation: Golden yellow flame, inference: Na+ present }
+  - id: k
+    ion: K+
+    name: Potassium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      flame: { observation: Lilac (pale violet) flame, inference: K+ present }
+  - id: ca
+    ion: Ca2+
+    name: Calcium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: White precipitate, inference: "Ca2+, Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      naoh-excess: { observation: White precipitate insoluble in excess, inference: "Ca2+ or Mg2+ present" }
+      flame: { observation: Brick-red flame, inference: Ca2+ present }
+  - id: mg
+    ion: Mg2+
+    name: Magnesium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: White precipitate, inference: "Ca2+, Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      naoh-excess: { observation: White precipitate insoluble in excess, inference: "Ca2+ or Mg2+ present" }
+      nh3-drops: { observation: White precipitate, inference: "Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      nh3-excess: { observation: White precipitate insoluble in excess, inference: "Mg2+, Al3+ or Pb2+ present" }
+  - id: al
+    ion: Al3+
+    name: Aluminium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: White gelatinous precipitate, inference: "Ca2+, Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      naoh-excess: { observation: Precipitate dissolves in excess to give a colourless solution, inference: "Al3+, Zn2+ or Pb2+ present" }
+      nh3-drops: { observation: White gelatinous precipitate, inference: "Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      nh3-excess: { observation: White precipitate insoluble in excess, inference: "Mg2+, Al3+ or Pb2+ present" }
+  - id: zn
+    ion: Zn2+
+    name: Zinc ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: White gelatinous precipitate, inference: "Ca2+, Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      naoh-excess: { observation: Precipitate dissolves in excess to give a colourless solution, inference: "Al3+, Zn2+ or Pb2+ present" }
+      nh3-drops: { observation: White gelatinous precipitate, inference: "Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      nh3-excess: { observation: Precipitate dissolves in excess to give a colourless solution, inference: Zn2+ present }
+  - id: pb
+    ion: Pb2+
+    name: Lead(II) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: White precipitate, inference: "Ca2+, Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      naoh-excess: { observation: Precipitate dissolves in excess to give a colourless solution, inference: "Al3+, Zn2+ or Pb2+ present" }
+      nh3-drops: { observation: White precipitate, inference: "Mg2+, Al3+, Zn2+ or Pb2+ may be present" }
+      nh3-excess: { observation: White precipitate insoluble in excess, inference: "Mg2+, Al3+ or Pb2+ present" }
+      dil-hcl: { observation: White precipitate forms; it dissolves on warming, inference: Pb2+ present (lead(II) chloride) }
+      bacl2: { observation: White precipitate insoluble in dilute HCl, inference: "SO4 2- may be present, but Pb2+ also forms a white precipitate with chloride" }
+  - id: fe2
+    ion: Fe2+
+    name: Iron(II) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: Dirty green gelatinous precipitate, inference: Fe2+ present }
+      naoh-excess: { observation: Green precipitate insoluble in excess; turns brown on standing, inference: Fe2+ present }
+      nh3-drops: { observation: Dirty green gelatinous precipitate, inference: Fe2+ present }
+      nh3-excess: { observation: Green precipitate insoluble in excess; turns brown on standing, inference: Fe2+ present }
+  - id: fe3
+    ion: Fe3+
+    name: Iron(III) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: Reddish-brown gelatinous precipitate, inference: Fe3+ present }
+      naoh-excess: { observation: Reddish-brown precipitate insoluble in excess, inference: Fe3+ present }
+      nh3-drops: { observation: Reddish-brown gelatinous precipitate, inference: Fe3+ present }
+      nh3-excess: { observation: Reddish-brown precipitate insoluble in excess, inference: Fe3+ present }
+  - id: cu
+    ion: Cu2+
+    name: Copper(II) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-drops: { observation: Pale blue gelatinous precipitate, inference: Cu2+ present }
+      naoh-excess: { observation: Pale blue precipitate insoluble in excess, inference: Cu2+ present }
+      nh3-drops: { observation: Pale blue gelatinous precipitate, inference: Cu2+ present }
+      nh3-excess: { observation: Precipitate dissolves in excess to give a deep blue solution, inference: Cu2+ present }
+      flame: { observation: Bluish-green flame, inference: Cu2+ present }
+  - id: nh4
+    ion: NH4+
+    name: Ammonium ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      naoh-warm: { observation: Colourless gas with a choking (pungent) smell; turns damp red litmus blue, inference: Ammonia gas; NH4+ present }
+
+anions:
+  - id: cl
+    ion: Cl-
+    name: Chloride ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      agno3: { observation: White precipitate, soluble in excess aqueous ammonia, inference: Cl- present }
+  - id: so4
+    ion: SO4 2-
+    name: Tetraoxosulphate(VI) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      bacl2: { observation: White precipitate insoluble in dilute HCl, inference: SO4 2- present }
+  - id: co3
+    ion: CO3 2-
+    name: Trioxocarbonate(IV) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      dil-hcl: { observation: Effervescence; colourless, odourless gas turns limewater milky, inference: "CO2 from CO3 2- or HCO3-" }
+      bacl2: { observation: White precipitate dissolves in dilute HCl with effervescence, inference: CO3 2- present }
+      mgso4: { observation: White precipitate in the cold, inference: CO3 2- present }
+  - id: hco3
+    ion: HCO3-
+    name: Hydrogentrioxocarbonate(IV) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      dil-hcl: { observation: Effervescence; colourless, odourless gas turns limewater milky, inference: "CO2 from CO3 2- or HCO3-" }
+      mgso4: { observation: No precipitate in the cold; white precipitate on boiling, inference: HCO3- present }
+  - id: no3
+    ion: NO3-
+    name: Trioxonitrate(V) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      brown-ring: { observation: A brown ring forms where the two liquids meet, inference: NO3- present }
+  - id: so3
+    ion: SO3 2-
+    name: Trioxosulphate(IV) ion
+    review: NEEDS_TEACHER_REVIEW
+    results:
+      dil-hcl: { observation: Colourless gas with a choking smell; turns orange acidified K2Cr2O7 paper green, inference: "SO2 from SO3 2-" }
+      bacl2: { observation: White precipitate dissolves in dilute HCl; gas with a choking smell, inference: SO3 2- present }
+
+gases:
+  - { id: co2, name: "Carbon(IV) oxide", formula: CO2, test: Bubble into limewater, result: Limewater turns milky, review: NEEDS_TEACHER_REVIEW }
+  - { id: nh3, name: Ammonia, formula: NH3, test: Damp red litmus paper; glass rod dipped in conc. HCl, result: "Red litmus turns blue; dense white fumes with HCl", review: NEEDS_TEACHER_REVIEW }
+  - { id: so2, name: "Sulphur(IV) oxide", formula: SO2, test: Acidified K2Cr2O7 paper, result: Orange paper turns green, review: NEEDS_TEACHER_REVIEW }
+  - { id: h2, name: Hydrogen, formula: H2, test: Lighted splint, result: Burns with a squeaky pop, review: NEEDS_TEACHER_REVIEW }
+  - { id: o2, name: Oxygen, formula: O2, test: Glowing splint, result: Glowing splint relights, review: NEEDS_TEACHER_REVIEW }
+  - { id: cl2, name: Chlorine, formula: Cl2, test: Damp blue litmus paper, result: Turns red, then is bleached, review: NEEDS_TEACHER_REVIEW }
+  - { id: no2, name: "Nitrogen(IV) oxide", formula: NO2, test: Colour and damp blue litmus, result: "Brown gas; turns blue litmus red", review: NEEDS_TEACHER_REVIEW }
+
+# Soluble salts used as unknown X. Combinations that would precipitate in solution are avoided.
+salts:
+  - { id: znso4, formula: ZnSO4, name: Zinc tetraoxosulphate(VI), cation: zn, anion: so4 }
+  - { id: cuso4, formula: CuSO4, name: Copper(II) tetraoxosulphate(VI), cation: cu, anion: so4 }
+  - { id: feso4, formula: FeSO4, name: Iron(II) tetraoxosulphate(VI), cation: fe2, anion: so4 }
+  - { id: fecl3, formula: FeCl3, name: Iron(III) chloride, cation: fe3, anion: cl }
+  - { id: pbno3, formula: Pb(NO3)2, name: Lead(II) trioxonitrate(V), cation: pb, anion: no3 }
+  - { id: al2so4, formula: Al2(SO4)3, name: Aluminium tetraoxosulphate(VI), cation: al, anion: so4 }
+  - { id: nh4cl, formula: NH4Cl, name: Ammonium chloride, cation: nh4, anion: cl }
+  - { id: na2co3, formula: Na2CO3, name: Sodium trioxocarbonate(IV), cation: na, anion: co3 }
+  - { id: nahco3, formula: NaHCO3, name: Sodium hydrogentrioxocarbonate(IV), cation: na, anion: hco3 }
+  - { id: na2so3, formula: Na2SO3, name: Sodium trioxosulphate(IV), cation: na, anion: so3 }
+  - { id: mgso4, formula: MgSO4, name: Magnesium tetraoxosulphate(VI), cation: mg, anion: so4 }
+  - { id: cacl2, formula: CaCl2, name: Calcium chloride, cation: ca, anion: cl }
+  - { id: kno3, formula: KNO3, name: Potassium trioxonitrate(V), cation: k, anion: no3 }
+  - { id: znc12, formula: ZnCl2, name: Zinc chloride, cation: zn, anion: cl }
+  - { id: nh4so4, formula: (NH4)2SO4, name: Ammonium tetraoxosulphate(VI), cation: nh4, anion: so4 }
+  - { id: mgno3, formula: Mg(NO3)2, name: Magnesium trioxonitrate(V), cation: mg, anion: no3 }
+  - { id: k2co3, formula: K2CO3, name: Potassium trioxocarbonate(IV), cation: k, anion: co3 }
+  - { id: cano3, formula: Ca(NO3)2, name: Calcium trioxonitrate(V), cation: ca, anion: no3 }

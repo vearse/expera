@@ -1,0 +1,84 @@
+# NEEDS TEACHER REVIEW: uses, how-to steps, tips and safety notes follow standard school laboratory practice.
+- id: vernier
+  name: Vernier calipers
+  use: Measuring internal, external and depth dimensions. A typical school caliper reads to 0.1 mm.
+  howTo:
+    - "Close the jaws fully and check that the zero marks line up."
+    - "Open the jaws, place the object squarely between them, then close gently."
+    - "Read the main scale before the zero of the Vernier scale, then find the Vernier division that lines up."
+    - "Combine the readings and correct any zero error."
+  tip: "The Vernier scale gives the extra digit; do not round the main-scale reading too early."
+  safety: "Close the jaws gently. Do not clamp the object so tightly that the jaws or object are damaged."
+  review: NEEDS_TEACHER_REVIEW
+- id: micrometer
+  name: Micrometer screw gauge
+  use: Measuring very small thicknesses and diameters, such as a wire, to 0.01 mm.
+  howTo:
+    - "Close the anvils and check the zero reading."
+    - "Open the gap and place the object between the anvils."
+    - "Turn the ratchet until it slips so the object is not crushed."
+    - "Read the sleeve scale, then the thimble division, and correct any zero error."
+  tip: "Use the ratchet, not the thimble, for the final tightening."
+  safety: "Never force the thimble. Stop when the ratchet clicks or slips."
+  review: NEEDS_TEACHER_REVIEW
+- id: metre-rule
+  name: Metre rule
+  use: Measuring lengths to the nearest millimetre and marking positions along a bench.
+  howTo:
+    - "Place the rule along the object with the scale facing you."
+    - "Line up the zero mark with one end of the object."
+    - "Read the other end with your eye directly above the mark."
+    - "Correct for a worn or damaged zero end."
+  tip: "A worn zero end is avoided by starting from a clear mark and subtracting the start reading."
+  review: NEEDS_TEACHER_REVIEW
+- id: stopwatch
+  name: Stopwatch
+  use: Measuring time intervals to 0.01 s in motion and oscillation experiments.
+  howTo:
+    - "Reset the stopwatch to zero before timing."
+    - "Start it at the chosen event and stop it at the end event."
+    - "Read the display and record the value with the correct unit."
+    - "Repeat the timing and average the results to reduce reaction-time error."
+  tip: "Your reaction time affects both the start and the stop, so repeat readings are important."
+  review: NEEDS_TEACHER_REVIEW
+- id: measuring-cylinder
+  name: Measuring cylinder
+  use: Measuring the volume of a liquid or the volume displaced by a solid.
+  howTo:
+    - "Choose a cylinder with a range close to the volume being measured."
+    - "Place it on a level bench and pour slowly."
+    - "Read the bottom of the meniscus with your eye level with the mark."
+    - "Record the volume and include the unit."
+  tip: "Read at eye level; looking from above or below causes a parallax error."
+  review: NEEDS_TEACHER_REVIEW
+- id: density
+  name: Density set (balance and measuring cylinder)
+  use: Finding density by measuring mass and volume, then calculating mass divided by volume.
+  howTo:
+    - "Zero the electronic balance and measure the mass of the solid."
+    - "Add water to the measuring cylinder and record the starting volume."
+    - "Lower the solid into the water and record the new volume."
+    - "Subtract the volumes to find the solid volume, then calculate density."
+  tip: "For a floating solid, use a sinker or a displacement can so the volume can still be measured."
+  review: NEEDS_TEACHER_REVIEW
+- id: thermometer
+  name: Thermometer
+  use: Measuring temperature, including the temperature rise of a liquid during heating.
+  howTo:
+    - "Check that the liquid column is unbroken and the range is suitable."
+    - "Place the bulb fully in the liquid without touching the container."
+    - "Wait for the reading to become steady."
+    - "Read at eye level and record the temperature with its unit."
+  tip: "Wait for the column to stop changing before taking the reading."
+  safety: "Do not use a thermometer as a stirrer or hold it by the bulb."
+  review: NEEDS_TEACHER_REVIEW
+- id: parallax-scale
+  name: Parallax scale
+  use: Demonstrating how the eye position changes the apparent reading of a scale.
+  howTo:
+    - "Place the scale upright on a level bench."
+    - "Move your eye directly in line with the pointer before reading."
+    - "Repeat the reading from the left and right to compare the apparent shift."
+    - "Use the aligned reading as the reliable value."
+  tip: "Always place your eye level with the pointer to avoid parallax error."
+  review: NEEDS_TEACHER_REVIEW

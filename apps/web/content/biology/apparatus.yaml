@@ -1,0 +1,86 @@
+# NEEDS TEACHER REVIEW: uses, how-to steps, tips and safety notes follow standard school laboratory practice.
+- id: compound-microscope
+  name: Compound microscope
+  use: Magnifying prepared slides so cells and small structures can be observed and drawn.
+  howTo:
+    - "Carry the microscope with both hands and place it on a firm, level bench."
+    - "Start with the lowest-power objective and switch on the lamp."
+    - "Place the slide on the stage and focus first with the coarse knob, then the fine knob."
+    - "Adjust the diaphragm for comfortable light, then examine at higher power."
+  tip: "Focus on low power first; never let a high-power objective touch the slide."
+  safety: "Carry the microscope upright with both hands and keep the lamp away from loose paper."
+  review: NEEDS_TEACHER_REVIEW
+- id: glass-slide
+  name: Glass slide
+  use: Supporting a specimen and coverslip so it can be viewed under the microscope.
+  howTo:
+    - "Hold the slide by its edges to keep the centre clean."
+    - "Place the specimen in the centre of the slide."
+    - "Add a drop of water or stain where needed."
+    - "Lower the coverslip and press down gently to remove air bubbles."
+  tip: "Use a clean slide; fingerprints and dust look like structures under magnification."
+  safety: "Handle broken glass with a brush and dustpan, never with bare fingers."
+  review: NEEDS_TEACHER_REVIEW
+- id: coverslip
+  name: Coverslip
+  use: Covering a wet mount to protect the objective lens and keep the specimen flat.
+  howTo:
+    - "Hold the coverslip at its edges."
+    - "Lower one side onto the slide first, then lower the rest slowly."
+    - "Tap gently to remove large air bubbles."
+    - "Blot excess liquid from the edge without moving the coverslip."
+  tip: "Lowering at an angle pushes air out and reduces bubbles."
+  safety: "Coverslips are thin and break easily. Handle them over the bench, not over the floor."
+  review: NEEDS_TEACHER_REVIEW
+- id: dropper
+  name: Dropper
+  use: Adding a small, controlled amount of water or stain to a slide or specimen.
+  howTo:
+    - "Squeeze the bulb before placing the tip in the liquid."
+    - "Release the bulb to draw up a small amount."
+    - "Hold the dropper vertically and add one drop at a time."
+    - "Keep the tip clear of the slide and clean it after use."
+  tip: "Holding the dropper vertically gives more consistent drop sizes."
+  review: NEEDS_TEACHER_REVIEW
+- id: petri-dish
+  name: Petri dish
+  use: Holding specimens, cultures or small organisms for observation and simple experiments.
+  howTo:
+    - "Place the dish on a clean, level surface."
+    - "Lift the lid only as much as needed to add the specimen."
+    - "Label the dish and keep it covered when not observing."
+    - "Wash and dry the dish after use, or dispose of it as instructed."
+  tip: "Keep cultures covered to reduce contamination from dust and airborne organisms."
+  review: NEEDS_TEACHER_REVIEW
+- id: forceps
+  name: Forceps
+  use: Picking up small specimens, leaves or coverslips without touching them with your fingers.
+  howTo:
+    - "Hold the forceps near the middle with the tips pointing down."
+    - "Squeeze gently and pick up the specimen by an edge."
+    - "Place it on the slide or dish and release slowly."
+    - "Wipe or rinse the tips after use."
+  tip: "Handle delicate specimens by an edge so the part being studied is not damaged."
+  review: NEEDS_TEACHER_REVIEW
+- id: iodine-solution
+  name: Iodine solution
+  use: Staining plant material such as onion epidermis and testing for starch. It turns blue-black with starch.
+  howTo:
+    - "Place the specimen on the slide."
+    - "Add one drop of iodine solution with a dropper."
+    - "Lower a coverslip and blot away excess stain."
+    - "Observe the stain only after the slide is covered."
+  tip: "Use only a small drop; too much stain makes the specimen too dark to see."
+  safety: "Iodine stains skin and clothes. Wear eye protection and wash splashes with plenty of water."
+  review: NEEDS_TEACHER_REVIEW
+- id: specimen-jar
+  name: Specimen jar
+  use: Holding preserved plant or animal specimens for observation and classification.
+  howTo:
+    - "Check the label before opening the jar."
+    - "Keep the lid on while carrying the jar."
+    - "Observe external features through the glass or place the specimen in a dish."
+    - "Return the specimen to the jar and close the lid firmly after use."
+  tip: "Compare several features before naming a specimen; one feature alone can be misleading."
+  safety: "Preserving fluid may be harmful. Do not open the jar unless your teacher instructs you to."
+  review: NEEDS_TEACHER_REVIEW

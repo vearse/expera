@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+.env
+.env.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.data
+dist
+apps/web/.next
+apps/api/dist
+*.pdf
+expera_virtual_science_labs_landing_page

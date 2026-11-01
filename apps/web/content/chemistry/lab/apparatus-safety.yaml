@@ -1,0 +1,155 @@
+id: apparatus-safety
+title: Laboratory apparatus, safety and measurement
+scope: "Identify apparatus; safe handling and labels; reading the burette, pipette and measuring cylinder"
+wave: 1
+aim: To identify common laboratory apparatus, follow safety rules and read measuring instruments accurately.
+apparatus: [beaker, conical-flask, burette, pipette, measuring-cylinder, test-tube, filter-funnel, bunsen-burner, separating-funnel, evaporating-dish]
+reagents: [distilled-water]
+safety:
+  - Wear a laboratory coat and eye protection.
+  - Never eat or drink in the laboratory.
+  - Report every accident or breakage to your teacher at once.
+keyIdea: Choose the apparatus that measures with the accuracy you need, and read every scale at eye level at the bottom of the meniscus.
+reviseTopic: Laboratory apparatus, safety and accuracy of measurement.
+learnLinks: ["Periodic Table explorer"]
+review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: id-burette
+    type: choice
+    image: burette
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Pipette }
+      - { id: b, text: Burette }
+      - { id: c, text: Measuring cylinder }
+      - { id: d, text: Test tube }
+    answer: b
+    explain: A burette is a long graduated tube with a tap. It delivers variable volumes accurately.
+  - id: id-pipette
+    type: choice
+    image: pipette
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Pipette }
+      - { id: b, text: Burette }
+      - { id: c, text: Dropper }
+    answer: a
+    explain: A pipette has a bulb and one calibration mark. It delivers one fixed volume, for example 25.0 cm3.
+  - id: id-conical
+    type: choice
+    image: conical-flask
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Beaker }
+      - { id: b, text: Conical flask }
+      - { id: c, text: Distillation flask }
+    answer: b
+    explain: The conical flask's sloping sides and narrow neck let you swirl liquids without splashing.
+  - id: id-sepfunnel
+    type: choice
+    image: separating-funnel
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Filter funnel }
+      - { id: b, text: Separating funnel }
+      - { id: c, text: Burette }
+    answer: b
+    explain: A separating funnel has a tap and is used to separate immiscible liquids.
+  - id: id-evap
+    type: choice
+    image: evaporating-dish
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Evaporating dish }
+      - { id: b, text: Beaker }
+      - { id: c, text: Watch glass }
+    answer: a
+    explain: An evaporating dish is used to evaporate a solvent from a solution.
+  - id: id-bunsen
+    type: choice
+    image: bunsen-burner
+    prompt: Name this apparatus.
+    options:
+      - { id: a, text: Bunsen burner }
+      - { id: b, text: Spirit lamp }
+      - { id: c, text: Thermometer }
+    answer: a
+    explain: The Bunsen burner is used for heating. Open the air hole for a hot, blue, non-luminous flame.
+  - id: most-accurate
+    type: choice
+    prompt: Which apparatus measures exactly 25.0 cm3 of a solution most accurately?
+    options:
+      - { id: a, text: Beaker }
+      - { id: b, text: Measuring cylinder }
+      - { id: c, text: Pipette }
+    answer: c
+    explain: A pipette is calibrated to deliver one volume accurately. A beaker's marks are only approximate.
+  - id: label-corrosive
+    type: choice
+    safety: true
+    prompt: A bottle of concentrated tetraoxosulphate(VI) acid carries a hazard label. Which label is it?
+    options:
+      - { id: a, text: Corrosive }
+      - { id: b, text: Flammable }
+      - { id: c, text: Explosive }
+    answer: a
+    explain: Concentrated acids destroy skin and materials, so they are labelled corrosive.
+  - id: label-flammable
+    type: choice
+    safety: true
+    prompt: Which substance should carry a "flammable" label?
+    options:
+      - { id: a, text: Ethanol }
+      - { id: b, text: Distilled water }
+      - { id: c, text: Sodium chloride }
+    answer: a
+    explain: Ethanol vapour catches fire easily. Keep it away from naked flames.
+  - id: dilute-acid
+    type: choice
+    safety: true
+    prompt: How should concentrated acid be diluted?
+    options:
+      - { id: a, text: Add the acid slowly to water, stirring }
+      - { id: b, text: Add water quickly to the acid }
+    answer: a
+    explain: Diluting acid gives out a lot of heat. Adding acid to water keeps it safe; adding water to acid can make it boil and spit.
+  - id: heating-tube
+    type: choice
+    safety: true
+    image: test-tube
+    prompt: When heating a liquid in a test tube, you should…
+    options:
+      - { id: a, text: point the mouth of the tube away from yourself and others }
+      - { id: b, text: fill the tube to the top and heat the bottom strongly }
+      - { id: c, text: look down into the tube while heating }
+    answer: a
+    explain: Hot liquid can shoot out of the tube suddenly.
+  - id: spill
+    type: choice
+    safety: true
+    prompt: Some alkali splashes on your hand. What should you do first?
+    options:
+      - { id: a, text: Wash it with plenty of running water and tell your teacher }
+      - { id: b, text: Wipe it on your uniform }
+      - { id: c, text: Ignore it until the practical ends }
+    answer: a
+    explain: Wash at once with plenty of water to dilute and remove the chemical, then report it.
+  - id: cylinder
+    type: bench
+    bench: cylinder-reading
+    prompt: Read the measuring cylinder.
+    explain: Read at eye level at the bottom of the meniscus.
+  - id: burette
+    type: bench
+    bench: burette-reading
+    prompt: Read the burette.
+    explain: Burette readings are recorded to 2 decimal places.
+  - id: parallax
+    type: choice
+    prompt: Why must you read a scale with your eye level with the meniscus?
+    options:
+      - { id: a, text: To avoid parallax error }
+      - { id: b, text: To see the colour better }
+      - { id: c, text: To read it faster }
+    answer: a
+    explain: Viewing from above or below makes the reading too low or too high (parallax error).

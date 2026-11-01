@@ -1,0 +1,69 @@
+# NEEDS TEACHER REVIEW: indicator ranges, colours and substance pH values are typical textbook values.
+indicators:
+  - id: methyl-orange
+    name: Methyl orange
+    low: 3.1
+    high: 4.4
+    acidColour: { name: red, hex: "#c8323c" }
+    transitionColour: { name: orange, hex: "#ec8a2c" }
+    alkaliColour: { name: yellow, hex: "#f2d43d" }
+    review: NEEDS_TEACHER_REVIEW
+  - id: phenolphthalein
+    name: Phenolphthalein
+    low: 8.2
+    high: 10.0
+    acidColour: { name: colourless, hex: "#f4f7fb" }
+    transitionColour: { name: pale pink, hex: "#f6c1d9" }
+    alkaliColour: { name: pink, hex: "#d63384" }
+    review: NEEDS_TEACHER_REVIEW
+  - id: litmus
+    name: Litmus
+    low: 4.5
+    high: 8.3
+    acidColour: { name: red, hex: "#c8323c" }
+    transitionColour: { name: purple, hex: "#7b4fa6" }
+    alkaliColour: { name: blue, hex: "#2f6fd0" }
+    review: NEEDS_TEACHER_REVIEW
+
+# Approximate pH values; real samples vary.
+substances:
+  - { id: hcl-dilute, name: Dilute hydrochloric acid (0.1 mol dm-3), pH: 1, review: NEEDS_TEACHER_REVIEW }
+  - { id: lime-juice, name: Lime juice (osan wewe), pH: 2, nigerian: true, review: NEEDS_TEACHER_REVIEW }
+  - { id: soft-drink, name: Carbonated soft drink, pH: 3, review: NEEDS_TEACHER_REVIEW }
+  - { id: vinegar, name: Vinegar, pH: 3, review: NEEDS_TEACHER_REVIEW }
+  - { id: orange-juice, name: Orange juice, pH: 3.5, nigerian: true, review: NEEDS_TEACHER_REVIEW }
+  - { id: tomato, name: Tomato juice, pH: 4.5, nigerian: true, review: NEEDS_TEACHER_REVIEW }
+  - { id: rain-water, name: Clean rain water, pH: 5.6, note: Slightly acidic from dissolved carbon(IV) oxide., review: NEEDS_TEACHER_REVIEW }
+  - { id: milk, name: Fresh milk, pH: 6.5, review: NEEDS_TEACHER_REVIEW }
+  - { id: pure-water, name: Distilled water, pH: 7, review: NEEDS_TEACHER_REVIEW }
+  - { id: salt-solution, name: Common salt solution, pH: 7, review: NEEDS_TEACHER_REVIEW }
+  - { id: blood, name: Human blood, pH: 7.4, review: NEEDS_TEACHER_REVIEW }
+  - { id: baking-soda, name: Baking soda solution, pH: 8.5, review: NEEDS_TEACHER_REVIEW }
+  - { id: toothpaste, name: Toothpaste, pH: 9, review: NEEDS_TEACHER_REVIEW }
+  - { id: soap, name: Soap solution, pH: 10, review: NEEDS_TEACHER_REVIEW }
+  - { id: milk-of-magnesia, name: Milk of magnesia (antacid), pH: 10.5, review: NEEDS_TEACHER_REVIEW }
+  - { id: wood-ash, name: Wood ash water (used in making local black soap), pH: 11, nigerian: true, note: Strength varies a lot between samples., review: NEEDS_TEACHER_REVIEW }
+  - { id: ammonia-cleaner, name: Household ammonia cleaner, pH: 11.5, review: NEEDS_TEACHER_REVIEW }
+  - { id: bleach, name: Household bleach, pH: 12.5, review: NEEDS_TEACHER_REVIEW }
+  - { id: naoh-dilute, name: Dilute sodium hydroxide (0.1 mol dm-3), pH: 13, review: NEEDS_TEACHER_REVIEW }
+
+reagents:
+  - { id: hcl, name: Dilute hydrochloric acid, formula: HCl(aq), kind: acid, hazards: [irritant], review: NEEDS_TEACHER_REVIEW }
+  - { id: h2so4-dilute, name: Dilute sulphuric acid, formula: H2SO4(aq), kind: acid, hazards: [irritant], review: NEEDS_TEACHER_REVIEW }
+  - { id: h2so4-conc, name: Concentrated sulphuric acid, formula: H2SO4, kind: acid, hazards: [corrosive], review: NEEDS_TEACHER_REVIEW }
+  - { id: hno3-dilute, name: Dilute trioxonitrate(V) acid (nitric acid), formula: HNO3(aq), kind: acid, hazards: [corrosive], review: NEEDS_TEACHER_REVIEW }
+  - { id: naoh, name: Sodium hydroxide solution, formula: NaOH(aq), kind: base, hazards: [corrosive], review: NEEDS_TEACHER_REVIEW }
+  - { id: nh3-aq, name: Aqueous ammonia, formula: NH3(aq), kind: base, hazards: [irritant], review: NEEDS_TEACHER_REVIEW }
+  - { id: cuo, name: Copper(II) oxide, formula: CuO(s), kind: base, hazards: [harmful], review: NEEDS_TEACHER_REVIEW }
+  - { id: agno3, name: Silver trioxonitrate(V) solution (silver nitrate), formula: AgNO3(aq), kind: test-reagent, hazards: [irritant], review: NEEDS_TEACHER_REVIEW }
+  - { id: bacl2, name: Barium chloride solution, formula: BaCl2(aq), kind: test-reagent, hazards: [toxic], review: NEEDS_TEACHER_REVIEW }
+  - { id: feso4, name: Freshly prepared iron(II) tetraoxosulphate(VI) solution, formula: FeSO4(aq), kind: test-reagent, hazards: [], review: NEEDS_TEACHER_REVIEW }
+  - { id: k2cr2o7, name: Acidified potassium heptaoxodichromate(VI) paper, formula: K2Cr2O7, kind: test-reagent, hazards: [toxic, oxidising], review: NEEDS_TEACHER_REVIEW }
+  - { id: limewater, name: Limewater, formula: Ca(OH)2(aq), kind: test-reagent, hazards: [irritant], review: NEEDS_TEACHER_REVIEW }
+  - { id: litmus-paper, name: Red and blue litmus paper, formula: "-", kind: indicator, hazards: [], review: NEEDS_TEACHER_REVIEW }
+  - { id: methyl-orange, name: Methyl orange, formula: "-", kind: indicator, hazards: [], review: NEEDS_TEACHER_REVIEW }
+  - { id: phenolphthalein, name: Phenolphthalein, formula: "-", kind: indicator, hazards: [flammable], review: NEEDS_TEACHER_REVIEW }
+  - { id: distilled-water, name: Distilled water, formula: H2O(l), kind: solvent, hazards: [], review: NEEDS_TEACHER_REVIEW }
+  - { id: salt-x, name: Unknown salt X, formula: "?", kind: salt, hazards: [harmful], review: NEEDS_TEACHER_REVIEW }
+  - { id: ink, name: Black ink, formula: "-", kind: solvent, hazards: [], review: NEEDS_TEACHER_REVIEW }
+  - { id: mixtures, name: Prepared mixtures (sand and water, salt solution, oil and water), formula: "-", kind: solvent, hazards: [], review: NEEDS_TEACHER_REVIEW }

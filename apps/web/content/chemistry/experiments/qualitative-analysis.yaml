@@ -1,0 +1,51 @@
+id: qualitative-analysis
+title: Qualitative analysis (salt X)
+scope: "Qualitative analysis: tests for cations, anions and gases"
+wave: 1
+aim: To identify the cation and the anion in an unknown simple salt X from tests, observations and inferences.
+apparatus: [test-tube, dropper, bunsen-burner, spatula]
+reagents: [salt-x, naoh, nh3-aq, hcl, hno3-dilute, agno3, bacl2, feso4, h2so4-conc, limewater, litmus-paper, k2cr2o7]
+safety:
+  - Point test tubes away from yourself and others when warming.
+  - Waft gases towards your nose; never sniff directly.
+  - Concentrated tetraoxosulphate(VI) acid is corrosive; add it slowly down the side of the tube.
+keyIdea: Each ion gives a characteristic observation with a particular reagent. Combine several tests, because one observation can fit more than one ion.
+reviseTopic: Tests for cations, anions and gases.
+learnLinks: ["Compound builder (ions and formulae)", "Periodic Table explorer"]
+review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: gas-co2
+    type: choice
+    prompt: A colourless, odourless gas turns limewater milky. What is the gas?
+    options:
+      - { id: a, text: "Carbon(IV) oxide, CO2" }
+      - { id: b, text: "Sulphur(IV) oxide, SO2" }
+      - { id: c, text: "Ammonia, NH3" }
+      - { id: d, text: "Hydrogen, H2" }
+    answer: a
+    explain: Carbon(IV) oxide turns limewater milky.
+  - id: gas-nh3
+    type: choice
+    prompt: A gas with a pungent smell turns damp red litmus paper blue. What is the gas?
+    options:
+      - { id: a, text: "Chlorine, Cl2" }
+      - { id: b, text: "Ammonia, NH3" }
+      - { id: c, text: "Oxygen, O2" }
+      - { id: d, text: "Sulphur(IV) oxide, SO2" }
+    answer: b
+    explain: Ammonia is the common alkaline gas, so it turns damp red litmus blue.
+  - id: waft
+    type: choice
+    safety: true
+    prompt: How should you smell a gas given off in a test tube?
+    options:
+      - { id: a, text: Put your nose close to the mouth of the tube and breathe in deeply }
+      - { id: b, text: Gently waft the gas towards your nose with your hand }
+    answer: b
+    explain: Wafting lets you detect the smell without breathing in a harmful amount.
+  - id: bench
+    type: bench
+    bench: qual
+    prompt: Identify salt X.
+    hint: Use the cation tests first. Use the anion tests that match what you have not ruled out.
+    explain: Test, record observations and inferences, then identify X.

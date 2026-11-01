@@ -1,0 +1,14 @@
+# Simulation configuration. Scientific numbers stay in conventions.yaml and the titration engine.
+# NEEDS TEACHER REVIEW: bubble volume 0.20 cm3 and parallax shift 0.10 cm3 are teaching models, not measured WAEC tolerances.
+
+titration:
+  indicatorId: phenolphthalein
+  bubbleCm3: 0.20
+  parallaxCm3: 0.10
+  review: NEEDS_TEACHER_REVIEW
+
+apparatusRoom:
+  titrationSetup: [retort-stand, burette, conical-flask, white-tile]
+  filtrationSetup: [filter-funnel, beaker]
+  readable: [burette, pipette, measuring-cylinder]
+  review: NEEDS_TEACHER_REVIEW

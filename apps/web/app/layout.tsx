@@ -1,0 +1,37 @@
+import type { Metadata, Viewport } from "next";
+import { Hanken_Grotesk, Sora } from "next/font/google";
+import "./globals.css";
+
+const sora = Sora({
+  subsets: ["latin"],
+  variable: "--font-sora",
+  display: "swap",
+});
+
+const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-hanken",
+  display: "swap",
+});
+
+export const metadata: Metadata = {
+  title: "Expera | Interactive STEM virtual laboratories",
+  description:
+    "Explore, experiment, practise and prepare with virtual science labs aligned to Nigerian curriculum science — WAEC, NECO, JAMB and BECE contexts.",
+};
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en-GB" className={`${sora.variable} ${hanken.variable}`}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="min-h-screen antialiased">{children}</body>
+    </html>
+  );
+}

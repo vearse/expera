@@ -1,0 +1,177 @@
+review: NEEDS_TEACHER_REVIEW
+defaultModelId: led-compound
+defaultIllumination: 62
+defaultDiaphragm: 68
+defaultCondenser: 60
+units:
+  imageSize: mm
+  actualSize: micrometre
+models:
+  - id: led-compound
+    name: LED compound light microscope
+    lightSource: led
+    description: A monocular compound light microscope with a built-in LED illuminator, three achromatic objectives and a mechanical stage. Representative school laboratory model.
+    defaultEyepieceId: wf10x
+    defaultObjectiveId: 10x
+    coarseStepMicrometres: 80
+    fineStepMicrometres: 4
+    focusRangeMicrometres: 500
+    parts:
+      - id: eyepiece
+        name: Eyepiece
+        fn: Contains the ocular lens. It magnifies the image produced by the objective.
+      - id: body-tube
+        name: Body tube
+        fn: Holds the eyepiece at the correct distance from the objective lenses.
+      - id: nosepiece
+        name: Revolving nosepiece
+        fn: Rotates to bring the chosen objective lens into line with the body tube.
+      - id: objective-4x
+        name: 4× objective
+        fn: Low-power scanner lens used to locate the specimen.
+      - id: objective-10x
+        name: 10× objective
+        fn: Low-power lens used to examine the whole specimen.
+      - id: objective-40x
+        name: 40× objective
+        fn: High-power lens used to see fine cell detail. Focus with the fine adjustment.
+      - id: stage
+        name: Stage
+        fn: Flat platform that supports the microscope slide.
+      - id: clips
+        name: Stage clips
+        fn: Hold the slide firmly so it does not move while focusing.
+      - id: condenser
+        name: Condenser
+        fn: Concentrates light from the illuminator onto the specimen.
+      - id: diaphragm
+        name: Diaphragm
+        fn: Controls the amount of light entering the specimen and affects contrast.
+      - id: illuminator
+        name: Illuminator
+        fn: Built-in light source that shines upward through the condenser.
+      - id: coarse-knob
+        name: Coarse adjustment knob
+        fn: Moves the stage quickly to bring the specimen into approximate focus at low power.
+      - id: fine-knob
+        name: Fine adjustment knob
+        fn: Makes small focus changes and is the only focusing knob used at high power.
+      - id: arm
+        name: Arm
+        fn: Supports the body tube and connects it to the base. Carry the microscope by the arm and base.
+      - id: base
+        name: Base
+        fn: Heavy support that keeps the microscope stable on the bench.
+    review: NEEDS_TEACHER_REVIEW
+    eyepieces:
+      - id: wf10x
+        name: WF 10× eyepiece
+        magnification: 10
+        fieldNumberMm: 18
+      - id: wf15x
+        name: WF 15× eyepiece
+        magnification: 15
+        fieldNumberMm: 16
+    objectives:
+      - id: 4x
+        name: 4× scanner objective
+        magnification: 4
+        numericalAperture: 0.1
+        depthOfFieldMicrometres: 100
+        focusShiftMicrometres: 20
+      - id: 10x
+        name: 10× low-power objective
+        magnification: 10
+        numericalAperture: 0.25
+        depthOfFieldMicrometres: 16
+        focusShiftMicrometres: 12
+      - id: 40x
+        name: 40× high-power objective
+        magnification: 40
+        numericalAperture: 0.65
+        depthOfFieldMicrometres: 2.5
+        focusShiftMicrometres: 8
+  - id: mirror-compound
+    name: Mirror compound light microscope
+    lightSource: mirror
+    description: A compound light microscope that uses a plane mirror and an external bench lamp. The mirror must be aligned before observation.
+    defaultEyepieceId: wf10x
+    defaultObjectiveId: 10x
+    coarseStepMicrometres: 80
+    fineStepMicrometres: 4
+    focusRangeMicrometres: 500
+    parts:
+      - id: eyepiece
+        name: Eyepiece
+        fn: Contains the ocular lens. It magnifies the image produced by the objective.
+      - id: body-tube
+        name: Body tube
+        fn: Holds the eyepiece at the correct distance from the objective lenses.
+      - id: nosepiece
+        name: Revolving nosepiece
+        fn: Rotates to bring the chosen objective lens into line with the body tube.
+      - id: objective-4x
+        name: 4× objective
+        fn: Low-power scanner lens used to locate the specimen.
+      - id: objective-10x
+        name: 10× objective
+        fn: Low-power lens used to examine the whole specimen.
+      - id: objective-40x
+        name: 40× objective
+        fn: High-power lens used to see fine cell detail. Focus with the fine adjustment.
+      - id: stage
+        name: Stage
+        fn: Flat platform that supports the microscope slide.
+      - id: clips
+        name: Stage clips
+        fn: Hold the slide firmly so it does not move while focusing.
+      - id: condenser
+        name: Condenser
+        fn: Concentrates light from the illuminator onto the specimen.
+      - id: diaphragm
+        name: Diaphragm
+        fn: Controls the amount of light entering the specimen and affects contrast.
+      - id: illuminator
+        name: Illuminator
+        fn: Built-in light source that shines upward through the condenser.
+      - id: coarse-knob
+        name: Coarse adjustment knob
+        fn: Moves the stage quickly to bring the specimen into approximate focus at low power.
+      - id: fine-knob
+        name: Fine adjustment knob
+        fn: Makes small focus changes and is the only focusing knob used at high power.
+      - id: arm
+        name: Arm
+        fn: Supports the body tube and connects it to the base. Carry the microscope by the arm and base.
+      - id: base
+        name: Base
+        fn: Heavy support that keeps the microscope stable on the bench.
+    review: NEEDS_TEACHER_REVIEW
+    eyepieces:
+      - id: wf10x
+        name: WF 10× eyepiece
+        magnification: 10
+        fieldNumberMm: 18
+      - id: h5x
+        name: H 5× eyepiece
+        magnification: 5
+        fieldNumberMm: 20
+    objectives:
+      - id: 4x
+        name: 4× scanner objective
+        magnification: 4
+        numericalAperture: 0.1
+        depthOfFieldMicrometres: 100
+        focusShiftMicrometres: 20
+      - id: 10x
+        name: 10× low-power objective
+        magnification: 10
+        numericalAperture: 0.25
+        depthOfFieldMicrometres: 16
+        focusShiftMicrometres: 12
+      - id: 40x
+        name: 40× high-power objective
+        magnification: 40
+        numericalAperture: 0.65
+        depthOfFieldMicrometres: 2.5
+        focusShiftMicrometres: 8

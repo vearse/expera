@@ -1,0 +1,311 @@
+review: NEEDS_TEACHER_REVIEW
+specimens:
+  - id: onion-epidermis
+    name: Onion epidermal cells
+    subtitle: Plant tissue whole mount
+    organism: Allium cepa (onion)
+    sampleKind: plant
+    description: A thin peel from the inner fleshy scale leaf of an onion, mounted in iodine solution. The preparation shows a single layer of elongated plant cells.
+    materials:
+      - Fresh onion bulb
+      - Microscope slide and coverslip
+      - Forceps and mounting needle
+      - Water
+      - Iodine solution
+      - Filter paper
+    stain:
+      id: iodine
+      name: Iodine solution
+      required: true
+      purpose: Iodine makes the nucleus and cytoplasm easier to distinguish. Starch-rich cytoplasm may darken.
+      review: NEEDS_TEACHER_REVIEW
+    steps:
+      - id: peel
+        action: sample
+        label: Peel a thin epidermal layer
+        instruction: Use forceps to peel a very thin, transparent layer from the concave inner surface of a fresh onion scale leaf.
+        success: A thin translucent epidermal peel is ready on the slide.
+        error: Select the correct specimen and peel a thin epidermal layer before mounting it.
+      - id: mount
+        action: mount
+        label: Mount the peel
+        instruction: Place the peel flat on a clean slide and add a small drop of water so it does not dry out.
+        success: The peel lies flat in a small drop of water.
+        error: Mount the epidermal peel on the slide before adding stain or a coverslip.
+      - id: stain
+        action: stain
+        label: Add iodine solution
+        instruction: Add one small drop of iodine solution beside the peel and draw it under the tissue with filter paper.
+        success: Iodine has been drawn through the peel.
+        error: This specimen requires a small amount of iodine solution before the coverslip is added.
+      - id: coverslip
+        action: coverslip
+        label: Lower the coverslip
+        instruction: Lower a coverslip slowly from one edge to exclude air bubbles. Do not press down on the slide.
+        success: The coverslip is in place with no large air bubbles.
+        error: Complete the mounting and staining steps before lowering the coverslip.
+    review: NEEDS_TEACHER_REVIEW
+    variants:
+      - id: onion-a
+        name: Onion epidermis, central scale leaf
+        description: Elongated, regularly arranged epidermal cells with thick cellulose walls.
+        structures:
+          - id: cell-wall
+            name: Cell wall
+            kind: cell-part
+            description: A rigid cellulose wall outlining each elongated plant cell.
+            minTotalMagnification: 40
+            minClarity: 0.2
+            expectedInDrawing: true
+            point: [0.5, 0.16]
+            referenceSizeMicrometres: 120
+          - id: cytoplasm
+            name: Cytoplasm
+            kind: cell-part
+            description: The living contents lining the cell wall, lightly coloured by iodine.
+            minTotalMagnification: 100
+            minClarity: 0.38
+            expectedInDrawing: false
+            point: [0.25, 0.5]
+          - id: nucleus
+            name: Nucleus
+            kind: organelle
+            description: A rounded structure, often near the cell wall, made more visible by iodine.
+            minTotalMagnification: 100
+            minClarity: 0.5
+            expectedInDrawing: true
+            point: [0.52, 0.48]
+            referenceSizeMicrometres: 20
+          - id: vacuole
+            name: Vacuole
+            kind: organelle
+            description: A large clear central space bounded by the tonoplast.
+            minTotalMagnification: 100
+            minClarity: 0.46
+            expectedInDrawing: false
+            point: [0.7, 0.52]
+            referenceSizeMicrometres: 80
+  - id: cheek-cells
+    name: Human cheek cells
+    subtitle: Animal cell smear
+    organism: Homo sapiens (buccal epithelium)
+    sampleKind: animal
+    description: A gentle cheek smear stained with methylene blue. The cells are irregular and separate, without a cell wall or chloroplasts.
+    materials:
+      - Sterile cotton swab
+      - Clean microscope slide and coverslip
+      - Methylene blue stain
+      - Water
+      - Filter paper
+      - Disposable gloves
+    stain:
+      id: methylene-blue
+      name: Methylene blue
+      required: true
+      purpose: Methylene blue stains the nucleus and cytoplasm so the cells stand out against the background.
+      review: NEEDS_TEACHER_REVIEW
+    steps:
+      - id: sample
+        action: sample
+        label: Collect cheek cells
+        instruction: Gently rub the inside of the cheek with a clean sterile swab. Use a fresh swab and do not share it.
+        success: A sample of cheek epithelial cells has been collected.
+        error: Collect a cheek sample with a clean swab before preparing the slide.
+      - id: mount
+        action: mount
+        label: Make a thin smear
+        instruction: Smear the swab thinly across the centre of a clean slide.
+        success: A thin smear has been spread on the slide.
+        error: Make a thin smear on the slide before staining.
+      - id: dry
+        action: dry
+        label: Air-dry the smear
+        instruction: Allow the smear to air-dry completely before staining.
+        success: The smear has air-dried.
+        error: Let the smear air-dry before applying methylene blue.
+      - id: stain
+        action: stain
+        label: Apply methylene blue
+        instruction: Add one drop of methylene blue, leave it briefly, then draw off excess stain with filter paper.
+        success: The smear is stained with methylene blue.
+        error: Apply methylene blue after the smear has air-dried.
+      - id: coverslip
+        action: coverslip
+        label: Lower the coverslip
+        instruction: Lower a coverslip slowly from one edge to avoid trapping air.
+        success: The coverslip is in place.
+        error: Complete the smear and stain before adding the coverslip.
+    review: NEEDS_TEACHER_REVIEW
+    variants:
+      - id: cheek-a
+        name: Cheek epithelial smear
+        description: Irregular squamous epithelial cells with a central nucleus and flexible cell membrane.
+        structures:
+          - id: cell-membrane
+            name: Cell membrane
+            kind: cell-part
+            description: The flexible boundary of each animal cell.
+            minTotalMagnification: 100
+            minClarity: 0.35
+            expectedInDrawing: true
+            point: [0.5, 0.28]
+            referenceSizeMicrometres: 60
+          - id: cytoplasm
+            name: Cytoplasm
+            kind: cell-part
+            description: The stained contents inside the cell membrane.
+            minTotalMagnification: 100
+            minClarity: 0.4
+            expectedInDrawing: false
+            point: [0.34, 0.52]
+          - id: nucleus
+            name: Nucleus
+            kind: organelle
+            description: A dark blue oval structure near the centre of the cell.
+            minTotalMagnification: 100
+            minClarity: 0.46
+            expectedInDrawing: true
+            point: [0.52, 0.5]
+            referenceSizeMicrometres: 18
+  - id: pond-water
+    name: Pond water
+    subtitle: Freshwater microbial sample
+    organism: Mixed freshwater community
+    sampleKind: microbial
+    description: A drop of pond water mounted under a coverslip. Different samples contain different microscopic organisms. Each sample is a teacher-reviewed representative model, not a photograph.
+    materials:
+      - Fresh pond water sample
+      - Pipette
+      - Microscope slide and coverslip
+      - Filter paper
+    stain: null
+    steps:
+      - id: sample
+        action: sample
+        label: Collect a water sample
+        instruction: Use a clean pipette to take a small sample from just below the surface of the pond water.
+        success: A pond water sample has been collected.
+        error: Collect a pond water sample before preparing the slide.
+      - id: mount
+        action: mount
+        label: Place a drop on the slide
+        instruction: Place one small drop of pond water in the centre of a clean slide.
+        success: A drop of pond water is on the slide.
+        error: Place a drop of pond water on the slide before adding the coverslip.
+      - id: coverslip
+        action: coverslip
+        label: Lower the coverslip
+        instruction: Lower a coverslip slowly from one edge. Do not press, because the organisms are fragile.
+        success: The coverslip is in place and the water sample is intact.
+        error: Lower the coverslip after placing the pond water drop on the slide.
+    review: NEEDS_TEACHER_REVIEW
+    variants:
+      - id: pond-a
+        name: Pond sample A — still water
+        description: A still-water community with Paramecium, Euglena and Amoeba.
+        structures:
+          - id: paramecium
+            name: Paramecium
+            kind: organism
+            description: An elongated ciliated protozoan with a oral groove and contractile vacuoles.
+            minTotalMagnification: 100
+            minClarity: 0.35
+            expectedInDrawing: true
+            point: [0.34, 0.42]
+            referenceSizeMicrometres: 200
+          - id: paramecium-cilia
+            name: Cilia
+            kind: structure
+            description: Fine hair-like projections around the Paramecium that beat to move it through water.
+            minTotalMagnification: 400
+            minClarity: 0.58
+            expectedInDrawing: false
+            point: [0.25, 0.42]
+          - id: euglena
+            name: Euglena
+            kind: organism
+            description: A spindle-shaped flagellate with green chloroplasts and a red eyespot.
+            minTotalMagnification: 100
+            minClarity: 0.4
+            expectedInDrawing: true
+            point: [0.64, 0.32]
+            referenceSizeMicrometres: 55
+          - id: euglena-flagellum
+            name: Flagellum
+            kind: structure
+            description: A long whip-like projection used for swimming.
+            minTotalMagnification: 400
+            minClarity: 0.62
+            expectedInDrawing: false
+            point: [0.7, 0.24]
+          - id: amoeba
+            name: Amoeba
+            kind: organism
+            description: An irregular single-celled organism that moves using pseudopodia.
+            minTotalMagnification: 100
+            minClarity: 0.38
+            expectedInDrawing: true
+            point: [0.53, 0.68]
+            referenceSizeMicrometres: 300
+      - id: pond-b
+        name: Pond sample B — algal water
+        description: A green-water community with Paramecium, Volvox and a diatom.
+        structures:
+          - id: paramecium
+            name: Paramecium
+            kind: organism
+            description: A ciliated protozoan with a characteristic slipper shape.
+            minTotalMagnification: 100
+            minClarity: 0.35
+            expectedInDrawing: true
+            point: [0.33, 0.63]
+            referenceSizeMicrometres: 200
+          - id: volvox
+            name: Volvox colony
+            kind: organism
+            description: A spherical green colony containing many small cells and daughter colonies.
+            minTotalMagnification: 100
+            minClarity: 0.38
+            expectedInDrawing: true
+            point: [0.62, 0.36]
+            referenceSizeMicrometres: 400
+          - id: diatom
+            name: Diatom
+            kind: organism
+            description: A golden-brown alga with a rigid silica frustule and a navicular shape.
+            minTotalMagnification: 400
+            minClarity: 0.5
+            expectedInDrawing: false
+            point: [0.4, 0.24]
+            referenceSizeMicrometres: 60
+      - id: pond-c
+        name: Pond sample C — shaded water
+        description: A shaded-water community with Stentor, Euglena and Paramecium.
+        structures:
+          - id: stentor
+            name: Stentor
+            kind: organism
+            description: A trumpet-shaped ciliate that attaches to debris and sweeps food toward its mouth.
+            minTotalMagnification: 100
+            minClarity: 0.38
+            expectedInDrawing: true
+            point: [0.38, 0.4]
+            referenceSizeMicrometres: 350
+          - id: euglena
+            name: Euglena
+            kind: organism
+            description: A green flagellate with a red eyespot.
+            minTotalMagnification: 100
+            minClarity: 0.4
+            expectedInDrawing: true
+            point: [0.67, 0.68]
+            referenceSizeMicrometres: 55
+          - id: paramecium
+            name: Paramecium
+            kind: organism
+            description: An elongated ciliate with visible contractile vacuoles.
+            minTotalMagnification: 100
+            minClarity: 0.35
+            expectedInDrawing: true
+            point: [0.63, 0.28]
+            referenceSizeMicrometres: 200

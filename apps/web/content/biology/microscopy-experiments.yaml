@@ -1,0 +1,73 @@
+review: NEEDS_TEACHER_REVIEW
+experiments:
+  - id: microscope-operation
+    title: Microscope operation
+    specimenId: onion-epidermis
+    aim: Identify the parts of a compound light microscope, mount a slide and bring a specimen into clear focus.
+    summary: Select a microscope, inspect its components, secure a slide and focus an image at more than one magnification.
+    hints:
+      - Start at the lowest objective and use the coarse adjustment before switching to high power.
+      - Use the fine adjustment at high power so the slide and objective are not damaged.
+      - Centre the specimen before increasing magnification.
+    criteria:
+      - Select and inspect the microscope.
+      - Place and secure the slide.
+      - Focus at low power, then change objective.
+      - Observe and record the specimen.
+    review: NEEDS_TEACHER_REVIEW
+  - id: onion-epidermis
+    title: Onion epidermal cell slide
+    specimenId: onion-epidermis
+    aim: Prepare an onion epidermal peel, observe its cells and identify visible plant cell structures.
+    summary: Peel a thin epidermis, mount it in iodine solution, focus it and draw the cells.
+    hints:
+      - Peel only the thin transparent layer, not the fleshy onion tissue.
+      - Add iodine beside the peel and draw it underneath with filter paper.
+      - Lower the coverslip from one edge to prevent air bubbles.
+    criteria:
+      - Prepare and mount the onion peel.
+      - Observe cell walls and nuclei at suitable magnification.
+      - Draw and label the observed structures.
+    review: NEEDS_TEACHER_REVIEW
+  - id: cheek-cells
+    title: Cheek cell observation
+    specimenId: cheek-cells
+    aim: Prepare a stained cheek smear and compare animal cell structures with plant cells.
+    summary: Make a thin cheek smear, stain it with methylene blue, focus it and draw the cells.
+    hints:
+      - Use a clean swab and a thin smear.
+      - Let the smear air-dry before staining.
+      - Cheek cells have a cell membrane but no cell wall or chloroplasts.
+    criteria:
+      - Prepare a thin stained cheek smear.
+      - Observe the cell membrane, cytoplasm and nucleus.
+      - Draw and label the observed animal cell structures.
+    review: NEEDS_TEACHER_REVIEW
+  - id: pond-water
+    title: Pond water observation
+    specimenId: pond-water
+    aim: Examine a freshwater sample, identify organisms and record the diversity of microscopic life.
+    summary: Mount a pond water drop, scan the field at low power, then increase magnification to identify organisms.
+    hints:
+      - Scan at low power first to find an organism, then centre it.
+      - Do not press the coverslip; the organisms are fragile.
+      - Different samples contain different organisms, so observations must describe what is actually seen.
+    criteria:
+      - Prepare a pond water slide.
+      - Locate and identify organisms in the sample.
+      - Draw and label at least one organism accurately.
+    review: NEEDS_TEACHER_REVIEW
+  - id: measurement-and-drawing
+    title: Magnification and actual size
+    specimenId: onion-epidermis
+    aim: Calculate total magnification, measure the displayed image and calculate the actual size of a specimen.
+    summary: Use the microscope settings and a virtual ruler to calculate actual size, then complete a biological drawing.
+    hints:
+      - Total magnification = eyepiece magnification × objective magnification.
+      - Actual size = image size ÷ total magnification.
+      - Convert millimetres to micrometres by multiplying by 1000.
+    criteria:
+      - Record the eyepiece and objective magnification.
+      - Measure the image size and calculate the actual size.
+      - Record the correct units.
+    review: NEEDS_TEACHER_REVIEW

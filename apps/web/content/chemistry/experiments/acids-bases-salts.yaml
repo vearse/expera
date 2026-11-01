@@ -1,0 +1,84 @@
+id: acids-bases-salts
+title: Acids, bases and salts
+scope: "Indicators, pH of household substances, neutralisation, preparing soluble and insoluble salts"
+wave: 1
+aim: To use indicators to classify substances, neutralise an alkali with an acid, and choose the right method to prepare a named salt.
+apparatus: [test-tube, dropper, burette, conical-flask, beaker, filter-funnel, evaporating-dish, bunsen-burner, tripod-gauze]
+reagents: [hcl, h2so4-dilute, naoh, cuo, bacl2, methyl-orange, phenolphthalein, litmus-paper, distilled-water]
+safety:
+  - Wear eye protection when handling acids and alkalis.
+  - Do not heat an evaporating dish to dryness; stop at the point of crystallisation to avoid spitting.
+  - Barium compounds are toxic; wash your hands after use.
+keyIdea: "Acids give H+ ions and alkalis give OH- ions in water. In neutralisation H+(aq) + OH-(aq) → H2O(l), and a salt is formed. The method for making a salt depends on whether the salt and the base are soluble."
+reviseTopic: "Acids, bases and salts: methods of salt preparation."
+learnLinks: ["Acids, bases and the pH scale", "Compound builder (combine bench)"]
+review: NEEDS_TEACHER_REVIEW
+tasks:
+  - id: indicators
+    type: bench
+    bench: indicator
+    prompt: Test the samples with indicators and classify them.
+    hint: Look at litmus first, then confirm with the other two indicators.
+    explain: Indicator colours show whether a solution is acidic, neutral or alkaline.
+  - id: indicator-choice-weak-base
+    type: choice
+    prompt: Which indicator is suitable for titrating a strong acid (HCl) against a weak base (aqueous ammonia)?
+    options:
+      - { id: a, text: Methyl orange }
+      - { id: b, text: Phenolphthalein }
+      - { id: c, text: Either one }
+    answer: a
+    explain: The end point of a strong acid against a weak base is in the acidic range, where methyl orange changes colour.
+  - id: indicator-choice-weak-acid
+    type: choice
+    prompt: Which indicator is suitable for titrating a weak acid (ethanoic acid) against a strong base (NaOH)?
+    options:
+      - { id: a, text: Methyl orange }
+      - { id: b, text: Phenolphthalein }
+      - { id: c, text: Either one }
+    answer: b
+    explain: The end point of a weak acid against a strong base is in the alkaline range, where phenolphthalein changes colour.
+  - id: neutralise
+    type: bench
+    bench: neutralise
+    prompt: Neutralise sodium hydroxide with hydrochloric acid.
+    hint: Add 5 cm3 portions first, then single drops when the pink colour starts to fade.
+    explain: Exact neutralisation is the first stage of preparing a soluble sodium salt by titration.
+  - id: method-nacl
+    type: choice
+    prompt: Which method is used to prepare sodium chloride, a soluble salt of sodium?
+    options:
+      - { id: a, text: "Titration of an acid with an alkali, then evaporation" }
+      - { id: b, text: "Adding excess insoluble base to an acid, then filtering" }
+      - { id: c, text: "Precipitation (double decomposition)" }
+    answer: a
+    explain: Sodium hydroxide is soluble, so excess cannot be filtered off. Use titration to find the exact volumes, then evaporate.
+  - id: order-cuso4
+    type: order
+    prompt: "Put the steps for preparing copper(II) tetraoxosulphate(VI) crystals from copper(II) oxide in order."
+    hint: The base is insoluble, so add it in excess and remove the excess.
+    items:
+      - Warm some dilute tetraoxosulphate(VI) acid in a beaker
+      - Add copper(II) oxide a little at a time, stirring, until some remains undissolved
+      - Filter to remove the excess copper(II) oxide
+      - Heat the filtrate in an evaporating dish to the point of crystallisation
+      - Leave to cool so that crystals form, then dry them between filter papers
+    explain: "Insoluble base + acid → salt + water. Adding the base in excess makes sure all the acid is used up."
+  - id: equation-cuso4
+    type: choice
+    prompt: Which is the balanced equation, with state symbols, for this preparation?
+    options:
+      - { id: a, text: "CuO(s) + H2SO4(aq) → CuSO4(aq) + H2O(l)" }
+      - { id: b, text: "CuO(s) + 2H2SO4(aq) → CuSO4(aq) + 2H2O(l)" }
+      - { id: c, text: "Cu(s) + H2SO4(aq) → CuSO4(aq) + H2(g)" }
+    answer: a
+    explain: One mole of copper(II) oxide reacts with one mole of the acid. Copper does not react with dilute tetraoxosulphate(VI) acid.
+  - id: order-baso4
+    type: order
+    prompt: "Put the steps for preparing insoluble barium tetraoxosulphate(VI) in order."
+    items:
+      - Mix solutions of barium chloride and sodium tetraoxosulphate(VI)
+      - Filter off the white precipitate
+      - Wash the residue with distilled water
+      - Dry the residue between filter papers or in a warm oven
+    explain: "Insoluble salts are made by precipitation: BaCl2(aq) + Na2SO4(aq) → BaSO4(s) + 2NaCl(aq)."
