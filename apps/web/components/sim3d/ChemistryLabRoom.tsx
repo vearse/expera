@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { ContactShadows, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -50,6 +51,10 @@ export type TeacherConfig = {
   message: string;
   position?: [number, number, number];
   rotation?: number;
+  /** When false, speech is shown in an HTML overlay instead of the 3D bubble. */
+  showSpeech?: boolean;
+  /** Clicking the 3D speech bubble triggers this action. */
+  onSpeechClick?: () => void;
 };
 
 export type WallChart = "periodic" | "measurement" | "biology" | "none";
@@ -111,7 +116,7 @@ export const APPARATUS_LAB_ROOM: LabRoomConfig = {
   teacher: {
     name: "Ms. Ada",
     message: "Choose an apparatus from the shelves. Its guide will appear below the room.",
-    position: [-4.55, 0, -1.15],
+    position: [-3.7, 0, -0.15],
     rotation: 1.32,
   },
 };
@@ -317,10 +322,10 @@ function useSpeechTexture(name: string, message: string, accent: string) {
       ctx.fillStyle = accent;
       ctx.font = '800 21px system-ui, -apple-system, "Segoe UI", sans-serif';
       ctx.textAlign = "left";
-      ctx.fillText(name.toUpperCase(), 40, 52);
+      ctx.fillText(name.toUpperCase(), 64, 52);
       ctx.fillStyle = "#1e293b";
       ctx.font = '600 31px system-ui, -apple-system, "Segoe UI", sans-serif';
-      lines.forEach((line, index) => ctx.fillText(line, 40, 102 + index * 40));
+      lines.forEach((line, index) => ctx.fillText(line, 64, 102 + index * 40));
     }
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -804,14 +809,59 @@ function NoticeBoard({ config, palette }: { config: NoticeBoardConfig; palette: 
 }
 
 function Teacher({ config, palette }: { config: TeacherConfig; palette: LabRoomPalette }) {
-  const name = config.name ?? "Teacher";
-  const { texture, aspect } = useSpeechTexture(name, config.message, palette.accent);
+  const name = config.name ?? "Ms. Ada";
+  const showSpeech = config.showSpeech !== false && config.message.trim().length > 0;
+  const { texture, aspect } = useSpeechTexture(name, showSpeech ? config.message : " ", palette.accent);
   const position = config.position ?? [-4.55, 0, -1.15];
   const rotation = config.rotation ?? 1.32;
+  const speech = useRef<THREE.Sprite>(null);
+  const phase = useRef(0);
+  const maxBubbleWidth = 2.15;
+  let baseScaleX = 1.05 * aspect;
+  let baseScaleY = 1.05;
+  if (baseScaleX > maxBubbleWidth) {
+    const fit = maxBubbleWidth / baseScaleX;
+    baseScaleX = maxBubbleWidth;
+    baseScaleY *= fit;
+  }
+  const speechBase: [number, number, number] = [1.45, 2.22, 0.35];
+  const interactive = Boolean(config.onSpeechClick);
+
+  useFrame((_state, delta) => {
+    phase.current += delta;
+    if (!speech.current || !showSpeech) return;
+    const bob = Math.sin(phase.current * 1.8);
+    speech.current.position.y = speechBase[1] + bob * 0.022;
+    const pulse = 1 + Math.sin(phase.current * 2.4) * 0.006;
+    speech.current.scale.set(baseScaleX * pulse, baseScaleY * pulse, 1);
+  });
+
+  const activate = (event: { stopPropagation: () => void }) => {
+    event.stopPropagation();
+    config.onSpeechClick?.();
+  };
 
   return (
-    <group position={position} rotation={[0, rotation, 0]}>
-      <group position={[0, 0, 0]}>
+    <group
+      position={position}
+      onClick={interactive ? activate : undefined}
+      onPointerOver={
+        interactive
+          ? (event) => {
+              event.stopPropagation();
+              document.body.style.cursor = "pointer";
+            }
+          : undefined
+      }
+      onPointerOut={
+        interactive
+          ? () => {
+              document.body.style.cursor = "default";
+            }
+          : undefined
+      }
+    >
+      <group rotation={[0, rotation, 0]}>
         {[-0.11, 0.11].map((x) => (
           <mesh key={x} position={[x, 0.36, 0]} castShadow>
             <cylinderGeometry args={[0.075, 0.065, 0.64, 16]} />
@@ -879,9 +929,17 @@ function Teacher({ config, palette }: { config: TeacherConfig; palette: LabRoomP
           <meshStandardMaterial color="#7f1d1d" roughness={0.6} />
         </mesh>
       </group>
-      <sprite position={[0.2, 2.28, 0.15]} scale={[1.02 * aspect, 1.02, 1]}>
-        <spriteMaterial map={texture} transparent depthWrite={false} toneMapped={false} />
-      </sprite>
+      {showSpeech ? (
+        <sprite ref={speech} position={speechBase} scale={[baseScaleX, baseScaleY, 1]} renderOrder={8}>
+          <spriteMaterial map={texture} transparent depthTest={false} depthWrite={false} toneMapped={false} />
+        </sprite>
+      ) : null}
+      {interactive ? (
+        <mesh position={[0.55, 1.35, 0.45]}>
+          <boxGeometry args={[1.5, 2.3, 0.9]} />
+          <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
+        </mesh>
+      ) : null}
     </group>
   );
 }

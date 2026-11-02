@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { loadApparatus, loadConventions, loadReagents } from "@/lib/content/load";
+import { loadApparatus, loadConventions, loadExperiment, loadReagents } from "@/lib/content/load";
 import { loadSafetyRules } from "@/lib/engine/safety";
 import { ApparatusLaboratory } from "@/components/lab/ApparatusLaboratory";
 import { TitrationLaboratory } from "@/components/lab/TitrationLaboratory";
@@ -10,6 +10,7 @@ export function ChemistryLabRun({ moduleId, mode }: { moduleId: string; mode: "g
   const modeLabel = mode === "guided" ? "Guided" : "Explore";
 
   if (moduleId === "apparatus") {
+    const experiment = loadExperiment("apparatus-safety");
     return (
       <div className="grid gap-4">
         <Link href={topicHref} className="text-sm text-primary hover:underline">
@@ -20,7 +21,12 @@ export function ChemistryLabRun({ moduleId, mode }: { moduleId: string; mode: "g
         <p className="max-w-3xl text-sm text-slate-600">
           The whole storeroom is visible at once. Orbit the room, pick equipment off the shelves, drag it onto the workbench, and complete the identify, assemble and reading challenges.
         </p>
-        <ApparatusLaboratory items={loadApparatus()} />
+        <ApparatusLaboratory
+          items={loadApparatus()}
+          mode={mode}
+          guidedTasks={mode === "guided" ? experiment.tasks : []}
+          safetyBriefing={experiment.safety}
+        />
       </div>
     );
   }

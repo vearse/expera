@@ -120,6 +120,20 @@ body {
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
 }
 
+.bench-note-ui {
+  box-sizing: border-box;
+  overflow: hidden;
+  color: #0f172a;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  user-select: text;
+}
+
+.bench-note-ui *,
+.bench-note-ui *::before,
+.bench-note-ui *::after {
+  box-sizing: border-box;
+}
+
 :focus-visible {
   outline: 3px solid var(--primary-container);
   outline-offset: 2px;

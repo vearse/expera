@@ -1,0 +1,34 @@
+id: apparatus
+version: 1
+title: Guided apparatus laboratory
+review: NEEDS_TEACHER_REVIEW
+stages:
+  - id: safety
+    title: Safety briefing
+    theory: Wear a laboratory coat and eye protection. Know hazard symbols, lab rules, and what to do if something spills.
+    taskKind: choice
+  - id: identify
+    title: Apparatus identification
+    theory: Name each piece of apparatus and state what it is used for before you touch it.
+    taskKind: identify-click
+  - id: reading
+    title: Reading measuring instruments
+    theory: Read the bottom of the meniscus at eye level. Burette readings are to 0.05 cm3.
+    taskKind: reading
+  - id: handling
+    title: Handling skills
+    theory: Light a Bunsen safely, adjust the air hole for a blue flame, and never pipette by mouth.
+    taskKind: handling
+  - id: assemble
+    title: Assembling set-ups
+    theory: Build each standard layout with the correct apparatus in a safe order.
+    taskKind: assemble
+  - id: cleanup
+    title: Clean-up
+    theory: Turn off gas, tidy the bench, and wash glassware before you leave.
+    taskKind: checklist
+  - id: assessment
+    title: Final check
+    theory: Build the titration set-up your teacher requests with no hints.
+    taskKind: assemble-final
+    setupTarget: titration

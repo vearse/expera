@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { Apparatus } from "@/lib/content/schemas";
+import type { ApparatusPartStates } from "@/lib/sim/apparatusPartStates";
 import { detectWebGL } from "@/lib/device";
 import { ApparatusModel, getApparatusHeight } from "./apparatusModels";
 import {
@@ -22,6 +23,7 @@ import {
   SHELF_X,
   SHELF_Z,
 } from "./ChemistryLabRoom";
+import { BenchNote, type BenchNoteData } from "./BenchNote";
 
 type Preset = "room" | "shelves" | "bench" | "top" | "custom";
 type ControlsLike = { enabled: boolean; target: THREE.Vector3; update?: () => void };
@@ -35,7 +37,19 @@ type RoomProps = {
   onReturnToShelf: (id: string) => void;
   onReorderBench: (ids: string[]) => void;
   onClearBench: () => void;
-  teacherHint: string;
+  teacherHint?: string;
+  benchNote?: BenchNoteData | null;
+  noteContent?: ReactNode;
+  onTeacherClick?: () => void;
+  highlightIds?: string[];
+  guidedOverlay?: ReactNode;
+  selectionPanel?: ReactNode;
+  viewLocked?: boolean;
+  onViewLockedChange?: (locked: boolean) => void;
+  fullscreen?: boolean;
+  onFullscreenChange?: (open: boolean) => void;
+  partStates?: ApparatusPartStates;
+  onTogglePart?: (part: "bunsen-lit" | "bunsen-air") => void;
 };
 
 function ApparatusObject({
@@ -43,23 +57,27 @@ function ApparatusObject({
   position,
   scale,
   selected,
+  highlighted,
   dragging,
   fromBench,
   onSelect,
   onDragStart,
   onToggle,
   onHover,
+  viewLocked,
 }: {
   id: string;
   position: [number, number, number];
   scale: number;
   selected: boolean;
+  highlighted: boolean;
   dragging: boolean;
   fromBench: boolean;
   onSelect: (id: string) => void;
   onDragStart: (id: string, fromBench: boolean) => void;
   onToggle: (id: string) => void;
   onHover: (id: string | null) => void;
+  viewLocked: boolean;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -81,14 +99,14 @@ function ApparatusObject({
       onPointerDown={(event) => {
         event.stopPropagation();
         onSelect(id);
-        onDragStart(id, fromBench);
+        if (!viewLocked) onDragStart(id, fromBench);
       }}
       onDoubleClick={(event) => {
         event.stopPropagation();
-        onToggle(id);
+        if (!viewLocked) onToggle(id);
       }}
     >
-      <ApparatusModel id={id} active={selected || hovered} lit={selected || hovered} />
+      <ApparatusModel id={id} active={selected || hovered || highlighted} lit={selected || hovered || highlighted} />
     </group>
   );
 }
@@ -107,7 +125,67 @@ function FloatingLabel({ entry }: { entry: { item: Apparatus; position: [number,
   );
 }
 
-function RoomScene({ items, selectedId, bench, teacherHint, preset, onPresetChange, onSelect, onMoveToBench, onReturnToShelf, onReorderBench }: RoomProps & { preset: Preset; onPresetChange: (p: Preset) => void }) {
+const NOTE_ANCHOR: [number, number, number] = [1.62, 1.54, 0.92];
+
+function NoteAnchor({ anchorRef }: { anchorRef: RefObject<HTMLDivElement | null> }) {
+  const group = useRef<THREE.Group>(null);
+  const { camera, size } = useThree();
+  const vec = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame(() => {
+    const el = anchorRef.current;
+    const node = group.current;
+    if (!el || !node) return;
+    node.getWorldPosition(vec);
+    vec.project(camera);
+    if (vec.z > 1) {
+      el.style.visibility = "hidden";
+      return;
+    }
+    const card = el.firstElementChild as HTMLElement | null;
+    const cardW = card?.offsetWidth || 336;
+    const cardH = card?.offsetHeight || 420;
+    const marginX = 10;
+    const marginTop = 52;
+    const marginBottom = 58;
+    const rawX = (vec.x * 0.5 + 0.5) * size.width;
+    const rawY = (-vec.y * 0.5 + 0.5) * size.height;
+    const minX = marginX + cardW / 2;
+    const maxX = Math.max(minX, size.width - marginX - cardW / 2);
+    const minY = marginTop + cardH / 2;
+    const maxY = Math.max(minY, size.height - marginBottom - cardH / 2);
+    const x = Math.min(maxX, Math.max(minX, rawX));
+    const y = Math.min(maxY, Math.max(minY, rawY));
+    el.style.visibility = "visible";
+    el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+  });
+
+  return <group ref={group} position={NOTE_ANCHOR} />;
+}
+
+function RoomScene({
+  items,
+  selectedId,
+  bench,
+  teacherHint,
+  benchNote,
+  noteContent,
+  noteAnchorRef,
+  onTeacherClick,
+  highlightIds = [],
+  preset,
+  onPresetChange,
+  onSelect,
+  onMoveToBench,
+  onReturnToShelf,
+  onReorderBench,
+  viewLocked = false,
+}: RoomProps & {
+  preset: Preset;
+  onPresetChange: (p: Preset) => void;
+  viewLocked?: boolean;
+  noteAnchorRef?: RefObject<HTMLDivElement | null>;
+}) {
   const { camera, gl } = useThree();
   const size = useThree((state) => state.size);
   const controls = useThree((state) => state.controls) as ControlsLike | null;
@@ -272,7 +350,14 @@ function RoomScene({ items, selectedId, bench, teacherHint, preset, onPresetChan
       <ChemistryLabRoom
         config={{
           ...APPARATUS_LAB_ROOM,
-          teacher: APPARATUS_LAB_ROOM.teacher ? { ...APPARATUS_LAB_ROOM.teacher, message: teacherHint } : null,
+          teacher: APPARATUS_LAB_ROOM.teacher
+            ? {
+                ...APPARATUS_LAB_ROOM.teacher,
+                message: teacherHint ?? "",
+                showSpeech: Boolean(teacherHint),
+                onSpeechClick: onTeacherClick,
+              }
+            : null,
         }}
       />
 
@@ -283,12 +368,14 @@ function RoomScene({ items, selectedId, bench, teacherHint, preset, onPresetChan
           position={position}
           scale={scale}
           selected={item.id === selectedId}
+          highlighted={highlightIds.includes(item.id)}
           dragging={isDragging}
           fromBench={onBenchItem}
           onSelect={onSelect}
           onDragStart={beginDrag}
           onToggle={(id) => (onBench.has(id) ? onReturnToShelf(id) : onMoveToBench(id))}
           onHover={setHoverId}
+          viewLocked={viewLocked}
         />
       ))}
 
@@ -299,11 +386,23 @@ function RoomScene({ items, selectedId, bench, teacherHint, preset, onPresetChan
         </mesh>
       ) : null}
 
+      {benchNote ? (
+        <BenchNote
+          data={benchNote}
+          position={NOTE_ANCHOR}
+          rotation={[-0.62, -0.12, 0.08]}
+          width={noteContent ? 1.34 : 1.16}
+          height={noteContent ? 0.94 : 0.78}
+        />
+      ) : null}
+      {noteContent && noteAnchorRef ? <NoteAnchor anchorRef={noteAnchorRef} /> : null}
+
       <FloatingLabel entry={visibleItems.find((entry) => entry.item.id === (hoverId ?? selectedId)) ?? null} />
 
       <OrbitControls
         makeDefault
-        enablePan
+        enablePan={!viewLocked}
+        enabled={!viewLocked}
         enableDamping
         dampingFactor={0.08}
         minDistance={2.2}
@@ -323,25 +422,32 @@ function RoomScene({ items, selectedId, bench, teacherHint, preset, onPresetChan
 export default function ApparatusRoom3D(props: RoomProps) {
   const [preset, setPreset] = useState<Preset>("room");
   const [webgl] = useState(() => detectWebGL());
+  const viewLocked = props.viewLocked ?? false;
+  const fullscreen = props.fullscreen ?? false;
+  const noteAnchorRef = useRef<HTMLDivElement>(null);
 
-  if (!webgl) {
-    return (
-      <div className="grid gap-2 rounded-2xl border border-amber-300 bg-amber-50 p-6 text-sm text-amber-950">
-        <p className="font-semibold">This device cannot show the 3D laboratory.</p>
-        <p>WebGL is turned off or unavailable. Use the apparatus shelves list below to select equipment and still complete the challenges.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-slate-300 bg-slate-200 shadow-inner" aria-label="Interactive 3D laboratory room with apparatus shelves, a workbench, a notice board and a teacher. Select, drag and inspect equipment.">
-      <div className="h-[560px] w-full">
+  const roomInner = (
+    <>
+      <div className={fullscreen ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}>
         <Canvas camera={{ position: [0, 4.2, 9.4], fov: 44 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
-          <RoomScene {...props} preset={preset} onPresetChange={setPreset} />
+          <RoomScene {...props} preset={preset} onPresetChange={setPreset} viewLocked={viewLocked} noteAnchorRef={noteAnchorRef} />
         </Canvas>
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-end gap-2 p-3">
+      {props.noteContent ? (
+        <div className="pointer-events-none absolute inset-0 z-10">
+          <div ref={noteAnchorRef} className="pointer-events-none absolute left-0 top-0" style={{ visibility: "hidden" }}>
+            <div
+              className="bench-note-ui pointer-events-auto h-[420px] w-[min(348px,46vw)] overflow-hidden rounded-lg shadow-[0_18px_40px_rgba(15,23,42,0.28)] ring-1 ring-slate-900/10"
+              data-testid="bench-note-anchor"
+            >
+              {props.noteContent}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start justify-end gap-2 p-3">
         <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
           {(["room", "shelves", "bench", "top"] as const).map((value) => (
             <button
@@ -356,31 +462,115 @@ export default function ApparatusRoom3D(props: RoomProps) {
         </div>
       </div>
 
-      {(() => {
-        const selected = props.items.find((item) => item.id === props.selectedId) ?? null;
-        if (!selected) return null;
-        return (
-          <div className="pointer-events-auto absolute left-3 top-16 max-w-[18rem] rounded-xl border border-sky-200 bg-white/95 p-3 text-slate-700 shadow-lg backdrop-blur" aria-live="polite">
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Selected apparatus</p>
-            <p className="text-sm font-bold text-slate-950">{selected.name}</p>
-            <p className="mt-1 line-clamp-3 text-[11px] leading-relaxed">{selected.use}</p>
-            <p className="mt-1.5 text-[10px] font-semibold text-sky-700">View the full guide below the room ↓</p>
-          </div>
-        );
-      })()}
+      {props.selectionPanel ? (
+        <div className="pointer-events-none absolute right-3 top-[8.5rem] z-20 flex max-w-[min(90%,20rem)]">
+          <div className="pointer-events-auto">{props.selectionPanel}</div>
+        </div>
+      ) : null}
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex items-end justify-between gap-2 p-3">
         <div className="pointer-events-auto rounded-xl border border-white/70 bg-white/85 px-3 py-2 text-xs text-slate-700 shadow-lg backdrop-blur">
           <span className="font-semibold text-slate-900">{props.bench.length}</span> on the bench
           {props.selectedId ? <span className="ml-2 text-slate-500"> · selected: {props.items.find((item) => item.id === props.selectedId)?.name}</span> : null}
+          {viewLocked ? <span className="ml-2 font-semibold text-amber-800"> · view locked</span> : null}
         </div>
-        <div className="pointer-events-auto flex gap-1.5">
+        <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={() => props.onViewLockedChange?.(!viewLocked)}
+            className={`min-h-9 rounded-lg px-3 text-xs font-semibold shadow-sm ${viewLocked ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+          >
+            {viewLocked ? "Unlock view" : "Lock view"}
+          </button>
+          <button
+            type="button"
+            onClick={() => props.onFullscreenChange?.(!fullscreen)}
+            className="min-h-9 rounded-lg bg-white/90 px-3 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white"
+          >
+            {fullscreen ? "Exit full view" : "Full view"}
+          </button>
           {props.bench.length > 0 ? (
             <button type="button" onClick={props.onClearBench} className="min-h-9 rounded-lg bg-white/90 px-3 text-xs font-semibold text-rose-700 shadow-sm hover:bg-white">
               Clear bench
             </button>
           ) : null}
         </div>
+      </div>
+    </>
+  );
+
+  if (!webgl) {
+    return (
+      <div className="grid gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid content-start gap-3">
+          <div>
+            <p className="font-semibold">This device cannot show the 3D laboratory.</p>
+            <p>WebGL is turned off or unavailable. Use the 2D shelf list below to select equipment and complete the same guided steps.</p>
+          </div>
+          <div className="grid gap-1.5 sm:grid-cols-2" role="list" aria-label="Apparatus shelves (2D fallback)">
+            {props.items.map((apparatus) => {
+              const onBench = props.bench.includes(apparatus.id);
+              const selected = apparatus.id === props.selectedId;
+              return (
+                <div
+                  key={apparatus.id}
+                  role="listitem"
+                  className={`flex items-center justify-between gap-2 rounded-lg border bg-white p-1.5 ${selected ? "border-sky-600 ring-1 ring-sky-300" : "border-amber-200"}`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => props.onSelect(apparatus.id)}
+                    className="min-w-0 flex-1 truncate px-1.5 py-1 text-left text-xs font-semibold text-slate-800"
+                  >
+                    {apparatus.name}
+                    <span className="ml-1 font-normal text-slate-500">{onBench ? "· bench" : "· shelf"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => (onBench ? props.onReturnToShelf(apparatus.id) : props.onMoveToBench(apparatus.id))}
+                    className={`shrink-0 rounded-md px-2 py-1 text-[11px] font-semibold ${onBench ? "bg-amber-100 text-amber-900" : "bg-sky-700 text-white"}`}
+                  >
+                    {onBench ? "Return" : "Place"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="grid max-h-[70vh] content-start gap-2 overflow-y-auto">
+          {props.noteContent ?? props.guidedOverlay}
+          {props.selectionPanel}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={
+        fullscreen
+          ? `fixed inset-0 z-50 grid grid-rows-[auto_minmax(0,1fr)] gap-2 bg-slate-950/90 p-3 backdrop-blur-sm ${viewLocked ? "ring-2 ring-amber-400/80" : ""}`
+          : `relative overflow-hidden rounded-2xl border border-slate-300 bg-slate-200 shadow-inner ${viewLocked ? "ring-2 ring-amber-400/80" : ""}`
+      }
+      role={fullscreen ? "dialog" : undefined}
+      aria-label="Interactive 3D laboratory room with apparatus shelves, a workbench, a notice board and a teacher. Select, drag and inspect equipment."
+    >
+      {fullscreen ? (
+        <div className="flex items-center justify-between px-1 text-white">
+          <p className="text-sm font-semibold">Full view · press Esc to exit</p>
+          <button type="button" className="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold hover:bg-white/25" onClick={() => props.onFullscreenChange?.(false)}>
+            Exit full view
+          </button>
+        </div>
+      ) : null}
+      <div
+        className={
+          fullscreen
+            ? "relative min-h-0 overflow-hidden rounded-2xl border border-slate-500 bg-slate-200 shadow-2xl"
+            : "relative"
+        }
+      >
+        {roomInner}
       </div>
     </div>
   );

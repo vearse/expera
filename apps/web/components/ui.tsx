@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { devToolsEnabled } from "@/lib/dev";
 
 export function Button({ className = "", variant = "primary", ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" }) {
   const base = "inline-flex min-h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold disabled:opacity-40";
@@ -11,7 +12,7 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 }
 
 export function ReviewBadge({ status }: { status: string }) {
-  if (status !== "NEEDS_TEACHER_REVIEW") return null;
+  if (!devToolsEnabled() || status !== "NEEDS_TEACHER_REVIEW") return null;
   return (
     <span className="inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900" title="This content has not yet been checked by a subject teacher.">
       Needs teacher review

@@ -202,6 +202,27 @@ export const Experiment = z.object({
 });
 export type Experiment = z.infer<typeof Experiment>;
 
+export const GuidedStageId = z.enum(["safety", "identify", "reading", "handling", "assemble", "cleanup", "assessment"]);
+export type GuidedStageId = z.infer<typeof GuidedStageId>;
+
+export const GuidedTourStage = z.object({
+  id: GuidedStageId,
+  title: z.string(),
+  theory: z.string(),
+  taskKind: z.enum(["choice", "identify-click", "reading", "handling", "assemble", "checklist", "assemble-final"]),
+  setupTarget: z.enum(["titration", "filtration"]).optional(),
+});
+export type GuidedTourStage = z.infer<typeof GuidedTourStage>;
+
+export const GuidedTour = z.object({
+  id: z.string(),
+  version: z.number().int().positive(),
+  title: z.string(),
+  review: Review,
+  stages: z.array(GuidedTourStage).min(1),
+});
+export type GuidedTour = z.infer<typeof GuidedTour>;
+
 export const Conventions = z
   .object({
     review: Review,

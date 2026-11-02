@@ -8,6 +8,7 @@ import {
   Conventions,
   ElementsFile,
   Experiment,
+  GuidedTour,
   QualFile,
   ReagentsFile,
 } from "./schemas";
@@ -50,6 +51,16 @@ export function loadExperiment(id: string) {
   const exp = parse(Experiment, `${dir}/${id}.yaml`);
   if (exp.id !== id) throw new Error(`${dir}/${id}.yaml has id "${exp.id}"`);
   return exp;
+}
+
+export function loadGuidedTour(id: string) {
+  const dir = path.join(ROOT, "tours");
+  if (!fs.existsSync(dir)) return null;
+  const file = path.join(dir, `${id}.yaml`);
+  if (!fs.existsSync(file)) return null;
+  const result = GuidedTour.safeParse(read(`tours/${id}.yaml`));
+  if (!result.success) throw new Error(`Invalid tour in tours/${id}.yaml:\n${z.prettifyError(result.error)}`);
+  return result.data;
 }
 
 export function loadAll() {

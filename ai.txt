@@ -1,0 +1,5 @@
+1. For Lab C1 the purpose is basicaly to introce student to all Ceemistry laboratory..it align with CHEMISTRY_LAB_MODULES first item. Ignore Teachers review focus on makinf the laboratory simulation for the purpse acheivale
+2. Ignore any NEEDS_TEACHER_REVIEW. Let reuse the yml and make it better
+3. Ignore fallback
+4. Ignore API call 
+5. SOurce for the  asset online let docus on the assset we have and makr the simulation better. Our focus is well guided simulation for student 

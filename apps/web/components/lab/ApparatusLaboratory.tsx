@@ -1,18 +1,28 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createStore } from "zustand/vanilla";
-import type { Apparatus } from "@/lib/content/schemas";
+import type { Apparatus, Task } from "@/lib/content/schemas";
+import { ApparatusGuideContent } from "@/components/lab/ApparatusGuideContent";
+import { ApparatusSelectionPanel, type InRoomPanelView } from "@/components/lab/ApparatusSelectionPanel";
+import { ApparatusSummaryCard } from "@/components/lab/ApparatusSummaryCard";
+import { BenchNotePanel } from "@/components/lab/BenchNotePanel";
+import { Button, ReviewBadge } from "@/components/ui";
+import { devToolsEnabled } from "@/lib/dev";
 import { awardMissionXp } from "@/lib/runtime/gamification";
 import {
   APPARATUS_SETUPS,
   createApparatusState,
+  GUIDED_STAGES,
+  highlightIdsForStep,
+  guidedTeacherMessage,
   reduceApparatus,
+  resolveGuidedStep,
+  stageByIndex,
   type ApparatusAction,
   type ApparatusState,
 } from "@/lib/sim/apparatusStore";
-import { Button, ReviewBadge } from "@/components/ui";
 
 const Room3D = dynamic(() => import("@/components/sim3d/ApparatusRoom3D"), {
   ssr: false,
@@ -27,7 +37,15 @@ const Viewer3D = dynamic(() => import("@/components/sim3d/ApparatusViewer3D"), {
 const READINGS = { burette: 23.45, pipette: 25, "measuring-cylinder": 48.5 } as const;
 type ReadingTarget = keyof typeof READINGS;
 
-function teacherHint(state: ApparatusState): string {
+const IDENTIFY_PROMPTS = [
+  { id: "burette", text: "Which apparatus delivers a variable volume, read to 0.05 cm3?" },
+  { id: "pipette", text: "Which apparatus delivers one fixed volume, such as 25.0 cm3?" },
+  { id: "conical-flask", text: "Which flask holds the solution being titrated?" },
+  { id: "filter-funnel", text: "Which apparatus holds filter paper during filtration?" },
+  { id: "retort-stand", text: "Which apparatus clamps a burette firmly in place?" },
+] as const;
+
+function exploreTeacherHint(state: ApparatusState): string {
   const selected = state.items.find((item) => item.id === state.selectedId) ?? null;
   if (!selected) return "Choose an apparatus on the shelves to begin.";
 
@@ -63,18 +81,35 @@ function teacherHint(state: ApparatusState): string {
 
 type LabStore = ApparatusState & { dispatch: (action: ApparatusAction) => void };
 
-const IDENTIFY_PROMPTS = [
-  { id: "burette", text: "Which apparatus delivers a variable volume, read to 0.05 cm3?" },
-  { id: "pipette", text: "Which apparatus delivers one fixed volume, such as 25.0 cm3?" },
-  { id: "conical-flask", text: "Which flask holds the solution being titrated?" },
-  { id: "filter-funnel", text: "Which apparatus holds filter paper during filtration?" },
-  { id: "retort-stand", text: "Which apparatus clamps a burette firmly in place?" },
-] as const;
+export function ApparatusLaboratory({
+  items,
+  mode = "explore",
+  guidedTasks = [],
+  safetyBriefing = [],
+}: {
+  items: Apparatus[];
+  mode?: "guided" | "explore";
+  guidedTasks?: Task[];
+  safetyBriefing?: string[];
+}) {
+  const [snap, setSnap] = useState<ApparatusState>(() => createApparatusState(items, mode, guidedTasks));
+  const [guidedDetailsOpen, setGuidedDetailsOpen] = useState(false);
+  const [viewLocked, setViewLocked] = useState(false);
+  const [labFullscreen, setLabFullscreen] = useState(false);
+  const [inRoomPanelView, setInRoomPanelView] = useState<InRoomPanelView>("selection");
+  const studentGuideRef = useRef<HTMLElement>(null);
 
-export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
-  const [snap, setSnap] = useState<ApparatusState>(() => createApparatusState(items));
+  useEffect(() => {
+    if (!labFullscreen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLabFullscreen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [labFullscreen]);
+
   const store = useMemo(() => {
-    const initial = createApparatusState(items);
+    const initial = createApparatusState(items, mode, guidedTasks);
     return createStore<LabStore>((set, get) => ({
       ...initial,
       dispatch: (action: ApparatusAction) => {
@@ -86,10 +121,22 @@ export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
         setSnap(next.state);
       },
     }));
-  }, [items]);
+  }, [items, mode, guidedTasks]);
 
   const dispatch = useCallback((action: ApparatusAction) => store.getState().dispatch(action), [store]);
-  const select = useCallback((id: string) => dispatch({ type: "select", id }), [dispatch]);
+  const select = useCallback(
+    (id: string) => {
+      setInRoomPanelView("selection");
+      dispatch({ type: "select", id });
+      if (snap.mode !== "guided") return;
+      const stage = stageByIndex(snap.guidedStageIndex);
+      const step = resolveGuidedStep(stage, snap);
+      if (stage.id === "identify" && snap.identifyPromptId && step?.primaryAction.kind === "identify" && id === step.primaryAction.apparatusId) {
+        dispatch({ type: "guess", id });
+      }
+    },
+    [dispatch, snap],
+  );
   const moveToBench = useCallback(
     (id: string) => {
       dispatch({ type: "select", id });
@@ -106,12 +153,32 @@ export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
   );
   const reorderBench = useCallback((ids: string[]) => dispatch({ type: "reorderBench", ids }), [dispatch]);
   const clearBench = useCallback(() => dispatch({ type: "clearBench" }), [dispatch]);
+  const scrollToStudentGuide = useCallback(() => {
+    studentGuideRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  useEffect(() => {
+    if (snap.mode !== "guided" || snap.stageComplete) return;
+    const currentStage = stageByIndex(snap.guidedStageIndex);
+    if (currentStage.id !== "identify") return;
+    const step = resolveGuidedStep(currentStage, snap);
+    if (step?.primaryAction.kind !== "identify") return;
+    const targetId = step.primaryAction.apparatusId;
+    if (snap.identifyPromptId !== targetId) {
+      dispatch({ type: "startIdentify", id: targetId });
+    }
+  }, [snap.mode, snap.stageComplete, snap.guidedStageIndex, snap.guidedStepIndex, snap.identifyPromptId, dispatch]);
+
+  const stage = stageByIndex(snap.guidedStageIndex);
+  const guidedStep = snap.mode === "guided" && !snap.stageComplete ? resolveGuidedStep(stage, snap) : null;
+  const hint = snap.mode === "guided" ? guidedTeacherMessage(snap) : exploreTeacherHint(snap);
+  const highlightIds =
+    snap.mode === "guided" && guidedStep ? highlightIdsForStep(guidedStep, snap.hintLevel, { identifyPromptId: snap.identifyPromptId }) : [];
 
   const selected = snap.items.find((item) => item.id === snap.selectedId) ?? null;
   const activePrompt = IDENTIFY_PROMPTS.find((prompt) => prompt.id === snap.identifyPromptId) ?? null;
   const setup = snap.setupId ? APPARATUS_SETUPS[snap.setupId] : null;
   const required = setup?.map((id) => snap.items.find((item) => item.id === id)?.name ?? id) ?? [];
-  const hint = teacherHint(snap);
 
   const readingChoices = useMemo(() => {
     if (snap.trueReading === null) return [];
@@ -119,8 +186,135 @@ export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
     return Array.from(new Set(values.map((value) => Math.round(value * 100) / 100))).sort(() => 0.5 - Math.random());
   }, [snap.trueReading]);
 
+  const benchNote = useMemo(() => {
+    const safetyLines = safetyBriefing.length
+      ? safetyBriefing
+      : [
+          "Wear a laboratory coat and eye protection.",
+          "Never eat or drink in the laboratory.",
+          "Report every accident or breakage to your teacher at once.",
+        ];
+
+    if (snap.mode === "guided" && stage.id === "safety") {
+      return {
+        eyebrow: "Safety briefing",
+        title: "Read before you start",
+        accent: "#b45309",
+        lines: safetyLines,
+        footer: "Answer the safety check on the bench note to continue.",
+      };
+    }
+    if (snap.mode === "guided" && stage.id === "identify") {
+      return {
+        eyebrow: "Apparatus note",
+        title: selected?.name ?? "Identify the apparatus",
+        accent: "#0369a1",
+        lines: selected
+          ? [
+              selected.use,
+              selected.safety ? `Safety: ${selected.safety}` : "",
+              ...(selected.howTo ?? []).slice(0, 2),
+            ].filter(Boolean)
+          : [guidedStep?.hint0 ?? "Select an apparatus on the shelves."],
+        footer: selected ? "Click the apparatus in the room, then submit." : "Click an apparatus to read its note.",
+      };
+    }
+    if (snap.mode === "explore") {
+      return selected
+        ? {
+            eyebrow: "Apparatus note",
+            title: selected.name,
+            accent: "#0369a1",
+            lines: [selected.use, selected.safety ? `Safety: ${selected.safety}` : ""].filter(Boolean),
+            footer: "Drag it to the bench or double-click it.",
+          }
+        : {
+            eyebrow: "Apparatus note",
+            title: "Apparatus laboratory",
+            accent: "#0369a1",
+            lines: ["Choose an apparatus from the shelves, then read its note here.", "Read the meniscus at eye level."],
+            footer: "Ask Ms. Ada if you are unsure.",
+          };
+    }
+    return {
+      eyebrow: "Guided note",
+      title: stage.title,
+      accent: "#0f766e",
+      lines: [stage.theory, guidedStep?.hint0 ?? ""].filter(Boolean),
+      footer: "Follow the bench note. Click Ms. Ada's speech bubble if you need a hint.",
+    };
+  }, [snap.mode, stage.id, stage.title, stage.theory, guidedStep?.hint0, selected, safetyBriefing]);
+
+  const noteContent = (
+    <BenchNotePanel
+      note={benchNote}
+      guided={snap.mode === "guided"}
+      step={guidedStep}
+      state={snap}
+      stageTitle={stage.title}
+      onDispatch={dispatch}
+      readingChoices={readingChoices}
+    />
+  );
+
+  const selectionPanel = selected ? (
+    <ApparatusSelectionPanel
+      item={selected}
+      onBench={snap.bench.includes(selected.id)}
+      view={inRoomPanelView}
+      onViewChange={setInRoomPanelView}
+      onCancel={() => {
+        setInRoomPanelView("selection");
+        dispatch({ type: "deselect" });
+      }}
+      onDispatch={dispatch}
+      partStates={snap.partStates}
+    />
+  ) : null;
+
   return (
     <div className="grid gap-4">
+      {snap.mode === "guided" ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-white px-4 py-3 shadow-sm">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-sky-700">Guided laboratory</p>
+            <p className="text-sm font-medium text-slate-900">
+              Stage {snap.guidedStageIndex + 1}/{GUIDED_STAGES.length}: {stage.title}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {devToolsEnabled() ? (
+              <label className="flex items-center gap-1.5 text-xs text-slate-600">
+                <span className="font-semibold text-amber-800">Test:</span>
+                <select
+                  className="min-h-9 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-800"
+                  value={snap.guidedStageIndex}
+                  onChange={(e) => dispatch({ type: "jumpToGuidedStage", index: Number(e.target.value) })}
+                  aria-label="Jump to guided stage for testing"
+                >
+                  {GUIDED_STAGES.map((entry, index) => (
+                    <option key={entry.id} value={index}>
+                      {index + 1}. {entry.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : null}
+            {!snap.stageComplete ? (
+              <Button variant="ghost" className="text-xs" onClick={() => dispatch({ type: "requestHint" })}>
+                Ask Ms. Ada ({snap.hintLevel}/2)
+              </Button>
+            ) : null}
+            <Button className="text-xs" disabled={!snap.stageComplete} onClick={() => dispatch({ type: "advanceGuided" })}>
+              Next stage
+            </Button>
+            <Button variant="ghost" className="text-xs" onClick={() => setGuidedDetailsOpen((v) => !v)}>
+              {guidedDetailsOpen ? "Hide details below" : "Expand details below"}
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
       <Room3D
         items={snap.items}
         selectedId={snap.selectedId}
@@ -130,22 +324,32 @@ export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
         onReturnToShelf={returnToShelf}
         onReorderBench={reorderBench}
         onClearBench={clearBench}
+        highlightIds={highlightIds}
+        viewLocked={viewLocked}
+        onViewLockedChange={setViewLocked}
+        fullscreen={labFullscreen}
+        onFullscreenChange={setLabFullscreen}
         teacherHint={hint}
+        benchNote={benchNote}
+        noteContent={noteContent}
+        onTeacherClick={
+          snap.mode === "guided"
+            ? () => dispatch({ type: snap.stageComplete ? "advanceGuided" : "requestHint" })
+            : undefined
+        }
+        selectionPanel={selectionPanel}
       />
 
-      <div className="flex items-start gap-3 rounded-xl border border-teal-200 bg-teal-50 p-3 text-teal-950 shadow-sm" aria-live="polite">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-teal-700 text-xs font-bold text-white">MA</span>
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-teal-700">Ms. Ada suggests</p>
-          <p className="mt-0.5 text-sm">{hint}</p>
-        </div>
-      </div>
-
-      <section className="grid gap-4 rounded-2xl border bg-white p-4 shadow-sm lg:p-5">
+      <section
+        id="apparatus-student-guide"
+        ref={studentGuideRef}
+        className="grid gap-4 rounded-2xl border bg-white p-4 shadow-sm lg:p-5"
+      >
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">Apparatus guide</p>
-            <h2 className="text-2xl font-bold text-slate-900">{selected?.name ?? "Select apparatus"}</h2>
+            <h2 className="text-2xl font-bold text-slate-900">{selected?.name ?? "Select apparatus in the laboratory"}</h2>
+            <p className="mt-1 text-sm text-slate-600">Full reference — use while the 3D room stays open above.</p>
           </div>
           {selected ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -161,202 +365,121 @@ export function ApparatusLaboratory({ items }: { items: Apparatus[] }) {
           <div className="grid gap-4 lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)]">
             <div className="grid content-start gap-2">
               <Viewer3D id={selected.id} className="h-64 lg:h-72" />
-              <p className="text-center text-[11px] text-slate-500">Live 3D model. Drag to rotate and scroll to zoom.</p>
+              <p className="text-center text-[11px] text-slate-500">Drag to rotate · scroll to zoom</p>
               {snap.bench.includes(selected.id) ? (
                 <Button className="text-xs" onClick={() => returnToShelf(selected.id)}>Return to shelf</Button>
               ) : (
                 <Button className="text-xs" onClick={() => moveToBench(selected.id)}>Move to bench</Button>
               )}
             </div>
-
-            <div className="grid content-start gap-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <h3 className="text-sm font-semibold text-slate-900">What it is used for</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{selected.use}</p>
-                </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <h3 className="text-sm font-semibold text-slate-900">How to use it</h3>
-                  <ol className="mt-2 grid gap-2 text-sm text-slate-700">
-                    {(selected.howTo ?? []).map((step, index) => (
-                      <li key={step} className="flex gap-2">
-                        <span className="grid size-5 shrink-0 place-items-center rounded-full bg-sky-700 text-[11px] font-bold text-white">{index + 1}</span>
-                        <span>{step}</span>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-              </div>
-
-              <div className="grid gap-3 md:grid-cols-2">
-                {selected.tip ? (
-                  <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sky-950">
-                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-700">Key point</h3>
-                    <p className="mt-1 text-sm">{selected.tip}</p>
-                  </div>
-                ) : null}
-                {selected.safety ? (
-                  <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-950">
-                    <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-700">Safety</h3>
-                    <p className="mt-1 text-sm">{selected.safety}</p>
-                  </div>
-                ) : null}
-              </div>
-            </div>
+            <ApparatusGuideContent item={selected} variant="full" />
           </div>
         ) : (
-          <p className="text-sm text-slate-600">Click any apparatus on the shelves or the bench to open its guide.</p>
+          <p className="text-sm text-slate-600">Click any apparatus in the room to open its guide here.</p>
         )}
       </section>
 
-      <section className="grid gap-3 rounded-2xl border bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <h2 className="text-lg font-semibold">Workbench challenges</h2>
-          <p className="text-xs text-slate-500">Select an item, then answer. Examples give hints.</p>
-        </div>
+      {snap.mode === "guided" && guidedDetailsOpen ? (
+        <section className="rounded-2xl border border-violet-200 bg-violet-50/40 p-4 text-sm text-slate-700">
+          <p className="font-semibold text-violet-900">Stage reference</p>
+          <p className="mt-1">{stage.theory}</p>
+        </section>
+      ) : null}
 
-          <div className="grid gap-3 lg:grid-cols-3">
-            <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h3 className="text-sm font-semibold text-slate-900">1. Identify apparatus</h3>
-              <p className="text-xs text-slate-600">{activePrompt?.text ?? "Choose a question to start."}</p>
-              <div className="flex flex-wrap gap-1">
-                {IDENTIFY_PROMPTS.map((prompt, index) => (
-                  <button
-                    key={prompt.id}
-                    type="button"
-                    onClick={() => dispatch({ type: "startIdentify", id: prompt.id })}
-                    className={`rounded-md border px-2 py-1 text-[11px] font-semibold ${snap.identifyPromptId === prompt.id ? "border-sky-600 bg-sky-700 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"}`}
-                  >
-                    Q{index + 1}
-                  </button>
-                ))}
-              </div>
-              <Button variant="ghost" className="justify-start text-xs" disabled={!activePrompt || !selected} onClick={() => selected && dispatch({ type: "guess", id: selected.id })}>
-                Submit {selected ? `"${selected.name}"` : "selected item"}
-              </Button>
-              {snap.identifyFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.identifyFeedback}</p> : null}
-              <p className="text-[11px] text-slate-500">Identified so far: {snap.identified.length}</p>
-            </article>
-
-            <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h3 className="text-sm font-semibold text-slate-900">2. Assemble a setup</h3>
-              <div className="flex flex-wrap gap-1.5">
-                <Button variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startSetup", id: "titration" })}>Titration</Button>
-                <Button variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startSetup", id: "filtration" })}>Filtration</Button>
-              </div>
-              {setup ? (
-                <ul className="grid gap-1 text-[11px] text-slate-700">
-                  {required.map((name, index) => {
-                    const id = setup[index];
-                    const have = snap.bench.includes(id);
-                    return (
-                      <li key={id} className={have ? "font-semibold text-emerald-700" : ""}>
-                        {have ? "On bench: " : "Needed: "}
-                        {name}
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="text-xs text-slate-600">Choose a setup, then drag each required item onto the bench.</p>
-              )}
-              <Button variant="ghost" className="min-h-9 justify-start px-2 text-xs" disabled={!setup} onClick={() => dispatch({ type: "checkSetup" })}>
-                Check the bench
-              </Button>
-              {snap.setupFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.setupFeedback}</p> : null}
-            </article>
-
-            <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <h3 className="text-sm font-semibold text-slate-900">3. Read the meniscus</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {(Object.keys(READINGS) as ReadingTarget[]).map((target) => (
-                  <Button key={target} variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startReading", target, trueReading: READINGS[target] })}>
-                    {snap.items.find((item) => item.id === target)?.name ?? target}
-                  </Button>
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                <Button variant={snap.view === "eye" ? "primary" : "ghost"} className="min-h-8 px-2 text-[11px]" onClick={() => dispatch({ type: "setView", view: "eye" })}>Eye level</Button>
-                <Button variant={snap.view === "above" ? "primary" : "ghost"} className="min-h-8 px-2 text-[11px]" onClick={() => dispatch({ type: "setView", view: "above" })}>From above</Button>
-                <Button variant={snap.view === "below" ? "primary" : "ghost"} className="min-h-8 px-2 text-[11px]" onClick={() => dispatch({ type: "setView", view: "below" })}>From below</Button>
-              </div>
-              {snap.trueReading !== null ? (
-                <div className="grid grid-cols-2 gap-1.5">
-                  {readingChoices.map((value) => (
-                    <Button key={value} variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "submitReading", value })}>
-                      {value.toFixed(2)} cm3
+      {snap.mode === "explore" ? (
+        <>
+          <section className="grid gap-3 rounded-2xl border bg-white p-4 shadow-sm">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 className="text-lg font-semibold">Workbench challenges</h2>
+              <p className="text-xs text-slate-500">Select an item, then answer. Examples give hints.</p>
+            </div>
+            <div className="grid gap-3 lg:grid-cols-3">
+              <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <h3 className="text-sm font-semibold text-slate-900">1. Identify apparatus</h3>
+                <p className="text-xs text-slate-600">{activePrompt?.text ?? "Choose a question to start."}</p>
+                <div className="flex flex-wrap gap-1">
+                  {IDENTIFY_PROMPTS.map((prompt, index) => (
+                    <button
+                      key={prompt.id}
+                      type="button"
+                      onClick={() => dispatch({ type: "startIdentify", id: prompt.id })}
+                      className={`rounded-md border px-2 py-1 text-[11px] font-semibold ${snap.identifyPromptId === prompt.id ? "border-sky-600 bg-sky-700 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"}`}
+                    >
+                      Q{index + 1}
+                    </button>
+                  ))}
+                </div>
+                <Button variant="ghost" className="justify-start text-xs" disabled={!activePrompt || !selected} onClick={() => selected && dispatch({ type: "guess", id: selected.id })}>
+                  Submit {selected ? `"${selected.name}"` : "selected item"}
+                </Button>
+                {snap.identifyFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.identifyFeedback}</p> : null}
+              </article>
+              <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <h3 className="text-sm font-semibold text-slate-900">2. Assemble a setup</h3>
+                <div className="flex flex-wrap gap-1.5">
+                  <Button variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startSetup", id: "titration" })}>Titration</Button>
+                  <Button variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startSetup", id: "filtration" })}>Filtration</Button>
+                </div>
+                {setup ? (
+                  <ul className="grid gap-1 text-[11px] text-slate-700">
+                    {required.map((name, index) => {
+                      const id = setup[index];
+                      const have = snap.bench.includes(id);
+                      return (
+                        <li key={id} className={have ? "font-semibold text-emerald-700" : ""}>
+                          {have ? "On bench: " : "Needed: "}
+                          {name}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+                <Button variant="ghost" className="min-h-9 justify-start px-2 text-xs" disabled={!setup} onClick={() => dispatch({ type: "checkSetup" })}>
+                  Check the bench
+                </Button>
+                {snap.setupFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.setupFeedback}</p> : null}
+              </article>
+              <article className="grid content-start gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <h3 className="text-sm font-semibold text-slate-900">3. Read the meniscus</h3>
+                <div className="flex flex-wrap gap-1.5">
+                  {(Object.keys(READINGS) as ReadingTarget[]).map((target) => (
+                    <Button key={target} variant="ghost" className="min-h-9 px-2 text-xs" onClick={() => dispatch({ type: "startReading", target, trueReading: READINGS[target] })}>
+                      {snap.items.find((item) => item.id === target)?.name ?? target}
                     </Button>
                   ))}
                 </div>
-              ) : (
-                <p className="text-xs text-slate-600">Choose apparatus to take a reading at eye level.</p>
-              )}
-              {snap.readingFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.readingFeedback}</p> : null}
-            </article>
-          </div>
-      </section>
-
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <section className="grid content-start gap-2 rounded-2xl border bg-white p-4 shadow-sm">
-          <h2 className="text-sm font-semibold">On the bench</h2>
-          {snap.bench.length ? (
-            <div className="flex flex-wrap gap-1.5">
-              {snap.bench.map((id) => {
-                const item = snap.items.find((entry) => entry.id === id);
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => select(id)}
-                    className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${snap.selectedId === id ? "border-sky-600 bg-sky-50 text-sky-800" : "border-slate-300 bg-white text-slate-700 hover:border-sky-500"}`}
-                  >
-                    {item?.name ?? id}
-                  </button>
-                );
-              })}
+                {snap.readingFeedback ? <p className="rounded-md bg-white p-2 text-xs text-slate-700 ring-1 ring-slate-200">{snap.readingFeedback}</p> : null}
+              </article>
             </div>
-          ) : (
-            <p className="text-xs text-slate-500">Nothing yet. Drag an item from the shelves onto the workbench, or double-click it.</p>
-          )}
-          <Button variant="ghost" className="min-h-9 justify-start px-2 text-xs" disabled={!snap.bench.length} onClick={clearBench}>
-            Clear the bench
-          </Button>
-        </section>
-
-        <section className="grid content-start gap-2 rounded-2xl border bg-white p-4 shadow-sm">
-          <h2 className="text-sm font-semibold">Apparatus shelves</h2>
-          <p className="text-[11px] text-slate-500">Keyboard and touch alternative: choose an item here, then inspect or move it.</p>
-          <div className="grid max-h-64 gap-1 overflow-auto pr-1">
-            {snap.items.map((item) => {
-              const onBench = snap.bench.includes(item.id);
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  aria-pressed={snap.selectedId === item.id}
-                  onClick={() => select(item.id)}
-                  className={`flex min-h-8 items-center justify-between gap-2 rounded-md px-2 text-left text-xs ${snap.selectedId === item.id ? "bg-sky-700 text-white" : "hover:bg-slate-100"}`}
-                >
-                  <span>{item.name}</span>
-                  <span className={`text-[10px] uppercase tracking-wide ${snap.selectedId === item.id ? "text-sky-100" : onBench ? "text-emerald-600" : "text-slate-400"}`}>
-                    {onBench ? "bench" : "shelf"}
-                  </span>
-                </button>
-              );
-            })}
+          </section>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <section className="grid content-start gap-2 rounded-2xl border bg-white p-4 shadow-sm">
+              <h2 className="text-sm font-semibold">On the bench</h2>
+              {snap.bench.length ? (
+                <div className="flex flex-wrap gap-1.5">
+                  {snap.bench.map((id) => {
+                    const item = snap.items.find((entry) => entry.id === id);
+                    return (
+                      <button key={id} type="button" onClick={() => select(id)} className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold ${snap.selectedId === id ? "border-sky-600 bg-sky-50 text-sky-800" : "border-slate-300 bg-white text-slate-700"}`}>
+                        {item?.name ?? id}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="text-xs text-slate-500">Nothing on the bench yet.</p>
+              )}
+              <Button variant="ghost" className="text-xs" disabled={!snap.bench.length} onClick={clearBench}>
+                Clear the bench
+              </Button>
+            </section>
           </div>
-        </section>
+        </>
+      ) : null}
 
-        <section className="grid content-start gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950 shadow-sm md:col-span-2 xl:col-span-1">
-          <h2 className="text-sm font-semibold">Safety first</h2>
-          <ul className="list-disc space-y-1 pl-4 text-xs">
-            <li>Wear goggles and tie back long hair before lighting a burner.</li>
-            <li>Never pipette by mouth — always use a pipette filler.</li>
-            <li>Read the bottom of the meniscus at eye level.</li>
-            <li>Remove the funnel before titrating and never leave a flame unattended.</li>
-          </ul>
-        </section>
-      </div>
+      {snap.showSummary ? (
+        <ApparatusSummaryCard state={snap} onClose={() => dispatch({ type: "closeSummary" })} />
+      ) : null}
     </div>
   );
 }

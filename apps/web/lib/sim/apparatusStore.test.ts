@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createApparatusState, reduceApparatus } from "./apparatusStore";
-import type { Apparatus } from "@/lib/content/schemas";
+import type { Apparatus, Task } from "@/lib/content/schemas";
 
 const items: Apparatus[] = [
   { id: "burette", name: "Burette", use: "Delivers a variable volume.", review: "NEEDS_TEACHER_REVIEW" },
@@ -10,6 +10,19 @@ const items: Apparatus[] = [
   { id: "conical-flask", name: "Conical flask", use: "Holds the titration mixture.", review: "NEEDS_TEACHER_REVIEW" },
   { id: "white-tile", name: "White tile", use: "Shows the colour change.", review: "NEEDS_TEACHER_REVIEW" },
 ];
+
+const safetyTask: Task = {
+  id: "label-corrosive",
+  type: "choice",
+  safety: true,
+  prompt: "Corrosive label?",
+  options: [
+    { id: "a", text: "Corrosive" },
+    { id: "b", text: "Flammable" },
+  ],
+  answer: "a",
+  explain: "Acids are corrosive.",
+};
 
 describe("apparatus simulation", () => {
   it("rejects an incomplete titration setup", () => {
@@ -38,5 +51,18 @@ describe("apparatus simulation", () => {
     state = reduceApparatus({ ...state, selectedId: "beaker" }, { type: "toBench" }).state;
     const checked = reduceApparatus(state, { type: "checkSetup" });
     expect(checked.events[0]?.xp).toBe(10);
+  });
+
+  it("escalates guided hints without advancing the step", () => {
+    let state = createApparatusState(items, "guided", [safetyTask]);
+    state = reduceApparatus(state, { type: "requestHint" }).state;
+    expect(state.hintLevel).toBe(1);
+    expect(state.guidedStepIndex).toBe(0);
+  });
+
+  it("advances safety substep on a correct choice", () => {
+    let state = createApparatusState(items, "guided", [safetyTask, { ...safetyTask, id: "label-flammable", answer: "b" }]);
+    state = reduceApparatus(state, { type: "answerChoice", taskId: safetyTask.id, optionId: "a" }).state;
+    expect(state.guidedStepIndex).toBe(1);
   });
 });
