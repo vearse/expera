@@ -40,6 +40,8 @@ type RoomProps = {
   teacherHint?: string;
   benchNote?: BenchNoteData | null;
   noteContent?: ReactNode;
+  noteOpen?: boolean;
+  onNoteOpenChange?: (open: boolean) => void;
   onTeacherClick?: () => void;
   highlightIds?: string[];
   guidedOverlay?: ReactNode;
@@ -170,6 +172,8 @@ function RoomScene({
   teacherHint,
   benchNote,
   noteContent,
+  noteOpen = false,
+  onNoteOpenChange,
   noteAnchorRef,
   onTeacherClick,
   highlightIds = [],
@@ -393,9 +397,10 @@ function RoomScene({
           rotation={[-0.62, -0.12, 0.08]}
           width={noteContent ? 1.34 : 1.16}
           height={noteContent ? 0.94 : 0.78}
+          onClick={noteContent && !noteOpen ? () => onNoteOpenChange?.(true) : undefined}
         />
       ) : null}
-      {noteContent && noteAnchorRef ? <NoteAnchor anchorRef={noteAnchorRef} /> : null}
+      {noteContent && noteOpen && noteAnchorRef ? <NoteAnchor anchorRef={noteAnchorRef} /> : null}
 
       <FloatingLabel entry={visibleItems.find((entry) => entry.item.id === (hoverId ?? selectedId)) ?? null} />
 
@@ -424,6 +429,7 @@ export default function ApparatusRoom3D(props: RoomProps) {
   const [webgl] = useState(() => detectWebGL());
   const viewLocked = props.viewLocked ?? false;
   const fullscreen = props.fullscreen ?? false;
+  const noteOpen = props.noteOpen ?? false;
   const noteAnchorRef = useRef<HTMLDivElement>(null);
 
   const roomInner = (
@@ -434,7 +440,7 @@ export default function ApparatusRoom3D(props: RoomProps) {
         </Canvas>
       </div>
 
-      {props.noteContent ? (
+      {props.noteContent && noteOpen ? (
         <div className="pointer-events-none absolute inset-0 z-10">
           <div ref={noteAnchorRef} className="pointer-events-none absolute left-0 top-0" style={{ visibility: "hidden" }}>
             <div
@@ -449,6 +455,16 @@ export default function ApparatusRoom3D(props: RoomProps) {
 
       <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start justify-end gap-2 p-3">
         <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
+          {props.noteContent ? (
+            <button
+              type="button"
+              onClick={() => props.onNoteOpenChange?.(!noteOpen)}
+              aria-pressed={noteOpen}
+              className={`min-h-9 rounded-lg px-3 text-xs font-semibold shadow-sm transition ${noteOpen ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+            >
+              {noteOpen ? "Hide note" : "Note view"}
+            </button>
+          ) : null}
           {(["room", "shelves", "bench", "top"] as const).map((value) => (
             <button
               key={value}
@@ -506,6 +522,16 @@ export default function ApparatusRoom3D(props: RoomProps) {
           <div>
             <p className="font-semibold">This device cannot show the 3D laboratory.</p>
             <p>WebGL is turned off or unavailable. Use the 2D shelf list below to select equipment and complete the same guided steps.</p>
+            {props.noteContent ? (
+              <button
+                type="button"
+                onClick={() => props.onNoteOpenChange?.(!noteOpen)}
+                aria-pressed={noteOpen}
+                className="mt-2 min-h-9 rounded-lg bg-amber-600 px-3 text-xs font-semibold text-white shadow-sm hover:bg-amber-700"
+              >
+                {noteOpen ? "Hide note" : "Note view"}
+              </button>
+            ) : null}
           </div>
           <div className="grid gap-1.5 sm:grid-cols-2" role="list" aria-label="Apparatus shelves (2D fallback)">
             {props.items.map((apparatus) => {
@@ -538,7 +564,7 @@ export default function ApparatusRoom3D(props: RoomProps) {
           </div>
         </div>
         <div className="grid max-h-[70vh] content-start gap-2 overflow-y-auto">
-          {props.noteContent ?? props.guidedOverlay}
+          {noteOpen || !props.noteContent ? props.noteContent ?? props.guidedOverlay : null}
           {props.selectionPanel}
         </div>
       </div>

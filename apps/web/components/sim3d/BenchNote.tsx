@@ -116,15 +116,37 @@ export function BenchNote({
   rotation = [-0.7, 0.18, 0],
   width = 1.18,
   height = 0.83,
+  onClick,
 }: {
   data: BenchNoteData;
   position?: [number, number, number];
   rotation?: [number, number, number];
   width?: number;
   height?: number;
+  onClick?: () => void;
 }) {
   return (
-    <group position={position} rotation={rotation}>
+    <group
+      position={position}
+      rotation={rotation}
+      onClick={
+        onClick
+          ? (event) => {
+              event.stopPropagation();
+              onClick();
+            }
+          : undefined
+      }
+      onPointerOver={
+        onClick
+          ? (event) => {
+              event.stopPropagation();
+              document.body.style.cursor = "pointer";
+            }
+          : undefined
+      }
+      onPointerOut={onClick ? () => (document.body.style.cursor = "default") : undefined}
+    >
       <mesh position={[0, -height / 2 - 0.17, -0.2]} rotation={[0.42, 0, 0]} castShadow>
         <boxGeometry args={[0.055, 0.5, 0.045]} />
         <meshStandardMaterial color="#8b5e3c" roughness={0.7} />
@@ -137,6 +159,12 @@ export function BenchNote({
         <meshStandardMaterial color="#8b5e3c" roughness={0.62} metalness={0.04} />
       </RoundedBox>
       <StaticPaper data={data} width={width} height={height} />
+      {onClick ? (
+        <mesh position={[0, 0, 0.01]}>
+          <planeGeometry args={[width + 0.14, height + 0.14]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+      ) : null}
       <mesh position={[0, height / 2 + 0.015, 0.02]} castShadow>
         <boxGeometry args={[0.2, 0.06, 0.03]} />
         <meshStandardMaterial color="#94a3b8" metalness={0.82} roughness={0.24} />

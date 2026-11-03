@@ -9,7 +9,6 @@ import { ApparatusSelectionPanel, type InRoomPanelView } from "@/components/lab/
 import { ApparatusSummaryCard } from "@/components/lab/ApparatusSummaryCard";
 import { BenchNotePanel } from "@/components/lab/BenchNotePanel";
 import { Button, ReviewBadge } from "@/components/ui";
-import { devToolsEnabled } from "@/lib/dev";
 import { awardMissionXp } from "@/lib/runtime/gamification";
 import {
   APPARATUS_SETUPS,
@@ -94,6 +93,7 @@ export function ApparatusLaboratory({
 }) {
   const [snap, setSnap] = useState<ApparatusState>(() => createApparatusState(items, mode, guidedTasks));
   const [guidedDetailsOpen, setGuidedDetailsOpen] = useState(false);
+  const [noteOpen, setNoteOpen] = useState(false);
   const [viewLocked, setViewLocked] = useState(false);
   const [labFullscreen, setLabFullscreen] = useState(false);
   const [inRoomPanelView, setInRoomPanelView] = useState<InRoomPanelView>("selection");
@@ -171,7 +171,12 @@ export function ApparatusLaboratory({
 
   const stage = stageByIndex(snap.guidedStageIndex);
   const guidedStep = snap.mode === "guided" && !snap.stageComplete ? resolveGuidedStep(stage, snap) : null;
-  const hint = snap.mode === "guided" ? guidedTeacherMessage(snap) : exploreTeacherHint(snap);
+  const stepHint = snap.mode === "guided" ? guidedTeacherMessage(snap) : exploreTeacherHint(snap);
+  const hint = noteOpen
+    ? stepHint
+    : snap.mode === "guided"
+      ? `Open the note on the bench or tap Note view to read your ${stage.title.toLowerCase()} guide.`
+      : "Tap Note view or the note on the bench to read the apparatus guide.";
   const highlightIds =
     snap.mode === "guided" && guidedStep ? highlightIdsForStep(guidedStep, snap.hintLevel, { identifyPromptId: snap.identifyPromptId }) : [];
 
@@ -275,42 +280,49 @@ export function ApparatusLaboratory({
   return (
     <div className="grid gap-4">
       {snap.mode === "guided" ? (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-white px-4 py-3 shadow-sm">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-sky-700">Guided laboratory</p>
-            <p className="text-sm font-medium text-slate-900">
-              Stage {snap.guidedStageIndex + 1}/{GUIDED_STAGES.length}: {stage.title}
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {devToolsEnabled() ? (
-              <label className="flex items-center gap-1.5 text-xs text-slate-600">
-                <span className="font-semibold text-amber-800">Test:</span>
-                <select
-                  className="min-h-9 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-medium text-slate-800"
-                  value={snap.guidedStageIndex}
-                  onChange={(e) => dispatch({ type: "jumpToGuidedStage", index: Number(e.target.value) })}
-                  aria-label="Jump to guided stage for testing"
-                >
-                  {GUIDED_STAGES.map((entry, index) => (
-                    <option key={entry.id} value={index}>
-                      {index + 1}. {entry.title}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ) : null}
-            {!snap.stageComplete ? (
-              <Button variant="ghost" className="text-xs" onClick={() => dispatch({ type: "requestHint" })}>
-                Ask Ms. Ada ({snap.hintLevel}/2)
+        <div className="grid gap-2 rounded-xl border bg-white px-4 py-3 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-sky-700">Guided laboratory</p>
+              <p className="text-sm font-medium text-slate-900">
+                Stage {snap.guidedStageIndex + 1}/{GUIDED_STAGES.length}: {stage.title}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {!snap.stageComplete ? (
+                <Button variant="ghost" className="text-xs" onClick={() => dispatch({ type: "requestHint" })}>
+                  Ask Ms. Ada ({snap.hintLevel}/2)
+                </Button>
+              ) : null}
+              <Button className="text-xs" disabled={!snap.stageComplete} onClick={() => dispatch({ type: "advanceGuided" })}>
+                Next stage
               </Button>
-            ) : null}
-            <Button className="text-xs" disabled={!snap.stageComplete} onClick={() => dispatch({ type: "advanceGuided" })}>
-              Next stage
-            </Button>
-            <Button variant="ghost" className="text-xs" onClick={() => setGuidedDetailsOpen((v) => !v)}>
-              {guidedDetailsOpen ? "Hide details below" : "Expand details below"}
-            </Button>
+              <Button variant="ghost" className="text-xs" onClick={() => setGuidedDetailsOpen((v) => !v)}>
+                {guidedDetailsOpen ? "Hide details below" : "Expand details below"}
+              </Button>
+            </div>
+          </div>
+          <div className="flex gap-1.5 overflow-x-auto pb-0.5" role="tablist" aria-label="Guided stages">
+            {GUIDED_STAGES.map((entry, index) => {
+              const active = index === snap.guidedStageIndex;
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => {
+                    if (!active) dispatch({ type: "jumpToGuidedStage", index });
+                  }}
+                  className={`flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg border px-2.5 text-[11px] font-semibold transition ${active ? "border-sky-700 bg-sky-700 text-white" : "border-slate-300 bg-white text-slate-700 hover:border-sky-500 hover:text-sky-800"}`}
+                >
+                  <span className={`grid size-4 place-items-center rounded-full text-[9px] ${active ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"}`}>
+                    {index + 1}
+                  </span>
+                  {entry.title}
+                </button>
+              );
+            })}
           </div>
         </div>
       ) : null}
@@ -332,9 +344,17 @@ export function ApparatusLaboratory({
         teacherHint={hint}
         benchNote={benchNote}
         noteContent={noteContent}
+        noteOpen={noteOpen}
+        onNoteOpenChange={setNoteOpen}
         onTeacherClick={
           snap.mode === "guided"
-            ? () => dispatch({ type: snap.stageComplete ? "advanceGuided" : "requestHint" })
+            ? () => {
+                if (!noteOpen) {
+                  setNoteOpen(true);
+                  return;
+                }
+                dispatch({ type: snap.stageComplete ? "advanceGuided" : "requestHint" });
+              }
             : undefined
         }
         selectionPanel={selectionPanel}
