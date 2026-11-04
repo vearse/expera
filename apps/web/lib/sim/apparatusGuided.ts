@@ -1,5 +1,6 @@
 import type { Apparatus, GuidedTourStage, Task } from "@/lib/content/schemas";
 import type { ApparatusPartStates } from "./apparatusPartStates";
+import { APPARATUS_SETUP_DEFINITIONS } from "./apparatusSetups";
 
 /**
  * Guided teacher-step schema (single source of truth for Ms. Ada copy and in-room cards):
@@ -324,7 +325,8 @@ export function guidedTeacherMessage(state: GuidedStepStateSlice & { items: Appa
   const step = resolveGuidedStep(stage, { ...state, items: state.items });
   if (!step) return "Answer on the bench note, or click me for a hint.";
   const message = teacherMessageFromStep(step, state.hintLevel, { ...state, items: state.items });
-  if (state.hintLevel >= 2) return `${message} Answer on the bench note.`;
+  const needsNote = step.primaryAction.kind === "choice";
+  if (state.hintLevel >= 2) return needsNote ? `${message} Answer on the bench note.` : message;
   if (state.hintLevel === 1) return `${message} Click me once more for the last hint.`;
   return `${message} Click me for a stronger hint.`;
 }
@@ -338,4 +340,60 @@ export function highlightIdsForStep(
   if (step.primaryAction.kind === "identify" && ctx?.identifyPromptId) return step.highlightIds;
   if (hintLevel >= 1) return step.highlightIds;
   return [];
+}
+
+export type GuidedPointerView = {
+  apparatusId: string | null;
+  label: string;
+  atBench?: boolean;
+};
+
+/**
+ * Resolves the in-room pointer for every guided action that does not need the
+ * bench note to answer a question. Question steps (safety choices) return null
+ * and stay in the note.
+ */
+export function guidedPointerFor(
+  state: GuidedStepStateSlice & {
+    bench: string[];
+    readingTarget?: "burette" | "pipette" | "measuring-cylinder" | null;
+  },
+  step: GuidedStepView | null,
+): GuidedPointerView | null {
+  if (!step) return null;
+  const nameOf = (id: string) => state.items?.find((entry) => entry.id === id)?.name ?? id.replace(/-/g, " ");
+  const action = step.primaryAction;
+
+  switch (action.kind) {
+    case "choice":
+      return null;
+    case "identify":
+      return { apparatusId: action.apparatusId, label: `Click the ${nameOf(action.apparatusId)}` };
+    case "reading": {
+      const target = state.readingTarget ?? "burette";
+      return {
+        apparatusId: target,
+        label: state.readingTarget ? `Read the ${nameOf(target)} at eye level` : "Choose an instrument, then read at eye level",
+      };
+    }
+    case "handling-bunsen":
+      return {
+        apparatusId: "bunsen-burner",
+        label: state.bench.includes("bunsen-burner") ? "Light it and open the air hole" : "Drag the Bunsen burner to the bench",
+      };
+    case "assemble":
+    case "assemble-final": {
+      const required = APPARATUS_SETUP_DEFINITIONS[action.setupId].required;
+      const missing = required.find((id) => !state.bench.includes(id));
+      if (missing) return { apparatusId: missing, label: `Drag the ${nameOf(missing)} to the bench` };
+      if (state.bench.some((id) => !required.includes(id))) {
+        return { apparatusId: null, atBench: true, label: "Remove extra apparatus, then check the set-up" };
+      }
+      return { apparatusId: null, atBench: true, label: "Check the set-up on the bench" };
+    }
+    case "cleanup":
+      return { apparatusId: null, atBench: true, label: "Clear the bench and tidy up" };
+    default:
+      return null;
+  }
 }

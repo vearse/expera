@@ -63,6 +63,8 @@ export type LabRoomConfig = {
   palette?: Partial<LabRoomPalette>;
   notice?: NoticeBoardConfig | null;
   teacher?: TeacherConfig | null;
+  /** Interior width in world units. Defaults to 12 so existing rooms keep their layout. */
+  roomWidth?: number;
   shelfLabel?: string;
   subjectLabel?: string;
   wallChart?: WallChart;
@@ -99,30 +101,19 @@ const DEFAULT_PALETTE: LabRoomPalette = {
   seat: "#0f766e",
 };
 
-export const APPARATUS_LAB_ROOM: LabRoomConfig = {
-  shelfLabel: "APPARATUS STORE",
-  notice: {
-    eyebrow: "Class notice",
-    title: "Apparatus laboratory",
-    subtitle: "Identify it. Pick it up. Use it safely.",
-    lines: [
-      "Click an apparatus to open its guide.",
-      "Drag it to the workbench, or double-click it.",
-      "Drag a bench item back to the shelves to return it.",
-      "Read the meniscus at eye level.",
-    ],
-    footer: "Ask Ms. Ada if you are unsure.",
-  },
-  teacher: {
-    name: "Ms. Ada",
-    message: "Choose an apparatus from the shelves. Its guide will appear below the room.",
-    position: [-3.7, 0, -0.15],
-    rotation: 1.32,
-  },
+/**
+ * One shared room shell for every Practical simulation. Subject-specific rooms
+ * start from this config and only override their labels, notices and furniture.
+ */
+export const STANDARD_TEACHER: TeacherConfig = {
+  name: "Ms. Ada",
+  message: "",
+  position: [-5.6, 0, -1.15],
+  rotation: 1.32,
 };
 
-export const TITRATION_LAB_ROOM: LabRoomConfig = {
-  shelfLabel: "CHEMISTRY STORE",
+export const STANDARD_LAB_ROOM: LabRoomConfig = {
+  roomWidth: 14,
   populateShelves: true,
   palette: {
     background: "#d8e6e5",
@@ -138,6 +129,33 @@ export const TITRATION_LAB_ROOM: LabRoomConfig = {
     accent: "#0f766e",
     seat: "#0d9488",
   },
+};
+
+export const APPARATUS_LAB_ROOM: LabRoomConfig = {
+  ...STANDARD_LAB_ROOM,
+  populateShelves: false,
+  shelfLabel: "APPARATUS STORE",
+  notice: {
+    eyebrow: "Class notice",
+    title: "Apparatus laboratory",
+    subtitle: "Identify it. Pick it up. Use it safely.",
+    lines: [
+      "Click an apparatus to open its guide.",
+      "Drag it to the workbench, or double-click it.",
+      "Drag a bench item back to the shelves to return it.",
+      "Read the meniscus at eye level.",
+    ],
+    footer: "Ask Ms. Ada if you are unsure.",
+  },
+  teacher: {
+    ...STANDARD_TEACHER,
+    message: "Choose an apparatus from the shelves. Its guide will appear below the room.",
+  },
+};
+
+export const TITRATION_LAB_ROOM: LabRoomConfig = {
+  ...STANDARD_LAB_ROOM,
+  shelfLabel: "CHEMISTRY STORE",
   notice: {
     eyebrow: "Practical notice",
     title: "Titration laboratory",
@@ -151,10 +169,8 @@ export const TITRATION_LAB_ROOM: LabRoomConfig = {
     footer: "Record every reading carefully.",
   },
   teacher: {
-    name: "Ms. Ada",
+    ...STANDARD_TEACHER,
     message: "Start by rinsing the burette with a little acid.",
-    position: [-4.55, 0, -1.15],
-    rotation: 1.32,
   },
 };
 
@@ -526,7 +542,7 @@ function Stool({ x, palette }: { x: number; palette: LabRoomPalette }) {
   );
 }
 
-function PeriodicPoster({ palette }: { palette: LabRoomPalette }) {
+function PeriodicPoster({ palette, width }: { palette: LabRoomPalette; width: number }) {
   const cells = useMemo(() => {
     const out: { x: number; y: number; color: string }[] = [];
     const colours = ["#38bdf8", "#0ea5e9", "#f59e0b", "#f43f5e", "#22c55e", "#a855f7", "#14b8a6", "#eab308"];
@@ -539,7 +555,7 @@ function PeriodicPoster({ palette }: { palette: LabRoomPalette }) {
     return out;
   }, []);
   return (
-    <group position={[-5.94, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
+    <group position={[-width / 2 + 0.08, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
       <mesh>
         <planeGeometry args={[1.35, 0.95]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.9} />
@@ -558,9 +574,9 @@ function PeriodicPoster({ palette }: { palette: LabRoomPalette }) {
   );
 }
 
-function MeasurementPoster({ palette }: { palette: LabRoomPalette }) {
+function MeasurementPoster({ palette, width }: { palette: LabRoomPalette; width: number }) {
   return (
-    <group position={[-5.94, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
+    <group position={[-width / 2 + 0.08, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
       <mesh>
         <planeGeometry args={[1.35, 0.95]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.9} />
@@ -603,9 +619,9 @@ function MeasurementPoster({ palette }: { palette: LabRoomPalette }) {
   );
 }
 
-function BiologyPoster({ palette }: { palette: LabRoomPalette }) {
+function BiologyPoster({ palette, width }: { palette: LabRoomPalette; width: number }) {
   return (
-    <group position={[-5.94, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
+    <group position={[-width / 2 + 0.08, 2.25, -0.55]} rotation={[0, Math.PI / 2, 0]}>
       <mesh>
         <planeGeometry args={[1.35, 0.95]} />
         <meshStandardMaterial color="#f6faf2" roughness={0.9} />
@@ -655,9 +671,9 @@ function BiologyPoster({ palette }: { palette: LabRoomPalette }) {
   );
 }
 
-function SubjectSticker({ label, palette }: { label: string; palette: LabRoomPalette }) {
+function SubjectSticker({ label, palette, width }: { label: string; palette: LabRoomPalette; width: number }) {
   return (
-    <group position={[-4.15, 3.42, -3.98]}>
+    <group position={[-width / 2 + 1.85, 3.42, -3.98]}>
       <mesh position={[0, 0, -0.006]}>
         <planeGeometry args={[3.72, 0.4]} />
         <meshStandardMaterial color={palette.accent} roughness={0.7} />
@@ -671,16 +687,16 @@ function SubjectSticker({ label, palette }: { label: string; palette: LabRoomPal
   );
 }
 
-function RoomWallChart({ kind, palette }: { kind: WallChart; palette: LabRoomPalette }) {
-  if (kind === "measurement") return <MeasurementPoster palette={palette} />;
-  if (kind === "biology") return <BiologyPoster palette={palette} />;
-  if (kind === "periodic") return <PeriodicPoster palette={palette} />;
+function RoomWallChart({ kind, palette, width }: { kind: WallChart; palette: LabRoomPalette; width: number }) {
+  if (kind === "measurement") return <MeasurementPoster palette={palette} width={width} />;
+  if (kind === "biology") return <BiologyPoster palette={palette} width={width} />;
+  if (kind === "periodic") return <PeriodicPoster palette={palette} width={width} />;
   return null;
 }
 
-function WallClock({ palette }: { palette: LabRoomPalette }) {
+function WallClock({ palette, width }: { palette: LabRoomPalette; width: number }) {
   return (
-    <group position={[4.5, 3.15, -3.94]}>
+    <group position={[width / 2 - 1.5, 3.15, -3.94]}>
       <mesh>
         <cylinderGeometry args={[0.26, 0.26, 0.045, 40]} />
         <meshStandardMaterial color="#f8fafc" roughness={0.5} />
@@ -705,9 +721,9 @@ function WallClock({ palette }: { palette: LabRoomPalette }) {
   );
 }
 
-function WindowLight() {
+function WindowLight({ width }: { width: number }) {
   return (
-    <group position={[5.97, 2.35, -1.1]} rotation={[0, -Math.PI / 2, 0]}>
+    <group position={[width / 2 - 0.05, 2.35, -1.1]} rotation={[0, -Math.PI / 2, 0]}>
       <mesh>
         <planeGeometry args={[3.3, 1.55]} />
         <meshBasicMaterial color="#e0f2fe" />
@@ -739,6 +755,7 @@ function RoomShell({
   showClock,
   showWindow,
   showPoster,
+  width,
 }: {
   palette: LabRoomPalette;
   subjectLabel: string;
@@ -746,42 +763,46 @@ function RoomShell({
   showClock: boolean;
   showWindow: boolean;
   showPoster: boolean;
+  width: number;
 }) {
+  const sideX = width / 2 - 0.02;
+  const trimX = width / 2;
+
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-        <planeGeometry args={[12, 8.2]} />
+        <planeGeometry args={[width, 8.2]} />
         <meshStandardMaterial color={palette.floor} roughness={0.9} />
       </mesh>
-      <gridHelper args={[12, 24, palette.floorGridMajor, palette.floorGridMinor]} position={[0, 0.006, 0]} />
+      <gridHelper args={[width, Math.round(width * 2), palette.floorGridMajor, palette.floorGridMinor]} position={[0, 0.006, 0]} />
       <mesh position={[0, 2.35, -4.07]} receiveShadow>
-        <planeGeometry args={[12, 4.7]} />
+        <planeGeometry args={[width, 4.7]} />
         <meshStandardMaterial color={palette.wallBack} roughness={0.92} />
       </mesh>
-      <mesh position={[-6.02, 2.35, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
+      <mesh position={[-sideX, 2.35, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[8.2, 4.7]} />
         <meshStandardMaterial color={palette.wallSide} roughness={0.94} />
       </mesh>
-      <mesh position={[6.02, 2.35, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
+      <mesh position={[sideX, 2.35, 0]} rotation={[0, -Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[8.2, 4.7]} />
         <meshStandardMaterial color={palette.wallSide} roughness={0.94} />
       </mesh>
       <mesh position={[0, 0.09, -4.04]}>
-        <boxGeometry args={[12, 0.18, 0.08]} />
+        <boxGeometry args={[width, 0.18, 0.08]} />
         <meshStandardMaterial color={palette.trim} roughness={0.7} />
       </mesh>
-      <mesh position={[-6.0, 0.09, 0]} rotation={[0, Math.PI / 2, 0]}>
+      <mesh position={[-trimX, 0.09, 0]} rotation={[0, Math.PI / 2, 0]}>
         <boxGeometry args={[8.2, 0.18, 0.08]} />
         <meshStandardMaterial color={palette.trim} roughness={0.7} />
       </mesh>
-      <mesh position={[6.0, 0.09, 0]} rotation={[0, -Math.PI / 2, 0]}>
+      <mesh position={[trimX, 0.09, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <boxGeometry args={[8.2, 0.18, 0.08]} />
         <meshStandardMaterial color={palette.trim} roughness={0.7} />
       </mesh>
-      <SubjectSticker label={subjectLabel} palette={palette} />
-      {showPoster ? <RoomWallChart kind={wallChart} palette={palette} /> : null}
-      {showWindow ? <WindowLight /> : null}
-      {showClock ? <WallClock palette={palette} /> : null}
+      <SubjectSticker label={subjectLabel} palette={palette} width={width} />
+      {showPoster ? <RoomWallChart kind={wallChart} palette={palette} width={width} /> : null}
+      {showWindow ? <WindowLight width={width} /> : null}
+      {showClock ? <WallClock palette={palette} width={width} /> : null}
     </group>
   );
 }
@@ -956,6 +977,7 @@ export function ChemistryLabRoom({ config }: { config: LabRoomConfig }) {
   const subjectLabel = config.subjectLabel ?? "EXPERA CHEMISTRY LABORATORY";
   const wallChart = config.wallChart ?? "periodic";
   const showContactShadows = config.showContactShadows ?? true;
+  const roomWidth = config.roomWidth ?? 12;
 
   return (
     <>
@@ -978,7 +1000,15 @@ export function ChemistryLabRoom({ config }: { config: LabRoomConfig }) {
       <pointLight position={[5.6, 2.5, -1]} intensity={5.5} distance={7} color="#e0f2fe" />
       <pointLight position={[-3, 2.2, 2]} intensity={2.5} distance={6} color="#fef3c7" />
 
-      <RoomShell palette={palette} subjectLabel={subjectLabel} wallChart={wallChart} showClock={showClock} showWindow={showWindow} showPoster={showPoster} />
+      <RoomShell
+        palette={palette}
+        subjectLabel={subjectLabel}
+        wallChart={wallChart}
+        showClock={showClock}
+        showWindow={showWindow}
+        showPoster={showPoster}
+        width={roomWidth}
+      />
       {showShelves ? (
         <>
           <ShelfUnit x={SHELF_X[0]} label={config.shelfLabel ?? "APPARATUS STORE"} palette={palette} />

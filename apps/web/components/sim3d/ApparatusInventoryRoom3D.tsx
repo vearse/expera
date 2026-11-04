@@ -6,7 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { Apparatus } from "@/lib/content/schemas";
 import { detectWebGL } from "@/lib/device";
-import { ApparatusModel, getApparatusHeight } from "./apparatusModels";
+import { ApparatusModel } from "./apparatusModels";
 import {
   APPARATUS_LAB_ROOM,
   ChemistryLabRoom,
@@ -30,56 +30,14 @@ type Props = {
   subject: InventorySubject;
 };
 
-const SUBJECT_THEMES: Record<InventorySubject, LabRoomConfig> = {
+const SUBJECT_THEMES: Record<InventorySubject, Pick<LabRoomConfig, "subjectLabel" | "wallChart">> = {
   physics: {
     subjectLabel: "EXPERA PHYSICS LABORATORY",
     wallChart: "measurement",
-    palette: {
-      background: "#d9e7f0",
-      fog: "#d9e7f0",
-      floor: "#e2ebf2",
-      floorGridMajor: "#b7c9d7",
-      floorGridMinor: "#cedbe5",
-      wallBack: "#eff5fa",
-      wallSide: "#e5eef6",
-      trim: "#c3d3df",
-      shelfFrame: "#4f6b7a",
-      shelfBoard: "#5f7d8c",
-      shelfBase: "#405966",
-      shelfBack: "#e5eef6",
-      benchTop: "#b8d8e4",
-      benchBody: "#e2e8f0",
-      sideBenchTop: "#b8d8e4",
-      drawer: "#f1f5f9",
-      metal: "#94a3b8",
-      accent: "#0e7490",
-      seat: "#0e7490",
-    },
   },
   biology: {
     subjectLabel: "EXPERA BIOLOGY LABORATORY",
     wallChart: "biology",
-    palette: {
-      background: "#e4e9dc",
-      fog: "#e4e9dc",
-      floor: "#e4e9dc",
-      floorGridMajor: "#b9c5b0",
-      floorGridMinor: "#d1d9c8",
-      wallBack: "#f2f5ec",
-      wallSide: "#edf1e7",
-      trim: "#b9c5b0",
-      shelfFrame: "#6c7f69",
-      shelfBoard: "#7b8d72",
-      shelfBase: "#5b6d59",
-      shelfBack: "#e8efe1",
-      benchTop: "#d7dfc9",
-      benchBody: "#f1f4eb",
-      sideBenchTop: "#c8d2bb",
-      drawer: "#f8faf6",
-      metal: "#94a3b8",
-      accent: "#0f766e",
-      seat: "#0f766e",
-    },
   },
 };
 
@@ -131,7 +89,6 @@ function Scene({ items, selectedId, title, teacherHint, onSelect, subject }: Pro
     () => ({
       ...APPARATUS_LAB_ROOM,
       ...SUBJECT_THEMES[subject],
-      palette: { ...SUBJECT_THEMES[subject].palette },
       shelfLabel: title.toUpperCase(),
       notice: {
         eyebrow: "Laboratory guide",
@@ -198,7 +155,7 @@ function Scene({ items, selectedId, title, teacherHint, onSelect, subject }: Pro
         text={labelEntry?.item.name ?? " "}
         position={[
           labelEntry?.position[0] ?? 0,
-          (labelEntry?.position[1] ?? 0) + getApparatusHeight(labelEntry?.item.id ?? "") * SHELF_SCALE + 0.09,
+          (labelEntry?.position[1] ?? 0) + 0.04,
           labelEntry?.position[2] ?? 0,
         ]}
         height={0.14}

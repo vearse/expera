@@ -8,13 +8,19 @@ import { ApparatusGuideContent } from "@/components/lab/ApparatusGuideContent";
 import { ApparatusSelectionPanel, type InRoomPanelView } from "@/components/lab/ApparatusSelectionPanel";
 import { ApparatusSummaryCard } from "@/components/lab/ApparatusSummaryCard";
 import { BenchNotePanel } from "@/components/lab/BenchNotePanel";
+import { GuidedStepCard } from "@/components/lab/GuidedStepCard";
 import { Button, ReviewBadge } from "@/components/ui";
+import { TeacherVoiceDock } from "@/components/teacher/TeacherVoiceDock";
 import { awardMissionXp } from "@/lib/runtime/gamification";
+import { apparatusStageMessageId } from "@/lib/teacherVoice/adapters";
+import { emitTeacherEvent } from "@/lib/teacherVoice/events";
+import { useTeacherVoiceModule } from "@/lib/teacherVoice/useTeacherVoiceModule";
 import {
   APPARATUS_SETUPS,
   createApparatusState,
   GUIDED_STAGES,
   highlightIdsForStep,
+  guidedPointerFor,
   guidedTeacherMessage,
   reduceApparatus,
   resolveGuidedStep,
@@ -92,6 +98,7 @@ export function ApparatusLaboratory({
   safetyBriefing?: string[];
 }) {
   const [snap, setSnap] = useState<ApparatusState>(() => createApparatusState(items, mode, guidedTasks));
+  const teacher = useTeacherVoiceModule({ moduleId: "chemistry/apparatus", mode: snap.mode });
   const [guidedDetailsOpen, setGuidedDetailsOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
   const [viewLocked, setViewLocked] = useState(false);
@@ -113,7 +120,11 @@ export function ApparatusLaboratory({
     return createStore<LabStore>((set, get) => ({
       ...initial,
       dispatch: (action: ApparatusAction) => {
-        const next = reduceApparatus(get(), action);
+        const current = get();
+        const next = reduceApparatus(current, action);
+        if (next.state.mistakes.length > current.mistakes.length) {
+          emitTeacherEvent({ type: "mistakeDetected", moduleId: "chemistry/apparatus", messageId: "chemistry.apparatus.mistake" });
+        }
         for (const event of next.events) {
           if (event.xp) awardMissionXp(`apparatus-${event.id}-${event.message}`, event.xp, event.badgeId);
         }
@@ -171,14 +182,54 @@ export function ApparatusLaboratory({
 
   const stage = stageByIndex(snap.guidedStageIndex);
   const guidedStep = snap.mode === "guided" && !snap.stageComplete ? resolveGuidedStep(stage, snap) : null;
+  const guidedPointer = snap.mode === "guided" ? guidedPointerFor(snap, guidedStep) : null;
+  const stepNeedsNote = guidedStep?.primaryAction.kind === "choice";
   const stepHint = snap.mode === "guided" ? guidedTeacherMessage(snap) : exploreTeacherHint(snap);
   const hint = noteOpen
     ? stepHint
     : snap.mode === "guided"
-      ? `Open the note on the bench or tap Note view to read your ${stage.title.toLowerCase()} guide.`
+      ? stepNeedsNote
+        ? `Open the note on the bench or tap Note view to answer this ${stage.title.toLowerCase()} question.`
+        : guidedPointer?.label ?? `Follow the guided pointer in the room for ${stage.title.toLowerCase()}.`
       : "Tap Note view or the note on the bench to read the apparatus guide.";
   const highlightIds =
     snap.mode === "guided" && guidedStep ? highlightIdsForStep(guidedStep, snap.hintLevel, { identifyPromptId: snap.identifyPromptId }) : [];
+  const guidedStageKey = `${stage.id}:${snap.guidedStepIndex}`;
+  const guidedView: "shelves" | "bench" | null = guidedPointer
+    ? guidedPointer.apparatusId
+      ? snap.bench.includes(guidedPointer.apparatusId)
+        ? "bench"
+        : "shelves"
+      : guidedPointer.atBench
+        ? "bench"
+        : null
+    : null;
+
+  useEffect(() => {
+    if (snap.mode !== "guided" || snap.showSummary) return;
+    if (guidedStep && guidedStep.primaryAction.kind !== "choice") {
+      setNoteOpen(false);
+    }
+  }, [snap.mode, snap.showSummary, stage.id, snap.guidedStepIndex, guidedStep?.primaryAction.kind]);
+
+  useEffect(() => {
+    if (snap.mode !== "guided" || snap.showSummary) return;
+    if (snap.stageComplete) {
+      teacher.message("chemistry.apparatus.stage-complete");
+      return;
+    }
+    teacher.stepStarted(`${stage.id}:${snap.guidedStepIndex}`, apparatusStageMessageId(stage.id));
+  }, [snap.guidedStageIndex, snap.guidedStepIndex, snap.mode, snap.showSummary, snap.stageComplete, stage.id, teacher]);
+
+  useEffect(() => {
+    if (snap.showSummary) teacher.message("chemistry.apparatus.complete");
+  }, [snap.showSummary, teacher]);
+
+  useEffect(() => {
+    if (snap.readingFeedback?.startsWith("The scale")) {
+      teacher.mistake("chemistry.apparatus.mistake");
+    }
+  }, [snap.readingFeedback, teacher]);
 
   const selected = snap.items.find((item) => item.id === snap.selectedId) ?? null;
   const activePrompt = IDENTIFY_PROMPTS.find((prompt) => prompt.id === snap.identifyPromptId) ?? null;
@@ -262,6 +313,18 @@ export function ApparatusLaboratory({
     />
   );
 
+  const guidedOverlay =
+    snap.mode === "guided" && guidedStep && !stepNeedsNote && !noteOpen ? (
+      <GuidedStepCard
+        step={guidedStep}
+        state={snap}
+        stageTitle={stage.title}
+        onDispatch={dispatch}
+        readingChoices={readingChoices}
+        showInstruction
+      />
+    ) : null;
+
   const selectionPanel = selected ? (
     <ApparatusSelectionPanel
       item={selected}
@@ -278,7 +341,9 @@ export function ApparatusLaboratory({
   ) : null;
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-4" onPointerDown={teacher.notifyInteraction}>
+      <TeacherVoiceDock />
+
       {snap.mode === "guided" ? (
         <div className="grid gap-2 rounded-xl border bg-white px-4 py-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -337,6 +402,11 @@ export function ApparatusLaboratory({
         onReorderBench={reorderBench}
         onClearBench={clearBench}
         highlightIds={highlightIds}
+        guidedPointer={guidedPointer}
+        guidedOverlay={guidedOverlay}
+        guidedView={guidedView}
+        guidedStageKey={guidedStageKey}
+        stageLabel={snap.mode === "guided" ? `Stage ${snap.guidedStageIndex + 1}/${GUIDED_STAGES.length}: ${stage.title}` : undefined}
         viewLocked={viewLocked}
         onViewLockedChange={setViewLocked}
         fullscreen={labFullscreen}

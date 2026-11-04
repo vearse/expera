@@ -15,6 +15,7 @@ export function GuidedStepCard({
   onDispatch,
   readingChoices,
   variant = "default",
+  showInstruction = false,
 }: {
   step: GuidedStepView;
   state: ApparatusState;
@@ -22,6 +23,7 @@ export function GuidedStepCard({
   onDispatch: (action: ApparatusAction) => void;
   readingChoices: number[];
   variant?: "default" | "paper";
+  showInstruction?: boolean;
 }) {
   const safetyTask =
     state.safetyTasks[state.guidedStepIndex]?.type === "choice" ? (state.safetyTasks[state.guidedStepIndex] as Task & { type: "choice" }) : null;
@@ -55,6 +57,7 @@ export function GuidedStepCard({
             Ms. Ada: {spokenHint}
           </p>
         ) : null}
+        {showInstruction ? <p className="text-[11px] leading-snug text-slate-700">{step.hint0}</p> : null}
         {step.primaryAction.kind === "choice" && safetyTask ? (
           <>
             <p className="text-sm font-medium text-slate-900">{safetyTask.prompt}</p>

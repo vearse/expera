@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Hanken_Grotesk, Sora } from "next/font/google";
+import { loadTeacherMessages } from "@/lib/content/teacherMessages";
+import { TeacherVoiceProvider } from "@/lib/teacherVoice/TeacherVoiceProvider";
 import "./globals.css";
 
 const sora = Sora({
@@ -23,6 +25,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const teacherVoice = loadTeacherMessages();
+
   return (
     <html lang="en-GB" className={`${sora.variable} ${hanken.variable}`}>
       <head>
@@ -31,7 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <TeacherVoiceProvider catalog={teacherVoice}>{children}</TeacherVoiceProvider>
+      </body>
     </html>
   );
 }

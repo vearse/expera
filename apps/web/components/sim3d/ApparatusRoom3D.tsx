@@ -24,6 +24,7 @@ import {
   SHELF_Z,
 } from "./ChemistryLabRoom";
 import { BenchNote, type BenchNoteData } from "./BenchNote";
+import { GuidedPointer } from "./GuidedPointer";
 
 type Preset = "room" | "shelves" | "bench" | "top" | "custom";
 type ControlsLike = { enabled: boolean; target: THREE.Vector3; update?: () => void };
@@ -44,7 +45,11 @@ type RoomProps = {
   onNoteOpenChange?: (open: boolean) => void;
   onTeacherClick?: () => void;
   highlightIds?: string[];
+  guidedPointer?: { apparatusId: string | null; label: string; atBench?: boolean } | null;
   guidedOverlay?: ReactNode;
+  guidedView?: "shelves" | "bench" | null;
+  guidedStageKey?: string;
+  stageLabel?: string;
   selectionPanel?: ReactNode;
   viewLocked?: boolean;
   onViewLockedChange?: (locked: boolean) => void;
@@ -115,8 +120,16 @@ function ApparatusObject({
 
 type DragInfo = { id: string; fromBench: boolean };
 
-function FloatingLabel({ entry }: { entry: { item: Apparatus; position: [number, number, number]; scale: number } | null }) {
-  const y = entry ? entry.position[1] + getApparatusHeight(entry.item.id) * entry.scale + 0.09 : -6;
+function FloatingLabel({
+  entry,
+}: {
+  entry: { item: Apparatus; position: [number, number, number]; scale: number; onBenchItem: boolean } | null;
+}) {
+  const y = entry
+    ? entry.onBenchItem
+      ? entry.position[1] + getApparatusHeight(entry.item.id) * entry.scale + 0.09
+      : entry.position[1] + 0.04
+    : -6;
   return (
     <RoomLabel
       text={entry?.item.name ?? " "}
@@ -177,6 +190,7 @@ function RoomScene({
   noteAnchorRef,
   onTeacherClick,
   highlightIds = [],
+  guidedPointer,
   preset,
   onPresetChange,
   onSelect,
@@ -232,6 +246,20 @@ function RoomScene({
     });
     return positions;
   }, [bench]);
+
+  const guidedPointerPosition = useMemo<[number, number, number] | null>(() => {
+    if (!guidedPointer) return null;
+    if (guidedPointer.apparatusId) {
+      const id = guidedPointer.apparatusId;
+      const onBenchItem = onBench.has(id);
+      const base = onBenchItem ? benchPositions.get(id) : slotById.get(id);
+      if (!base) return null;
+      const scale = onBenchItem ? BENCH_SCALE : SHELF_SCALE;
+      return [base[0], base[1] + getApparatusHeight(id) * scale + 0.1, base[2] + 0.16];
+    }
+    if (guidedPointer.atBench) return [0, BENCH_TOP + 0.55, 0.55];
+    return null;
+  }, [benchPositions, guidedPointer, onBench, slotById]);
 
   const cameraPresets = useMemo(() => {
     const narrow = Math.max(0, Math.min(1.35, (1.25 - aspect) / 0.6));
@@ -383,6 +411,10 @@ function RoomScene({
         />
       ))}
 
+      {guidedPointerPosition ? (
+        <GuidedPointer position={guidedPointerPosition} instruction={guidedPointer?.label ?? ""} />
+      ) : null}
+
       {dragId ? (
         <mesh position={[0, BENCH_TOP + 0.004, 0.5]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[4.95, 1.92]} />
@@ -432,6 +464,11 @@ export default function ApparatusRoom3D(props: RoomProps) {
   const noteOpen = props.noteOpen ?? false;
   const noteAnchorRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (!props.guidedView || viewLocked) return;
+    setPreset(props.guidedView);
+  }, [props.guidedStageKey, props.guidedView, viewLocked]);
+
   const roomInner = (
     <>
       <div className={fullscreen ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}>
@@ -453,8 +490,14 @@ export default function ApparatusRoom3D(props: RoomProps) {
         </div>
       ) : null}
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start justify-end gap-2 p-3">
-        <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
+      <div className={`pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-start gap-2 p-3 ${props.stageLabel ? "justify-between" : "justify-end"}`}>
+        {props.stageLabel ? (
+          <div className="pointer-events-auto min-w-0 max-w-[min(70%,19rem)] rounded-xl border border-white/70 bg-white/90 px-3 py-2 shadow-lg backdrop-blur">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Current stage</p>
+            <p className="truncate text-xs font-semibold text-slate-900">{props.stageLabel}</p>
+          </div>
+        ) : null}
+        <div className="pointer-events-auto ml-auto flex flex-wrap justify-end gap-1.5">
           {props.noteContent ? (
             <button
               type="button"
@@ -481,6 +524,12 @@ export default function ApparatusRoom3D(props: RoomProps) {
       {props.selectionPanel ? (
         <div className="pointer-events-none absolute right-3 top-[8.5rem] z-20 flex max-w-[min(90%,20rem)]">
           <div className="pointer-events-auto">{props.selectionPanel}</div>
+        </div>
+      ) : null}
+
+      {props.guidedOverlay ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-[4.5rem] z-20 flex justify-start p-3">
+          <div className="pointer-events-auto w-full max-w-[min(420px,92vw)]">{props.guidedOverlay}</div>
         </div>
       ) : null}
 
@@ -519,6 +568,12 @@ export default function ApparatusRoom3D(props: RoomProps) {
     return (
       <div className="grid gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid content-start gap-3">
+          {props.stageLabel ? (
+            <div className="rounded-xl border border-amber-300 bg-white/90 px-3 py-2 shadow-sm">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-700">Current stage</p>
+              <p className="text-xs font-semibold text-slate-900">{props.stageLabel}</p>
+            </div>
+          ) : null}
           <div>
             <p className="font-semibold">This device cannot show the 3D laboratory.</p>
             <p>WebGL is turned off or unavailable. Use the 2D shelf list below to select equipment and complete the same guided steps.</p>
@@ -564,7 +619,8 @@ export default function ApparatusRoom3D(props: RoomProps) {
           </div>
         </div>
         <div className="grid max-h-[70vh] content-start gap-2 overflow-y-auto">
-          {noteOpen || !props.noteContent ? props.noteContent ?? props.guidedOverlay : null}
+          {props.guidedOverlay}
+          {noteOpen || !props.noteContent ? props.noteContent : null}
           {props.selectionPanel}
         </div>
       </div>

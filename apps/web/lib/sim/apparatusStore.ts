@@ -16,6 +16,7 @@ export type { GuidedStage, GuidedStageId } from "./apparatusGuided";
 export {
   ASSEMBLE_SEQUENCE,
   GUIDED_STAGES,
+  guidedPointerFor,
   guidedTeacherMessage,
   highlightIdsForStep,
   resolveGuidedStep,

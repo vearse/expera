@@ -5,7 +5,7 @@ import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import { detectWebGL } from "@/lib/device";
-import { ChemistryLabRoom, RoomLabel, type LabRoomConfig } from "@/components/sim3d/ChemistryLabRoom";
+import { ChemistryLabRoom, RoomLabel, STANDARD_LAB_ROOM, STANDARD_TEACHER, type LabRoomConfig } from "@/components/sim3d/ChemistryLabRoom";
 import {
   currentBob,
   currentEffectiveLengthM,
@@ -19,29 +19,13 @@ const PIVOT_Y = 4.62;
 const LENGTH_SCALE = 1.72;
 
 const PENDULUM_ROOM: LabRoomConfig = {
+  ...STANDARD_LAB_ROOM,
   showShelves: false,
   showWorkBench: false,
   showSideBench: false,
   showStools: false,
   subjectLabel: "EXPERA PHYSICS LABORATORY",
   wallChart: "measurement",
-  palette: {
-    background: "#d9e7f0",
-    fog: "#d9e7f0",
-    floor: "#e2ebf2",
-    floorGridMajor: "#b7c9d7",
-    floorGridMinor: "#cedbe5",
-    wallBack: "#eff5fa",
-    wallSide: "#e5eef6",
-    trim: "#c3d3df",
-    benchTop: "#b8d8e4",
-    benchBody: "#e2e8f0",
-    sideBenchTop: "#b8d8e4",
-    drawer: "#f1f5f9",
-    metal: "#94a3b8",
-    accent: "#0e7490",
-    seat: "#0e7490",
-  },
   notice: {
     eyebrow: "Pendulum practical",
     title: "Period and length",
@@ -55,10 +39,9 @@ const PENDULUM_ROOM: LabRoomConfig = {
     footer: "Ask Mr. Bello if you are unsure.",
   },
   teacher: {
+    ...STANDARD_TEACHER,
     name: "Mr. Bello",
     message: "Measure the effective length, then arm the stopwatch for a repeated-swing timing.",
-    position: [-5.45, 0, -1.25],
-    rotation: 1.28,
   },
 };
 
@@ -81,10 +64,9 @@ function roomConfig(state: PendulumLabState): LabRoomConfig {
       footer: "Success criteria are in the panel above.",
     },
     teacher: {
+      ...STANDARD_TEACHER,
       name: "Mr. Bello",
       message: "Independent mode: no procedural hints. Read the aim, choose your apparatus and collect evidence you can justify.",
-      position: [-5.45, 0, -1.25],
-      rotation: 1.28,
     },
   };
 }

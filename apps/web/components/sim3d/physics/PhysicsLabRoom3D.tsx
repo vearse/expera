@@ -6,7 +6,7 @@ import { OrbitControls, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import type { PhysicsStationId } from "@/lib/content/physics";
 import { detectWebGL, prefersReducedMotion } from "@/lib/device";
-import { ChemistryLabRoom, RoomLabel, type LabRoomConfig } from "@/components/sim3d/ChemistryLabRoom";
+import { ChemistryLabRoom, RoomLabel, STANDARD_LAB_ROOM, STANDARD_TEACHER, type LabRoomConfig } from "@/components/sim3d/ChemistryLabRoom";
 import type { PhysicsRoomProps } from "@/components/physics/lab/PhysicsLabRoom";
 
 const STATION_X: Record<PhysicsStationId, number> = {
@@ -347,29 +347,13 @@ function Bench() {
 }
 
 const PHYSICS_ROOM: LabRoomConfig = {
+  ...STANDARD_LAB_ROOM,
   showShelves: false,
   showWorkBench: false,
   showSideBench: false,
   showStools: false,
   subjectLabel: "EXPERA PHYSICS LABORATORY",
   wallChart: "measurement",
-  palette: {
-    background: "#d9e7f0",
-    fog: "#d9e7f0",
-    floor: "#e2ebf2",
-    floorGridMajor: "#b7c9d7",
-    floorGridMinor: "#cedbe5",
-    wallBack: "#eff5fa",
-    wallSide: "#e5eef6",
-    trim: "#c3d3df",
-    benchTop: "#b8d8e4",
-    benchBody: "#e2e8f0",
-    sideBenchTop: "#b8d8e4",
-    drawer: "#f1f5f9",
-    metal: "#94a3b8",
-    accent: "#0e7490",
-    seat: "#0e7490",
-  },
   notice: {
     eyebrow: "Practical notice",
     title: "Measurement laboratory",
@@ -383,10 +367,9 @@ const PHYSICS_ROOM: LabRoomConfig = {
     footer: "Ask Mr. Bello if you are unsure.",
   },
   teacher: {
+    ...STANDARD_TEACHER,
     name: "Mr. Bello",
     message: "Choose an instrument station, then read its guide below the room.",
-    position: [-5.55, 0, -1.35],
-    rotation: 1.28,
   },
 };
 

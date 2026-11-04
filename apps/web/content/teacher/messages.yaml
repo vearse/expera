@@ -1,0 +1,313 @@
+version: 1
+messages:
+  - id: chemistry.titration.rinse-burette.instruction
+    module: chemistry/titration
+    step: rinse-burette
+    kind: step_instruction
+    status: approved
+    text: Rinse the burette with a little acid before you fill it.
+    caption: Rinse the burette with acid.
+  - id: chemistry.titration.fill-burette.instruction
+    module: chemistry/titration
+    step: fill-burette
+    kind: step_instruction
+    status: approved
+    text: Fill the burette just above the zero mark.
+    caption: Fill the burette.
+  - id: chemistry.titration.remove-air-bubble.instruction
+    module: chemistry/titration
+    step: remove-air-bubble
+    kind: step_instruction
+    status: approved
+    text: Open the tap and clear the air bubble from the jet.
+    caption: Clear the jet.
+  - id: chemistry.titration.record-initial.instruction
+    module: chemistry/titration
+    step: record-initial
+    kind: step_instruction
+    status: approved
+    text: Read the burette scale at eye level, then record the initial reading.
+    caption: Record the initial reading.
+  - id: chemistry.titration.pipette-base.instruction
+    module: chemistry/titration
+    step: pipette-base
+    kind: step_instruction
+    status: approved
+    text: Use the pipette filler to transfer exactly the base into the conical flask.
+    caption: Pipette the base.
+  - id: chemistry.titration.add-indicator.instruction
+    module: chemistry/titration
+    step: add-indicator
+    kind: step_instruction
+    status: approved
+    text: Pick up the indicator bottle, then add two drops to the flask.
+    caption: Add two drops of indicator.
+  - id: chemistry.titration.white-tile.instruction
+    module: chemistry/titration
+    step: white-tile
+    kind: step_instruction
+    status: approved
+    text: Place the flask on the white tile so the colour change is easier to see.
+    caption: Use the white tile.
+  - id: chemistry.titration.swirl-flask.instruction
+    module: chemistry/titration
+    step: swirl-flask
+    kind: step_instruction
+    status: approved
+    text: Swirl the flask to mix the acid and the alkali.
+    caption: Swirl the flask.
+  - id: chemistry.titration.run-in-acid.instruction
+    module: chemistry/titration
+    step: run-in-acid
+    kind: step_instruction
+    status: approved
+    text: Run acid into the flask and swirl after each addition.
+    caption: Run in the acid.
+  - id: chemistry.titration.fine-end-point.instruction
+    module: chemistry/titration
+    step: fine-end-point
+    kind: step_instruction
+    status: approved
+    text: Add acid one drop at a time and stop at the first permanent colour change.
+    caption: Add one drop at a time.
+  - id: chemistry.titration.record-final.instruction
+    module: chemistry/titration
+    step: record-final
+    kind: step_instruction
+    status: approved
+    text: Read the final burette level at eye level and record it.
+    caption: Record the final reading.
+  - id: chemistry.titration.next-trial.instruction
+    module: chemistry/titration
+    step: next-trial
+    kind: step_instruction
+    status: approved
+    text: Start the next titre and repeat until the titres are concordant.
+    caption: Start the next titre.
+  - id: chemistry.titration.complete
+    module: chemistry/titration
+    kind: encouragement
+    status: approved
+    text: You have finished the titration. Review your concordant titres and the calculation.
+    caption: Titration complete.
+
+  - id: chemistry.titration.mistake.fill-without-rinse
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: The burette was filled without rinsing it. Rinse with a little acid first, then fill again.
+    caption: Rinse the burette before filling it.
+  - id: chemistry.titration.mistake.initial-before-fill
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: Fill the burette before recording the initial reading.
+    caption: Fill the burette first.
+  - id: chemistry.titration.mistake.parallax-initial
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: The initial reading was not taken at eye level. Move to eye level to avoid parallax error.
+    caption: Read the initial level at eye level.
+  - id: chemistry.titration.mistake.pipette-mouth
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: Never pipette by mouth. Use the pipette filler to draw up the base.
+    caption: Use the pipette filler.
+  - id: chemistry.titration.mistake.indicator-too-much
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: Too much indicator makes the end point harder to judge. Two drops are enough.
+    caption: Use only two drops.
+  - id: chemistry.titration.mistake.deliver-before-ready
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: Fill the burette and record the initial reading before you open the tap.
+    caption: Prepare the burette first.
+  - id: chemistry.titration.mistake.no-base
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: There is no base in the conical flask yet. Pipette the base before you deliver acid.
+    caption: Pipette the base first.
+  - id: chemistry.titration.mistake.bubble-released
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: An air bubble left the jet, so the burette reading is larger than the volume delivered. Clear the jet before you start.
+    caption: Clear the air bubble first.
+  - id: chemistry.titration.mistake.overshot
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: You overshot the end point. Near the end point, add acid one drop at a time.
+    caption: Slow down near the end point.
+  - id: chemistry.titration.mistake.not-swirled
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: The flask was not swirled, so the colour change is uneven. Swirl after each addition.
+    caption: Swirl after each addition.
+  - id: chemistry.titration.mistake.parallax-final
+    module: chemistry/titration
+    kind: mistake
+    status: approved
+    text: The final reading was taken off eye level. Read the meniscus at eye level.
+    caption: Record the final level at eye level.
+
+  - id: chemistry.safety.pipette-mouth
+    module: chemistry
+    kind: safety
+    status: approved
+    text: Never pipette by mouth. Fit a pipette filler, draw the solution to the mark, and transfer it safely.
+    caption: Never pipette by mouth.
+  - id: chemistry.safety.heat-closed
+    module: chemistry
+    kind: safety
+    status: approved
+    text: Do not heat a closed system. The pressure can burst the glassware.
+    caption: Never heat a closed system.
+  - id: chemistry.safety.acid-water
+    module: chemistry
+    kind: safety
+    status: approved
+    text: Never add water to concentrated acid. Add acid to water slowly with stirring.
+    caption: Add acid to water, not water to acid.
+  - id: chemistry.safety.heated-tube
+    module: chemistry
+    kind: safety
+    status: approved
+    text: Never point a heated test tube at anyone.
+    caption: Keep heated tubes pointed away.
+
+  - id: chemistry.apparatus.safety.instruction
+    module: chemistry/apparatus
+    step: safety
+    kind: step_instruction
+    status: approved
+    text: Read each safety question and choose the safest laboratory practice.
+    caption: Answer the safety questions.
+  - id: chemistry.apparatus.identify.instruction
+    module: chemistry/apparatus
+    step: identify
+    kind: step_instruction
+    status: approved
+    text: Find the apparatus described in the note, then submit your answer.
+    caption: Identify the apparatus.
+  - id: chemistry.apparatus.reading.instruction
+    module: chemistry/apparatus
+    step: reading
+    kind: step_instruction
+    status: approved
+    text: Read the bottom of the meniscus with your eye level with the scale.
+    caption: Read the meniscus at eye level.
+  - id: chemistry.apparatus.handling.instruction
+    module: chemistry/apparatus
+    step: handling
+    kind: step_instruction
+    status: approved
+    text: Place the Bunsen burner on the bench, light it, and open the air hole for a blue flame.
+    caption: Light the Bunsen safely.
+  - id: chemistry.apparatus.assemble.instruction
+    module: chemistry/apparatus
+    step: assemble
+    kind: step_instruction
+    status: approved
+    text: Build the setup on the bench in the order shown.
+    caption: Build the setup.
+  - id: chemistry.apparatus.cleanup.instruction
+    module: chemistry/apparatus
+    step: cleanup
+    kind: step_instruction
+    status: approved
+    text: Turn off the gas, tidy the bench, and wash the glassware.
+    caption: Clean up the bench.
+  - id: chemistry.apparatus.assessment.instruction
+    module: chemistry/apparatus
+    step: assessment
+    kind: step_instruction
+    status: approved
+    text: Build the titration setup without hints.
+    caption: Build the titration setup.
+  - id: chemistry.apparatus.stage-complete
+    module: chemistry/apparatus
+    kind: encouragement
+    status: approved
+    text: Stage complete. Open the next stage when you are ready.
+    caption: Stage complete.
+  - id: chemistry.apparatus.complete
+    module: chemistry/apparatus
+    kind: encouragement
+    status: approved
+    text: You have completed the guided apparatus laboratory.
+    caption: Apparatus laboratory complete.
+  - id: chemistry.apparatus.mistake
+    module: chemistry/apparatus
+    kind: mistake
+    status: approved
+    text: Check that step again. Read the bench note and try once more.
+    caption: Check the step and try again.
+
+  - id: learn.periodic-table.welcome
+    module: learn/periodic-table
+    kind: step_instruction
+    status: approved
+    text: Welcome to the periodic table explorer. Use the filters, trends and compare tools, and follow the element detail panel.
+    caption: Explore the periodic table.
+  - id: learn.periodic-table.complete
+    module: learn/periodic-table
+    kind: encouragement
+    status: approved
+    text: You have explored all four periodic table features. Try the trends and compare tools again with a new element.
+    caption: All periodic table features explored.
+  - id: learn.atom-builder.welcome
+    module: learn/atom-builder
+    kind: step_instruction
+    status: approved
+    text: Welcome to the atom builder. Add protons, neutrons and electrons, and watch the shell arrangement and ion charge change.
+    caption: Build an atom.
+  - id: learn.atom-builder.complete
+    module: learn/atom-builder
+    kind: encouragement
+    status: approved
+    text: You have explored the atom builder. Try a mission and compare the shell arrangement with the element.
+    caption: Atom builder explored.
+  - id: learn.compound-bench.welcome
+    module: learn/compound-bench
+    kind: step_instruction
+    status: approved
+    text: Welcome to the compound builder. Combine cations and anions, then check the formula and the charge balance.
+    caption: Build a compound.
+  - id: learn.compound-bench.complete
+    module: learn/compound-bench
+    kind: encouragement
+    status: approved
+    text: You have explored the compound builder. Try balancing an equation next.
+    caption: Compound builder explored.
+  - id: learn.ph-explorer.welcome
+    module: learn/ph-explorer
+    kind: step_instruction
+    status: approved
+    text: Welcome to the pH explorer. Move the pH slider and compare the indicator colours with the examples.
+    caption: Explore the pH scale.
+  - id: learn.ph-explorer.complete
+    module: learn/ph-explorer
+    kind: encouragement
+    status: approved
+    text: You have explored the pH scale. Compare an acidic, a neutral and an alkaline example.
+    caption: pH explorer complete.
+  - id: learn.molecules.welcome
+    module: learn/molecules
+    kind: step_instruction
+    status: approved
+    text: Welcome to the molecules viewer. Rotate each molecule and compare its shape, bonds and bond angles.
+    caption: View the molecules.
+  - id: learn.molecules.complete
+    module: learn/molecules
+    kind: encouragement
+    status: approved
+    text: You have explored the molecule viewer. Compare a linear molecule with a tetrahedral one.
+    caption: Molecule viewer explored.
