@@ -139,9 +139,38 @@ body {
   outline-offset: 2px;
 }
 
+@keyframes meniscusPulse {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scaleY(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleY(1.08);
+  }
+}
+
+.meniscus-glow {
+  animation: meniscusPulse 3s ease-in-out infinite;
+}
+
+.reality-stack-card {
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .reality-stack-card {
+    position: sticky;
+    top: calc(5.75rem + (var(--stack-index) * 2.25rem));
+    z-index: calc(var(--stack-index) + 1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
     animation: none !important;
   }
+
 }

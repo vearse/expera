@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ExperaLogo } from "./ExperaLogo";
-import { BtnPrimary } from "./ui";
+import { BrandLogo } from "./BrandLogo";
+import { openEarlyAccess } from "./earlyAccess";
 
 const LINKS = [
+  { href: "#reality", label: "Why Expera" },
   { href: "#features", label: "Features" },
-  { href: "#subjects", label: "Subjects" },
+  { href: "#curriculum", label: "Curriculum" },
   { href: "#branches", label: "Branches" },
   { href: "#teachers", label: "For teachers" },
-  { href: "#schools", label: "For schools" },
 ];
 
 export function VanguardLandingNav() {
@@ -31,11 +31,8 @@ export function VanguardLandingNav() {
       }`}
     >
       <div className="vanguard-container flex h-20 items-center justify-between gap-4">
-        <Link href="#top" className="flex items-center gap-3">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 p-1.5">
-            <ExperaLogo className="size-full text-primary" />
-          </div>
-          <span className="font-display text-xl font-bold text-brand-ink">Expera</span>
+        <Link href="#top" className="flex items-center">
+          <BrandLogo className="h-11 w-auto" />
         </Link>
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
           {LINKS.map((l) => (
@@ -45,7 +42,13 @@ export function VanguardLandingNav() {
           ))}
         </nav>
         <div className="hidden sm:block">
-          <BtnPrimary href="#waitlist">Join the waitlist</BtnPrimary>
+          <button
+            type="button"
+            onClick={openEarlyAccess}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container shadow-emerald custom-emerald-shadow transition hover:opacity-95"
+          >
+            Join the waitlist
+          </button>
         </div>
         <button
           type="button"
@@ -71,9 +74,16 @@ export function VanguardLandingNav() {
             ))}
           </nav>
           <div className="mt-3">
-            <BtnPrimary href="#waitlist" className="w-full">
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openEarlyAccess();
+              }}
+              className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container"
+            >
               Join the waitlist
-            </BtnPrimary>
+            </button>
           </div>
         </div>
       ) : null}
