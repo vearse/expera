@@ -51,7 +51,7 @@ const BLOCKS: Block[] = [
 
 export function PracticalRealitySection() {
   return (
-    <section id="reality" className="bg-white py-20 lg:py-28">
+    <section id="reality" className="bg-white py-20 lg:py-20">
       <div className="vanguard-container">
         <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-16">
           <p className="text-sm font-semibold text-[#2f5bff]">The practical reality</p>

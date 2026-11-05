@@ -8,8 +8,9 @@ import { openEarlyAccess } from "./earlyAccess";
 const LINKS = [
   { href: "#reality", label: "Why Expera" },
   { href: "#features", label: "Features" },
-  { href: "#curriculum", label: "Curriculum" },
+  { href: "#schools", label: "For schools" },
   { href: "#branches", label: "Branches" },
+  { href: "#curriculum", label: "Curriculum" },
   { href: "#teachers", label: "For teachers" },
 ];
 

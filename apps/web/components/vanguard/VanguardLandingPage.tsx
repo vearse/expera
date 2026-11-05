@@ -113,33 +113,80 @@ export function VanguardLandingPage() {
         <LiveWorkstationPreview />
       </SectionShell>
 
+      <section id="schools" className="bg-[#f4f6fb] py-20 lg:py-20">
+        <div className="vanguard-container">
+          <div className="mx-auto mb-14 max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#0f9f6e]">School administrators &amp; principals</p>
+            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-[#12182b] sm:text-5xl">Give every student a science lab.</h2>
+            <p className="mt-3 text-base text-[#4b5568] sm:text-lg">
+              Equipping physical secondary school laboratories costs millions in recurrent capital. Expera delivers practical science at a fraction of the cost.
+            </p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: "savings", title: "Zero reagent costs", body: "No annual budget drain buying scarce silver nitrate, hydrochloric acid, or delicate glass thermometers." },
+              { icon: "health_and_safety", title: "100% safe practicals", body: "Zero risk of chemical burns, acid spills, inhalation hazards, or laboratory fires." },
+              { icon: "star", title: "Exam-ready results", body: "Raise WAEC and NECO science outcomes by giving every student frequent, repeatable practical trials." },
+              { icon: "hub", title: "One unified platform", body: "Deploy across every arm from JSS 1 to SSS 3 with one science workspace for the whole school." },
+            ].map((item) => (
+              <article key={item.title} className="rounded-3xl border border-white bg-white p-6 shadow-sm">
+                <span className="grid size-11 place-items-center rounded-full bg-emerald-50 text-[#0f9f6e]">
+                  <MaterialIcon name={item.icon} />
+                </span>
+                <h3 className="mt-5 font-display text-lg font-bold text-[#12182b]">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#5b6475]">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-12 text-center">
+            <button type="button" onClick={openEarlyAccess} className="rounded-full bg-[#12b981] px-7 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#0ea371]">
+              Book a school demo
+            </button>
+          </div>
+        </div>
+      </section>
+
       <LandingStemBranches />
 
-      <CurricularDomainsSection />
+      <section id="students" className="bg-white py-20 lg:py-20">
+        <div className="vanguard-container">
+          <div className="mx-auto mb-14 max-w-2xl text-center">
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-[#0f9f6e]">Student experience</span>
+            <h2 className="mt-4 font-display text-3xl font-bold tracking-tight text-[#12182b] sm:text-5xl">Why students love Expera</h2>
+            <p className="mt-3 text-base text-[#5b6475] sm:text-lg">Built for everyday Nigerian realities: bandwidth-friendly, high engagement, zero anxiety.</p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: "touch_app", title: "Hands-on 3D labs", body: "Perform practicals anytime, anywhere. No waiting for a scarce laboratory period or shared apparatus.", tint: "bg-emerald-50 text-emerald-700" },
+              { icon: "military_tech", title: "Missions & badges", body: "Earn mastery points, clear syllabus milestones, and unlock exam-ready badges as you practise.", tint: "bg-amber-50 text-amber-700" },
+              { icon: "lightbulb", title: "Instant explanations", body: "Immediate step-by-step corrections when an experiment spills or an answer misses the mark.", tint: "bg-sky-50 text-sky-700" },
+              { icon: "phonelink", title: "Low-end friendly", body: "Runs smoothly on budget Android phones, cheap Chromebooks, and low-bandwidth Nigerian networks.", tint: "bg-teal-50 text-teal-700" },
+            ].map((item) => (
+              <article key={item.title} className="rounded-3xl border border-[#eceff5] bg-[#f7f8fc] p-6">
+                <span className={`grid size-11 place-items-center rounded-full ${item.tint}`}>
+                  <MaterialIcon name={item.icon} />
+                </span>
+                <h3 className="mt-5 font-display text-lg font-bold text-[#12182b]">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#5b6475]">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col items-start justify-between gap-5 rounded-3xl border border-[#e6e8ee] bg-[#f4f5f7] px-6 py-6 sm:flex-row sm:items-center sm:px-8">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-[#5b6475]">Practice and exam preparation</p>
+              <p className="mt-2 max-w-2xl font-display text-lg font-bold text-[#12182b] sm:text-xl">
+                Repeat WAEC and NECO practicals, then sit timed mocks in the same layout as the paper.
+              </p>
+              <p className="mt-1 text-sm text-[#5b6475]">Acid–base titration, food tests, and apparatus steps — practise until the reading is concordant.</p>
+            </div>
+            <button type="button" onClick={openEarlyAccess} className="shrink-0 rounded-full bg-[#12b981] px-6 py-3 text-sm font-bold text-white hover:bg-[#0ea371]">
+              Start free trial
+            </button>
+          </div>
+        </div>
+      </section>
 
-      <SectionShell className="bg-surface-container-lowest">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
-          <span className="rounded-full bg-surface-container px-4 py-1 text-xs font-bold uppercase tracking-wider text-primary">Student experience</span>
-          <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl">Why students use Expera</h2>
-          <p className="mt-2 text-on-surface-variant">Bandwidth-friendly, high engagement, and access when the physical lab is not available.</p>
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            { icon: "touch_app", title: "Hands-on 3D labs", body: "Perform practicals anytime without waiting for a scarce laboratory period." },
-            { icon: "military_tech", title: "Missions and progress", body: "Track exploration across Learn, Lab and Practice as features roll out." },
-            { icon: "lightbulb", title: "Instant explanations", body: "Step-by-step corrections when a procedure step needs clarification." },
-            { icon: "phonelink", title: "Low-end friendly", body: "Runs on budget phones, Chromebooks, and low-bandwidth networks." },
-          ].map((item) => (
-            <article key={item.title} className="rounded-lg border border-outline-variant/50 bg-surface p-6 level-1-card">
-              <div className="mb-4 flex size-10 items-center justify-center rounded-full bg-primary-container/20 text-primary">
-                <MaterialIcon name={item.icon} />
-              </div>
-              <h3 className="font-display text-lg font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-on-surface-variant">{item.body}</p>
-            </article>
-          ))}
-        </div>
-      </SectionShell>
+      <CurricularDomainsSection />
 
       <SectionShell id="teachers" className="bg-[#f7f8fc]">
         <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-14">

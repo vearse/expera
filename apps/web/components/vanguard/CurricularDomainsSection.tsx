@@ -61,7 +61,7 @@ const EXTENDED_SUBJECTS = [
 
 export function CurricularDomainsSection() {
   return (
-    <section id="curriculum" className="border-y border-outline-variant/20 bg-white py-20 lg:py-28">
+    <section id="curriculum" className="border-y border-outline-variant/20 bg-white py-20 lg:py-20">
       <div className="vanguard-container">
         <div className="mb-14 max-w-3xl">
           <p className="text-xs font-bold uppercase tracking-wider text-primary">Curricular Domains</p>
