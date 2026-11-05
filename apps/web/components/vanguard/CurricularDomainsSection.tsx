@@ -71,7 +71,7 @@ export function CurricularDomainsSection() {
 
         <div className="mb-10 grid items-stretch gap-8 lg:grid-cols-3">
           {DOMAIN_CARDS.map((card) => (
-            <article key={card.href} className={`flex flex-col justify-between rounded-2xl border p-8 ${card.card}`}>
+            <article key={card.href} className={`glass-hover flex flex-col justify-between rounded-2xl border p-8 ${card.card}`}>
               <div>
                 <div className="mb-4 flex items-center justify-between gap-3">
                   <span className={`grid size-12 place-items-center rounded-xl text-white shadow-md ${card.iconBg}`}>

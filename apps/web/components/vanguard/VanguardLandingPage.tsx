@@ -129,7 +129,7 @@ export function VanguardLandingPage() {
               { icon: "star", title: "Exam-ready results", body: "Raise WAEC and NECO science outcomes by giving every student frequent, repeatable practical trials." },
               { icon: "hub", title: "One unified platform", body: "Deploy across every arm from JSS 1 to SSS 3 with one science workspace for the whole school." },
             ].map((item) => (
-              <article key={item.title} className="rounded-3xl border border-white bg-white p-6 shadow-sm">
+              <article key={item.title} className="glass-hover rounded-3xl border border-white bg-white p-6 shadow-sm">
                 <span className="grid size-11 place-items-center rounded-full bg-emerald-50 text-[#0f9f6e]">
                   <MaterialIcon name={item.icon} />
                 </span>
@@ -162,7 +162,7 @@ export function VanguardLandingPage() {
               { icon: "lightbulb", title: "Instant explanations", body: "Immediate step-by-step corrections when an experiment spills or an answer misses the mark.", tint: "bg-sky-50 text-sky-700" },
               { icon: "phonelink", title: "Low-end friendly", body: "Runs smoothly on budget Android phones, cheap Chromebooks, and low-bandwidth Nigerian networks.", tint: "bg-teal-50 text-teal-700" },
             ].map((item) => (
-              <article key={item.title} className="rounded-3xl border border-[#eceff5] bg-[#f7f8fc] p-6">
+              <article key={item.title} className="glass-hover rounded-3xl border border-[#eceff5] bg-[#f7f8fc] p-6">
                 <span className={`grid size-11 place-items-center rounded-full ${item.tint}`}>
                   <MaterialIcon name={item.icon} />
                 </span>
