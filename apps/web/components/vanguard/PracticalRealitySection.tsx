@@ -16,7 +16,7 @@ const BLOCKS: Block[] = [
     title: "Master techniques through unconstrained practice.",
     lead: "Unlimited trials. 100% hazard-free.",
     body: "When students only reach a physical laboratory in the final week before WAEC, anxiety replaces inquiry. Expera gives every student a personal bench they can repeat — five, ten, or twenty titrations — until the procedure feels ordinary.",
-    panel: "bg-[#dff6fb]",
+    panel: "bg-wash-cyan",
     leadTone: "text-[#0e7490]",
     image: {
       src: "/landing/hero-titration.png",
@@ -28,7 +28,7 @@ const BLOCKS: Block[] = [
     title: "Diagnose parallax errors and air bubbles in real time.",
     lead: "Students spotted the meniscus error on a Lagos mock exam after practising with Expera’s digital gauge.",
     body: "WAEC Paper 3 penalises trapped air under the burette stopcock, a misread meniscus, and a flask that was never swirled. The simulation flags those mistakes the moment they happen.",
-    panel: "bg-[#e7edff]",
+    panel: "bg-accent-soft",
     leadTone: "text-[#1d4ed8]",
     image: {
       src: "/landing/hero-microscopy.png",
@@ -40,7 +40,7 @@ const BLOCKS: Block[] = [
     title: "Keep practicals running on shared tablets and modest labs.",
     lead: "Under 2 MB per scene. Chromebook and web — nothing to install.",
     body: "Engineered from Lagos for schools where power, water, and bandwidth come and go. Scenes stay light enough for Android tablets, a projector, and a computer lab that drops offline.",
-    panel: "bg-[#fff1d6]",
+    panel: "bg-wash-orange",
     leadTone: "text-[#c2410c]",
     image: {
       src: "/landing/hero-classroom.png",
@@ -54,8 +54,8 @@ export function PracticalRealitySection() {
     <section id="reality" className="bg-white py-20 lg:py-20">
       <div className="vanguard-container">
         <div className="mx-auto mb-12 max-w-3xl text-center lg:mb-16">
-          <p className="text-sm font-semibold text-[#2f5bff]">The practical reality</p>
-          <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-[#1a1464] sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
+          <p className="text-sm font-semibold text-accent">The practical reality</p>
+          <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-brand sm:text-4xl lg:text-[2.75rem] lg:leading-tight">
             A laboratory should never be out of reach.
           </h2>
           <p className="mt-4 text-lg text-on-surface-variant">
@@ -73,7 +73,7 @@ export function PracticalRealitySection() {
               <div className="grid min-h-[32rem] overflow-hidden rounded-[1.75rem] bg-white shadow-[0_18px_50px_-28px_rgba(15,23,42,0.45)] lg:grid-cols-2">
                 <div className={`flex flex-col justify-center gap-4 px-7 py-10 sm:px-10 lg:px-12 ${block.panel}`}>
                   <p className={`text-sm font-semibold ${block.leadTone}`}>{block.kicker}</p>
-                  <h3 className="max-w-[18ch] font-display text-3xl font-bold leading-[1.15] tracking-tight text-[#1a1464] sm:text-[2.15rem]">
+                  <h3 className="max-w-[18ch] font-display text-3xl font-bold leading-[1.15] tracking-tight text-brand sm:text-[2.15rem]">
                     {block.title}
                   </h3>
                   <p className={`max-w-[36ch] text-base font-semibold leading-snug ${block.leadTone}`}>{block.lead}</p>

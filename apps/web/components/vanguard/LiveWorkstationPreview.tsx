@@ -29,7 +29,7 @@ export function LiveWorkstationPreview() {
                 : "border border-brand-mint bg-white text-gray-700 hover:bg-gray-50"
             }`}
           >
-            <MaterialIcon name={tab.icon} className={`text-sm ${active === tab.id ? "text-emerald-400" : ""}`} />
+            <MaterialIcon name={tab.icon} className={`text-sm ${active === tab.id ? "text-[#7eb6ff]" : ""}`} />
             {tab.label}
           </button>
         ))}

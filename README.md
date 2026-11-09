@@ -17,7 +17,8 @@ npm run typecheck
 
 ## Module API
 
-- `GET http://127.0.0.1:4000/health`
-- `GET http://127.0.0.1:4000/modules/:subject/:kind/:id` — same JSON as topic pages
+- `GET http://127.0.0.1:4000/api/v1/health` — includes `version` and `apiVersion`
+- `GET http://127.0.0.1:4000/api/v1/modules/:subject/:kind/:id` — same JSON as topic pages
+- `POST http://127.0.0.1:4000/api/v1/early-access` — waitlist sign-up
 
 Set `MODULES_API_BASE_URL=http://127.0.0.1:4000` in `.env.local` (see `.env.example`) so Next can load module details from the API instead of the local catalogue.

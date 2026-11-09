@@ -1,17 +1,16 @@
 import Link from "next/link";
-import { ExperaLogo } from "./ExperaLogo";
+import { BrandLogo, BrandMark } from "./BrandLogo";
 
 export function HubFooter() {
   return (
     <footer className="mt-12 border-t border-outline-variant/30 bg-surface-container-low">
       <div className="vanguard-container flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <ExperaLogo className="size-5 text-primary" />
-            <span className="font-display font-bold text-primary">Expera</span>
-            <span className="text-sm text-secondary">· Made for Nigerian schools 🇳🇬</span>
+          <div className="flex items-center gap-3">
+            <BrandMark className="size-10 sm:hidden" />
+            <BrandLogo className="hidden h-12 sm:block" />
           </div>
-          <p className="mt-2 max-w-xl text-sm text-secondary">
+          <p className="mt-3 max-w-xl text-sm text-secondary">
             Interactive STEM virtual laboratories. Content mapped toward WAEC, NECO, JAMB and BECE contexts — not official endorsement.
           </p>
         </div>

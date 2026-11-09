@@ -240,12 +240,4 @@ export const FAQS = [
   },
 ] as const;
 
-export const EARLY_ACCESS_ROLES = [
-  "Student",
-  "Parent or guardian",
-  "Teacher or educator",
-  "School representative",
-  "University or tertiary student",
-  "Professional",
-  "Other",
-] as const;
+export { EARLY_ACCESS_ROLES } from "@expera/shared";

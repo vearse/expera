@@ -2,6 +2,26 @@
 
 :root {
   color-scheme: light;
+  /* Logo palette. Components read these tokens; do not hardcode the hexes. */
+  --brand: #141d38;
+  --brand-deep: #0c1224;
+  --brand-mid: #1a3d7a;
+  --brand-muted: #3e4c6b;
+  --accent: #0070f3;
+  --accent-hover: #0051ff;
+  --accent-cyan: #00d2ff;
+  --accent-cyan-deep: #007a99;
+  --accent-orange: #ff8c00;
+  --accent-orange-deep: #c56a00;
+  --accent-soft: #e6f2ff;
+  --accent-muted: #8ec8ff;
+  --accent-fixed: #d6ebff;
+  --wash-cyan: #e5f9ff;
+  --wash-orange: #fff3e0;
+  --wash-navy: #e8eaf2;
+  --line: #d7dce8;
+  --line-soft: #e6eaf3;
+
   --background: #faf8ff;
   --surface: #faf8ff;
   --surface-container-lowest: #ffffff;
@@ -9,27 +29,45 @@
   --surface-container: #eaedff;
   --surface-container-high: #e2e7ff;
   --on-surface: #131b2e;
-  --on-surface-variant: #3c4a42;
+  --on-surface-variant: #3c4562;
   --secondary: #565d79;
-  --outline-variant: #bbcabf;
-  --primary: #006c49;
-  --primary-container: #10b981;
-  --on-primary-container: #00422b;
+  --outline-variant: #c5cbe0;
+  --primary: var(--brand);
+  --primary-container: var(--accent);
+  --on-primary-container: #ffffff;
   --on-primary: #ffffff;
-  --tertiary: #0053db;
+  --tertiary: var(--accent);
   --inverse-surface: #283044;
   --inverse-on-surface: #eef0ff;
-  --brand-ink: #0d1b17;
-  --brand-mint: #e7f3ef;
-  --lab-bg: #f8fcfa;
-  --primary-fixed: #6ffbbe;
-  --on-primary-fixed: #002113;
+  --brand-ink: var(--brand);
+  --brand-mint: var(--accent-soft);
+  --lab-bg: #f6f7fb;
+  --primary-fixed: var(--accent-fixed);
+  --on-primary-fixed: var(--brand);
   --secondary-fixed-dim: #bec5e5;
 }
 
 @theme inline {
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
+  --color-brand-mid: var(--brand-mid);
+  --color-brand-muted: var(--brand-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-cyan-deep: var(--accent-cyan-deep);
+  --color-accent-orange: var(--accent-orange);
+  --color-accent-orange-deep: var(--accent-orange-deep);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-muted: var(--accent-muted);
+  --color-accent-fixed: var(--accent-fixed);
+  --color-wash-cyan: var(--wash-cyan);
+  --color-wash-orange: var(--wash-orange);
+  --color-wash-navy: var(--wash-navy);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-container-lowest: var(--surface-container-lowest);
@@ -86,8 +124,8 @@ body {
   line-height: 1;
 }
 
-.custom-emerald-shadow {
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+.custom-brand-shadow {
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .level-1-card {
@@ -146,8 +184,8 @@ body {
 .lab-grid-bg {
   background-size: 32px 32px;
   background-image:
-    linear-gradient(to right, rgba(0, 108, 73, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 108, 73, 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(12, 22, 84, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(12, 22, 84, 0.06) 1px, transparent 1px);
 }
 
 .lab-grid-dark {

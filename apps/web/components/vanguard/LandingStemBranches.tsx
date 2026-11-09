@@ -78,29 +78,29 @@ export function LandingStemBranches() {
                 onFocus={() => setActive(index)}
                 className={`relative flex flex-col rounded-3xl p-8 transition duration-200 ${
                   on
-                    ? "z-10 border-2 border-emerald-500 bg-brand-ink text-white shadow-2xl shadow-emerald-950/20 lg:-translate-y-4"
-                    : "border border-brand-mint bg-white text-brand-ink shadow-sm"
+                    ? "z-10 border-2 border-accent bg-brand text-white shadow-2xl shadow-accent/20 lg:-translate-y-4"
+                    : "border border-accent-soft bg-white text-brand shadow-sm"
                 }`}
               >
-                {on ? <div className="absolute -right-12 -top-12 size-44 rounded-full bg-emerald-500/20 blur-2xl" aria-hidden /> : null}
+                {on ? <div className="absolute -right-12 -top-12 size-44 rounded-full bg-accent/25 blur-2xl" aria-hidden /> : null}
                 <div className="relative">
                   {on && branch.id === "practical" ? (
-                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-brand-ink">
+                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-white">
                       <MaterialIcon name="star" className="text-xs" />
                       Core secondary focus
                     </div>
                   ) : (
-                    <div className={`mb-6 flex size-12 items-center justify-center rounded-2xl ${on ? "bg-white/10 text-emerald-300" : "bg-emerald-50 text-primary"}`}>
+                    <div className={`mb-6 flex size-12 items-center justify-center rounded-2xl ${on ? "bg-white/10 text-accent-muted" : "bg-accent-soft text-brand"}`}>
                       <MaterialIcon name={branch.icon} className="text-2xl" />
                     </div>
                   )}
-                  <span className={`text-xs font-bold uppercase tracking-wider ${on ? "text-emerald-300" : branch.badgeIdle}`}>{branch.badge}</span>
+                  <span className={`text-xs font-bold uppercase tracking-wider ${on ? "text-accent-muted" : branch.badgeIdle}`}>{branch.badge}</span>
                   <h3 className={`mt-1 mb-3 font-display font-bold ${on ? "text-2xl" : "text-xl"}`}>{branch.title}</h3>
                   <p className={`mb-6 text-sm leading-relaxed ${on ? "text-gray-300" : "text-on-surface-variant"}`}>{branch.body}</p>
                   <ul className={`space-y-2.5 border-t pt-4 text-xs font-medium ${on ? "border-white/10 text-gray-200" : "border-outline-variant/30 text-on-surface"}`}>
                     {branch.items.map((line) => (
                       <li key={line} className="flex items-center gap-2">
-                        <MaterialIcon name={on ? "verified" : "check_circle"} className={`text-sm ${on ? "text-emerald-400" : "text-primary"}`} />
+                        <MaterialIcon name={on ? "verified" : "check_circle"} className={`text-sm ${on ? "text-accent-muted" : "text-brand"}`} />
                         {line}
                       </li>
                     ))}
@@ -109,7 +109,7 @@ export function LandingStemBranches() {
                     <Link
                       href={branch.href}
                       className={`mt-8 inline-flex items-center justify-center gap-1 rounded-full px-5 py-3 text-sm font-bold ${
-                        on ? "w-full bg-emerald-500 text-brand-ink hover:bg-emerald-600" : "text-primary hover:underline"
+                        on ? "w-full bg-accent text-white hover:bg-accent-hover" : "text-brand hover:underline"
                       }`}
                     >
                       {branch.cta}
@@ -118,9 +118,9 @@ export function LandingStemBranches() {
                   ) : (
                     <button
                       type="button"
-                      onClick={openEarlyAccess}
+                      onClick={() => openEarlyAccess()}
                       className={`mt-8 inline-flex items-center justify-center gap-1 rounded-full px-5 py-3 text-sm font-bold ${
-                        on ? "w-full bg-emerald-500 text-brand-ink hover:bg-emerald-600" : "text-primary hover:underline"
+                        on ? "w-full bg-accent text-white hover:bg-accent-hover" : "text-brand hover:underline"
                       }`}
                     >
                       {branch.cta}

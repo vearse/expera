@@ -24,7 +24,7 @@ export function BtnPrimary({ href, children, className = "" }: { href: string; c
   return (
     <Link
       href={href}
-      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container shadow-emerald custom-emerald-shadow transition hover:opacity-95 active:scale-[0.98] ${className}`}
+      className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container custom-brand-shadow transition hover:opacity-95 active:scale-[0.98] ${className}`}
     >
       {children}
     </Link>

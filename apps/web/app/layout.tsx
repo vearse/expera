@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   title: "Expera | Interactive STEM virtual laboratories",
   description:
     "Explore, experiment, practise and prepare with virtual science labs aligned to Nigerian curriculum science — WAEC, NECO, JAMB and BECE contexts.",
+  icons: {
+    icon: [{ url: "/brand/icon.png", type: "image/png" }],
+    apple: "/brand/icon.png",
+  },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };

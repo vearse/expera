@@ -1,12 +1,9 @@
-import { HubHeader } from "@/components/vanguard/HubHeader";
-import { HubFooter } from "@/components/vanguard/HubFooter";
+import { PlatformChrome } from "@/components/layout/PlatformChrome";
 
 export function SubjectChrome({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <HubHeader />
+    <PlatformChrome>
       <main className="vanguard-container flex-1 pb-8 pt-6">{children}</main>
-      <HubFooter />
-    </div>
+    </PlatformChrome>
   );
 }

@@ -31,9 +31,9 @@ export function VanguardLandingNav() {
         scrolled ? "border-outline-variant/30 bg-lab-bg/95 shadow-sm backdrop-blur-md" : "border-transparent bg-lab-bg/80"
       }`}
     >
-      <div className="vanguard-container flex h-20 items-center justify-between gap-4">
-        <Link href="#top" className="flex items-center">
-          <BrandLogo className="h-11 w-auto" />
+      <div className="vanguard-container flex h-20 items-center justify-between gap-6">
+        <Link href="#top" className="flex shrink-0 items-center">
+          <BrandLogo className="h-12 sm:h-16" />
         </Link>
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
           {LINKS.map((l) => (
@@ -45,8 +45,8 @@ export function VanguardLandingNav() {
         <div className="hidden sm:block">
           <button
             type="button"
-            onClick={openEarlyAccess}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container shadow-emerald custom-emerald-shadow transition hover:opacity-95"
+            onClick={() => openEarlyAccess()}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-primary-container px-6 text-sm font-bold text-on-primary-container custom-brand-shadow transition hover:opacity-95"
           >
             Join the waitlist
           </button>
