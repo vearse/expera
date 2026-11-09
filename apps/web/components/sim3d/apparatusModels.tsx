@@ -4,21 +4,28 @@ import { useMemo, useRef } from "react";
 import { RoundedBox } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useLabQuality } from "./lab/LabQualityContext";
 
 type ModelProps = { lit?: boolean };
 
 const GLASS = "#e8f7ff";
 
 function GlassMat({ opacity = 0.42, color = GLASS }: { opacity?: number; color?: string }) {
+  const quality = useLabQuality();
+  const high = quality === "high";
   return (
     <meshPhysicalMaterial
       color={color}
       transparent
-      opacity={opacity}
-      roughness={0.06}
+      opacity={high ? Math.min(opacity, 0.22) : opacity}
+      roughness={0.045}
       metalness={0}
+      transmission={high ? 0.78 : 0}
+      thickness={high ? 0.04 : 0}
+      ior={1.5}
       clearcoat={1}
       clearcoatRoughness={0.04}
+      envMapIntensity={high ? 1.25 : 0.75}
       side={THREE.DoubleSide}
       depthWrite={false}
     />
@@ -26,11 +33,20 @@ function GlassMat({ opacity = 0.42, color = GLASS }: { opacity?: number; color?:
 }
 
 function LiquidMat({ color = "#38bdf8", opacity = 0.82 }: { color?: string; opacity?: number }) {
-  return <meshStandardMaterial color={color} transparent opacity={opacity} roughness={0.12} metalness={0.05} />;
+  return (
+    <meshPhysicalMaterial
+      color={color}
+      transparent
+      opacity={opacity}
+      roughness={0.1}
+      metalness={0.04}
+      envMapIntensity={0.55}
+    />
+  );
 }
 
 function MetalMat({ color = "#cbd5e1" }: { color?: string }) {
-  return <meshStandardMaterial color={color} metalness={0.85} roughness={0.25} />;
+  return <meshStandardMaterial color={color} metalness={0.9} roughness={0.18} envMapIntensity={1.1} />;
 }
 
 function WoodMat() {

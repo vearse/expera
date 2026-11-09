@@ -25,6 +25,8 @@ import {
 } from "./ChemistryLabRoom";
 import { BenchNote, type BenchNoteData } from "./BenchNote";
 import { GuidedPointer } from "./GuidedPointer";
+import { LabQualityProvider, useLabQuality } from "./lab/LabQualityContext";
+import { LabQualityControl } from "./lab/LabQualityControl";
 
 type Preset = "room" | "shelves" | "bench" | "top" | "custom";
 type ControlsLike = { enabled: boolean; target: THREE.Vector3; update?: () => void };
@@ -457,8 +459,17 @@ function RoomScene({
 }
 
 export default function ApparatusRoom3D(props: RoomProps) {
+  return (
+    <LabQualityProvider>
+      <ApparatusRoomView {...props} />
+    </LabQualityProvider>
+  );
+}
+
+function ApparatusRoomView(props: RoomProps) {
   const [preset, setPreset] = useState<Preset>("room");
   const [webgl] = useState(() => detectWebGL());
+  const quality = useLabQuality();
   const viewLocked = props.viewLocked ?? false;
   const fullscreen = props.fullscreen ?? false;
   const noteOpen = props.noteOpen ?? false;
@@ -471,10 +482,24 @@ export default function ApparatusRoom3D(props: RoomProps) {
 
   const roomInner = (
     <>
-      <div className={fullscreen ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}>
-        <Canvas camera={{ position: [0, 4.2, 9.4], fov: 44 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
+      <div className={`relative ${fullscreen ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}`}>
+        <Canvas
+          camera={{ position: [0, 4.2, 9.4], fov: 44 }}
+          dpr={quality === "low" ? 1 : quality === "medium" ? [1, 1.35] : [1, 1.6]}
+          shadows={quality !== "low"}
+          gl={{
+            antialias: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1.02,
+            outputColorSpace: THREE.SRGBColorSpace,
+            powerPreference: quality === "low" ? "low-power" : "high-performance",
+          }}
+        >
           <RoomScene {...props} preset={preset} onPresetChange={setPreset} viewLocked={viewLocked} noteAnchorRef={noteAnchorRef} />
         </Canvas>
+        {quality === "high" ? (
+          <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_90px_rgba(28,39,48,0.22)]" aria-hidden />
+        ) : null}
       </div>
 
       {props.noteContent && noteOpen ? (
@@ -540,6 +565,7 @@ export default function ApparatusRoom3D(props: RoomProps) {
           {viewLocked ? <span className="ml-2 font-semibold text-amber-800"> · view locked</span> : null}
         </div>
         <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
+          <LabQualityControl />
           <button
             type="button"
             onClick={() => props.onViewLockedChange?.(!viewLocked)}

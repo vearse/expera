@@ -92,7 +92,7 @@ function useNoteTexture(data: BenchNoteData, accent: string) {
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
+    texture.anisotropy = 16;
     return texture;
   }, [accent, data]);
 
