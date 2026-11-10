@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { detectWebGL } from "@/lib/device";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 import {
   currentBob,
   currentEffectiveLengthM,
@@ -193,12 +194,19 @@ function PendulumBench2D({ state }: { state: PendulumLabState }) {
 export function PendulumRoom({ state }: { state: PendulumLabState; dispatch: (action: PendulumAction) => void }) {
   const [view, setView] = useState<"3d" | "2d">("2d");
   const [supports3d, setSupports3d] = useState(false);
+  const [checked, setChecked] = useState(false);
+  const markReady = useLabReadySignal();
 
   useEffect(() => {
     const supported = detectWebGL();
     setSupports3d(supported);
     if (supported) setView("3d");
+    setChecked(true);
   }, []);
+
+  useEffect(() => {
+    if (checked && !supports3d) markReady?.();
+  }, [checked, markReady, supports3d]);
 
   return (
     <section className="min-w-0" aria-label="Pendulum laboratory room">

@@ -263,34 +263,122 @@ function PaperPoster({
         <boxGeometry args={[size[0] + 0.06, size[1] + 0.06, 0.025]} />
         <meshStandardMaterial color="#d6c7a8" roughness={0.7} />
       </mesh>
-      <mesh receiveShadow>
+      <mesh position={[0, 0, 0.004]} receiveShadow>
         <planeGeometry args={size} />
         <meshStandardMaterial map={map} roughness={0.78} metalness={0} />
-      </mesh>
-      <mesh position={[0.01, -0.01, -0.018]} rotation={[0.02, 0, 0.015]}>
-        <planeGeometry args={[size[0], size[1]]} />
-        <meshStandardMaterial color="#c4b79a" roughness={0.9} />
       </mesh>
     </group>
   );
 }
 
+const BANNER_W = 3.5;
+const BANNER_H = 0.64;
+const BANNER_LOGO = "/brand/icon.png";
+
+function paintBanner(ctx: CanvasRenderingContext2D, w: number, h: number, label: string, accent: string, logo: HTMLImageElement | null) {
+  ctx.fillStyle = "#fbfaf5";
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = accent;
+  ctx.fillRect(0, 0, w, h * 0.07);
+  ctx.fillRect(0, h * 0.93, w, h * 0.07);
+  ctx.fillStyle = "#f59e0b";
+  ctx.fillRect(0, h * 0.07, w, h * 0.018);
+
+  const pad = h * 0.16;
+  const logoSize = h * 0.68;
+  const logoX = pad;
+  const logoY = (h - logoSize) / 2;
+  if (logo) {
+    const ratio = logo.naturalWidth / Math.max(1, logo.naturalHeight);
+    const lw = logoSize * ratio;
+    ctx.drawImage(logo, logoX + (logoSize - lw) / 2, logoY, lw, logoSize);
+  }
+
+  const words = label.trim().split(/\s+/);
+  const hasBrand = words[0]?.toUpperCase() === "EXPERA";
+  const rest = (hasBrand ? words.slice(1) : words).join(" ");
+  const textX = logoX + logoSize + pad * 0.9;
+
+  ctx.fillStyle = "#cbd5d1";
+  ctx.fillRect(textX - pad * 0.45, h * 0.24, Math.max(2, w * 0.002), h * 0.52);
+
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#0b2a4a";
+  ctx.font = `800 ${Math.round(h * 0.4)}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+  ctx.fillText("Expera", textX, h * 0.53);
+  ctx.fillStyle = accent;
+  ctx.font = `700 ${Math.round(h * 0.19)}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+  const tracked = (rest || "Laboratory").toUpperCase().split("").join(String.fromCharCode(8202));
+  ctx.fillText(tracked, textX + h * 0.01, h * 0.8);
+
+  ctx.fillStyle = "#64748b";
+  ctx.font = `600 ${Math.round(h * 0.14)}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+  ctx.textAlign = "right";
+  ctx.fillText("Explore · Experiment · Excel", w - pad, h * 0.8);
+}
+
+/** Printed vinyl banner on the back wall: brand logo, then the laboratory name. */
 export function LabBanner({ label, palette, width }: { label: string; palette: LabRoomPalette; width: number }) {
+  const quality = useLabQuality();
+  const gl = useThree((s) => s.gl);
+  const canvas = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = 2048;
+    c.height = Math.round((2048 * BANNER_H) / BANNER_W);
+    return c;
+  }, []);
+  const texture = useMemo(() => {
+    const map = new THREE.CanvasTexture(canvas);
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.generateMipmaps = true;
+    map.minFilter = THREE.LinearMipmapLinearFilter;
+    return map;
+  }, [canvas]);
+
+  useEffect(() => {
+    texture.anisotropy = anisotropyFor(quality, gl.capabilities.getMaxAnisotropy());
+    texture.needsUpdate = true;
+  }, [gl, quality, texture]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const draw = (logo: HTMLImageElement | null) => {
+      const ctx = canvas.getContext("2d");
+      if (!ctx || cancelled) return;
+      paintBanner(ctx, canvas.width, canvas.height, label, palette.accent, logo);
+      texture.needsUpdate = true;
+    };
+    draw(null);
+    const img = new Image();
+    img.onload = () => draw(img);
+    img.src = BANNER_LOGO;
+    return () => {
+      cancelled = true;
+    };
+  }, [canvas, label, palette.accent, texture]);
+
+  useEffect(() => () => texture.dispose(), [texture]);
+
+  const x = -width / 2 + 1.95;
   return (
-    <group position={[-width / 2 + 1.85, 3.42, -3.98]}>
-      <mesh position={[0, 0, -0.02]} castShadow>
-        <boxGeometry args={[3.78, 0.46, 0.05]} />
-        <meshStandardMaterial color="#0f3f3c" roughness={0.55} metalness={0.08} />
+    <group position={[x, 3.5, -4.0]}>
+      <mesh position={[0, 0, -0.012]} castShadow>
+        <boxGeometry args={[BANNER_W + 0.06, BANNER_H + 0.06, 0.02]} />
+        <meshStandardMaterial color="#e4e7e2" roughness={0.6} metalness={0.05} />
       </mesh>
-      <mesh position={[0, 0, -0.006]}>
-        <planeGeometry args={[3.72, 0.4]} />
-        <meshStandardMaterial color={palette.accent} roughness={0.62} />
+      <mesh position={[0, 0, 0.001]}>
+        <planeGeometry args={[BANNER_W, BANNER_H]} />
+        <meshStandardMaterial map={texture} roughness={0.55} metalness={0} />
       </mesh>
-      <mesh position={[0, -0.19, -0.005]}>
-        <planeGeometry args={[3.72, 0.035]} />
-        <meshBasicMaterial color="#f8fafc" />
-      </mesh>
-      <RoomLabel text={label} position={[0, 0, 0.012]} height={0.13} />
+      {[-1, 1].map((side) =>
+        [-1, 1].map((row) => (
+          <mesh key={`${side}-${row}`} position={[side * (BANNER_W / 2 - 0.04), row * (BANNER_H / 2 - 0.04), 0.008]} rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.014, 0.014, 0.012, 16]} />
+            <meshStandardMaterial color="#c0c7cc" metalness={0.85} roughness={0.25} />
+          </mesh>
+        )),
+      )}
     </group>
   );
 }
@@ -366,10 +454,11 @@ export function LabWallChart({ kind, width }: { kind: WallChart; palette: LabRoo
   const measurement = useCanvasTexture(paintMeasurement, 1408, 1152, []);
   const biology = useCanvasTexture(paintBiology, 1408, 1152, []);
   if (kind === "none") return null;
-  const pos: [number, number, number] = [-width / 2 + 0.08, 2.25, -0.55];
+  // Centred on the wall behind Ms. Ada (STANDARD_TEACHER sits at z = -1.15) and above her head.
+  const pos: [number, number, number] = [-width / 2 + 0.08, 2.5, -1.15];
   const rot: [number, number, number] = [0, Math.PI / 2, 0];
   const map = kind === "measurement" ? measurement : kind === "biology" ? biology : periodic;
-  return <PaperPoster map={map} position={pos} rotation={rot} size={[1.35, 0.95]} />;
+  return <PaperPoster map={map} position={pos} rotation={rot} size={[1.75, 1.25]} />;
 }
 
 export function LabSafetyRulesSign({ width }: { width: number }) {

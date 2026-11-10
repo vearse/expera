@@ -6,6 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import type { Apparatus } from "@/lib/content/schemas";
 import { detectWebGL } from "@/lib/device";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 import { ApparatusModel } from "./apparatusModels";
 import {
   APPARATUS_LAB_ROOM,
@@ -181,7 +182,17 @@ function Scene({ items, selectedId, title, teacherHint, onSelect, subject }: Pro
 
 export default function ApparatusInventoryRoom3D(props: Props) {
   const [webgl, setWebgl] = useState(false);
-  useEffect(() => setWebgl(detectWebGL()), []);
+  const [checked, setChecked] = useState(false);
+  const markReady = useLabReadySignal();
+
+  useEffect(() => {
+    setWebgl(detectWebGL());
+    setChecked(true);
+  }, []);
+
+  useEffect(() => {
+    if (checked && !webgl) markReady?.();
+  }, [checked, markReady, webgl]);
 
   if (!webgl) {
     return (
@@ -196,8 +207,14 @@ export default function ApparatusInventoryRoom3D(props: Props) {
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-slate-300 bg-slate-200 shadow-inner" aria-label={`Interactive 3D ${props.title}. Click an apparatus on the shelves to inspect it.`}>
-      <div className="h-[440px] w-full sm:h-[560px]">
-        <Canvas camera={{ position: [0, 3.9, 8.4], fov: 44 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
+      <div className="h-[clamp(300px,60vh,560px)] w-full">
+        <Canvas
+          camera={{ position: [0, 3.9, 8.4], fov: 44 }}
+          onCreated={() => markReady?.()}
+          dpr={[1, 1.6]}
+          shadows
+          gl={{ antialias: true }}
+        >
           <Scene {...props} />
         </Canvas>
       </div>

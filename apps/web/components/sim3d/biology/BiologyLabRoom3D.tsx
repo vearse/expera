@@ -1,12 +1,14 @@
 "use client";
 
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import type { MicroscopeModelSpec, SpecimenSpec } from "@/lib/content/biology";
 import type { SlideState } from "@/lib/engine/biology/microscopy";
 import { detectWebGL, prefersReducedMotion } from "@/lib/device";
+import { LabMenu } from "@/components/lab/LabMenu";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 
 type Preset = "room" | "bench" | "wide" | "custom";
 type ControlsLike = { enabled: boolean; target: THREE.Vector3; update?: () => void };
@@ -38,6 +40,12 @@ const HIDDEN_ROOM_NODES = /^(pPlane26|pPlane27|pPlane40)(_|$)/;
 
 function LabRoomModel() {
   const { scene } = useGLTF(ROOM_MODEL);
+  const markReady = useLabReadySignal();
+
+  useEffect(() => {
+    markReady?.();
+  }, [markReady]);
+
   const model = useMemo(() => {
     const cloned = scene.clone(true);
     cloned.traverse((object) => {
@@ -147,6 +155,11 @@ function Scene({ preset, onPresetChange }: { preset: Preset; onPresetChange: (pr
 export default function BiologyLabRoom3D(props: BiologyRoomProps) {
   const [preset, setPreset] = useState<Preset>("room");
   const [webgl] = useState(() => detectWebGL());
+  const markReady = useLabReadySignal();
+
+  useEffect(() => {
+    if (!webgl) markReady?.();
+  }, [markReady, webgl]);
 
   if (!webgl) {
     return (
@@ -162,24 +175,28 @@ export default function BiologyLabRoom3D(props: BiologyRoomProps) {
       className="relative overflow-hidden rounded-2xl border border-emerald-900/20 bg-emerald-50 shadow-inner"
       aria-label="Interactive 3D Biology laboratory built from the chemical laboratory room. Drag to orbit, scroll to zoom. All microscope and specimen actions are also available in the control panels below."
     >
-      <div className="h-[420px] w-full sm:h-[560px]">
+      <div className="h-[clamp(300px,60vh,560px)] w-full">
         <Canvas camera={{ position: [0, 2.9, 8.4], fov: 44 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
           <Scene preset={preset} onPresetChange={setPreset} />
         </Canvas>
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex flex-wrap items-start justify-end gap-2 p-3">
-        <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
-          {(["room", "bench", "wide"] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setPreset(value)}
-              className={`min-h-9 rounded-lg px-3 text-xs font-semibold capitalize shadow-sm transition ${preset === value ? "bg-emerald-800 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-            >
-              {value === "room" ? "Room" : value === "bench" ? "Bench" : "Wide"}
-            </button>
-          ))}
+        <div className="pointer-events-auto">
+          <LabMenu label="Camera controls">
+            <div className="flex flex-col items-stretch gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+              {(["room", "bench", "wide"] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreset(value)}
+                  className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold capitalize shadow-sm transition sm:min-h-9 sm:w-auto ${preset === value ? "bg-emerald-800 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+                >
+                  {value === "room" ? "Room" : value === "bench" ? "Bench" : "Wide"}
+                </button>
+              ))}
+            </div>
+          </LabMenu>
         </div>
       </div>
 

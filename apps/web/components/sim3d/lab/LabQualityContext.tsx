@@ -21,7 +21,7 @@ const LabQualityContext = createContext<Api | null>(null);
 
 export function LabQualityProvider({ children }: { children: ReactNode }) {
   const [detected, setDetected] = useState<LabQuality>("medium");
-  const [choice, setChoiceState] = useState<LabQualityChoice>("auto");
+  const [choice, setChoiceState] = useState<LabQualityChoice>("medium");
   const dropped = useRef(false);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export function useLabQualityApi(): Api {
     return {
       quality: "medium",
       detected: "medium",
-      choice: "auto",
+      choice: "medium",
       setChoice: () => undefined,
     };
   }

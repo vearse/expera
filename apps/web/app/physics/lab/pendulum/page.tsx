@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { loadPendulum } from "@/lib/content/pendulum";
 import { PendulumLaboratory } from "@/components/physics/lab/PendulumLaboratory";
+import { LabExperience } from "@/components/lab/LabExperience";
 
 export const metadata: Metadata = {
   title: "Simple pendulum practical · Expera Physics",
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default function PendulumLabPage() {
-  return <PendulumLaboratory data={loadPendulum()} />;
+  return (
+    <LabExperience title="Simple pendulum" subject="Physics">
+      <PendulumLaboratory data={loadPendulum()} />
+    </LabExperience>
+  );
 }

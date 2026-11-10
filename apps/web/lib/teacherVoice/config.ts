@@ -1,5 +1,5 @@
 export const TEACHER_VOICE_CONFIG = {
-  initialDelayMs: 5_000,
+  initialDelayMs: 1_000,
   repeatIntervalMs: 20_000,
   maxPrompts: 5,
   counterScope: "per-hint" as const,

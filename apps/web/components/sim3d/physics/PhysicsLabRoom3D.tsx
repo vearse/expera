@@ -8,6 +8,8 @@ import type { PhysicsStationId } from "@/lib/content/physics";
 import { detectWebGL, prefersReducedMotion } from "@/lib/device";
 import { ChemistryLabRoom, RoomLabel, STANDARD_LAB_ROOM, STANDARD_TEACHER, type LabRoomConfig } from "@/components/sim3d/ChemistryLabRoom";
 import type { PhysicsRoomProps } from "@/components/physics/lab/PhysicsLabRoom";
+import { LabMenu } from "@/components/lab/LabMenu";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 
 const STATION_X: Record<PhysicsStationId, number> = {
   vernier: -4.45,
@@ -462,7 +464,12 @@ function Scene(props: PhysicsRoomProps & { preset: ViewPreset }) {
 export default function PhysicsLabRoom3D(props: PhysicsRoomProps) {
   const [preset, setPreset] = useState<ViewPreset>("room");
   const [webgl] = useState(() => detectWebGL());
+  const markReady = useLabReadySignal();
   const active = useMemo(() => props.stations.find((station) => station.id === props.activeStationId), [props.activeStationId, props.stations]);
+
+  useEffect(() => {
+    if (!webgl) markReady?.();
+  }, [markReady, webgl]);
 
   if (!webgl) {
     return (
@@ -475,8 +482,15 @@ export default function PhysicsLabRoom3D(props: PhysicsRoomProps) {
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-slate-300 bg-[#d9e7f0] shadow-lg" aria-label="Interactive isometric 3D Physics laboratory. Select Vernier calipers, micrometer, metre rule, stopwatch, parallax scale or density station. All actions are also available in the controls below.">
-      <div className="h-[430px] w-full sm:h-[560px]">
-        <Canvas orthographic camera={{ position: [8, 7.2, 8], zoom: 60, near: 0.1, far: 100 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
+      <div className="h-[clamp(300px,60vh,560px)] w-full">
+        <Canvas
+          orthographic
+          camera={{ position: [8, 7.2, 8], zoom: 60, near: 0.1, far: 100 }}
+          onCreated={() => markReady?.()}
+          dpr={[1, 1.6]}
+          shadows
+          gl={{ antialias: true }}
+        >
           <Scene {...props} preset={preset} />
         </Canvas>
       </div>
@@ -505,23 +519,28 @@ export default function PhysicsLabRoom3D(props: PhysicsRoomProps) {
             </div>
           ) : null}
         </div>
-        <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
-          {([
-            ["room", "Whole lab", "grid_view"],
-            ["instruments", "Instruments", "straighten"],
-            ["density", "Density", "scale"],
-          ] as const).map(([value, label, icon]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setPreset(value)}
-              className={`material-symbols-outlined min-h-9 rounded-lg px-3 text-sm font-semibold shadow-sm transition ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-              title={label}
-              aria-label={`Camera: ${label}`}
-            >
-              {icon}
-            </button>
-          ))}
+        <div className="pointer-events-auto">
+          <LabMenu label="Camera controls">
+            <div className="flex flex-col items-stretch gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+              {([
+                ["room", "Whole lab", "grid_view"],
+                ["instruments", "Instruments", "straighten"],
+                ["density", "Density", "scale"],
+              ] as const).map(([value, label, icon]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreset(value)}
+                  className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold shadow-sm transition sm:min-h-9 sm:w-auto ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+                  title={label}
+                  aria-label={`Camera: ${label}`}
+                >
+                  <span className="material-symbols-outlined mr-1.5 align-middle text-base sm:mr-0">{icon}</span>
+                  <span className="sm:hidden">{label}</span>
+                </button>
+              ))}
+            </div>
+          </LabMenu>
         </div>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">

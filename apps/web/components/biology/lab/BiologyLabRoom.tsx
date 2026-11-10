@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { detectWebGL } from "@/lib/device";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 import type { MicroscopeModelSpec, SpecimenSpec, SpecimenVariant } from "@/lib/content/biology";
 import type { ObservationResult, SlideState } from "@/lib/engine/biology/microscopy";
 import { BiologyBench2D } from "./BiologyBench2D";
@@ -57,6 +58,11 @@ export function BiologyLabRoom({
 }) {
   const [supported] = useState(() => detectWebGL());
   const [view, setView] = useState<"3d" | "2d">(() => (supported ? "3d" : "2d"));
+  const markReady = useLabReadySignal();
+
+  useEffect(() => {
+    if (!supported) markReady?.();
+  }, [markReady, supported]);
 
   return (
     <section className="grid gap-2" aria-label="Biology laboratory room">

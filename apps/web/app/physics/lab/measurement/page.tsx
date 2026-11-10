@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { loadPhysics } from "@/lib/content/physics";
 import { loadSubjectApparatus } from "@/lib/content/apparatus";
 import { PhysicsLaboratory } from "@/components/physics/lab/PhysicsLaboratory";
+import { LabExperience } from "@/components/lab/LabExperience";
 
 export const metadata: Metadata = {
   title: "Measurement and errors laboratory · Expera Physics",
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default function MeasurementLabPage() {
-  return <PhysicsLaboratory data={loadPhysics()} apparatus={loadSubjectApparatus("physics")} />;
+  return (
+    <LabExperience title="Measurement and errors" subject="Physics">
+      <PhysicsLaboratory data={loadPhysics()} apparatus={loadSubjectApparatus("physics")} />
+    </LabExperience>
+  );
 }

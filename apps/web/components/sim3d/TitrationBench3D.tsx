@@ -10,6 +10,7 @@ import { availableContextActions, availableSecondaryActions, targetKey } from "@
 import { TITRATION_INTERACTION_POINTS } from "@/lib/sim/titrationGuide";
 import type { GuidedSimulationController } from "@/lib/sim/useGuidedSimulation";
 import { GuidedInstructionCard } from "@/components/lab/GuidedInstructionCard";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 import { BENCH_TOP, ChemistryLabRoom, RoomLabel, TITRATION_LAB_ROOM } from "./ChemistryLabRoom";
 import { GuidedPointer } from "./GuidedPointer";
 import { SimulationToolbar } from "./SimulationToolbar";
@@ -535,8 +536,13 @@ export default function TitrationBench3D({
   const [locked, setLocked] = useState(false);
   const [fullView, setFullView] = useState(false);
   const [webgl] = useState(() => detectWebGL());
+  const markReady = useLabReadySignal();
   const reading = buretteReading(state);
   const ph = currentPH(state);
+
+  useEffect(() => {
+    if (!webgl) markReady?.();
+  }, [markReady, webgl]);
 
   useEffect(() => {
     if (!fullView) return;
@@ -628,8 +634,15 @@ export default function TitrationBench3D({
       ) : null}
 
       <div className={fullView ? "relative min-h-0 overflow-hidden rounded-2xl border border-slate-500 bg-slate-200 shadow-2xl" : "relative"}>
-        <div className={fullView ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}>
-          <Canvas camera={{ position: CAMERA_VIEWS.room.position, fov: 42 }} dpr={[1, 1.5]} shadows gl={{ antialias: true }} frameloop="demand">
+        <div className={fullView ? "h-full min-h-[480px] w-full" : "h-[clamp(320px,62vh,560px)] w-full"}>
+          <Canvas
+            camera={{ position: CAMERA_VIEWS.room.position, fov: 42 }}
+            onCreated={() => markReady?.()}
+            dpr={[1, 1.5]}
+            shadows
+            gl={{ antialias: true }}
+            frameloop="demand"
+          >
             <TitrationScene state={state} colour={colour} view={view} guided={guided} locked={locked} onTeacherClick={guided.requestHint} />
           </Canvas>
         </div>

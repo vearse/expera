@@ -6,7 +6,7 @@ import { useLabQualityApi } from "./LabQualityContext";
 export function LabQualityControl() {
   const { quality, choice, setChoice } = useLabQualityApi();
   return (
-    <label className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-white/90 px-2.5 text-[11px] font-semibold text-slate-700 shadow-sm">
+    <label className="inline-flex min-h-10 w-full items-center justify-between gap-1.5 rounded-lg bg-white/90 px-2.5 text-[11px] font-semibold text-slate-700 shadow-sm sm:min-h-9 sm:w-auto sm:justify-start">
       Graphics
       <select
         aria-label="Laboratory graphics quality"

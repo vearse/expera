@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { ChemistryLabRun } from "@/components/chemistry/ChemistryLabRun";
+import { LabExperience } from "@/components/lab/LabExperience";
 import { getModuleDetail, listModuleIds } from "@/lib/modules/getModuleDetail";
 import { getLocalChemistryModule } from "@/lib/modules/catalogue/chemistry";
 
@@ -24,5 +25,10 @@ export default async function ChemistryLabRunPage({ params, searchParams }: Page
 
   const run = ChemistryLabRun({ moduleId, mode });
   if (!run) notFound();
-  return run;
+  const title = moduleId === "apparatus" ? "Apparatus laboratory" : moduleId === "titration" ? "Acid-base titration" : "Chemistry laboratory";
+  return (
+    <LabExperience title={title} subject="Chemistry">
+      {run}
+    </LabExperience>
+  );
 }

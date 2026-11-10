@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { detectWebGL } from "@/lib/device";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 import type { PhysicsStation, PhysicsStationId } from "@/lib/content/physics";
 import type { Apparatus } from "@/lib/content/schemas";
 import type {
@@ -48,13 +49,20 @@ export type PhysicsRoomProps = {
 
 export function PhysicsLabRoom(props: PhysicsRoomProps) {
   const [supported, setSupported] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [view, setView] = useState<"3d" | "2d">("2d");
+  const markReady = useLabReadySignal();
 
   useEffect(() => {
     const webgl = detectWebGL();
     setSupported(webgl);
     if (webgl) setView("3d");
+    setChecked(true);
   }, []);
+
+  useEffect(() => {
+    if (checked && !supported) markReady?.();
+  }, [checked, markReady, supported]);
 
   return (
     <section className="grid gap-2" aria-label="Physics measurement laboratory room">

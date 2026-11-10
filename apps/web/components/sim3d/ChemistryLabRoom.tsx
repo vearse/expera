@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import { TeacherModel } from "./TeacherModel";
 import { LabLook } from "./lab/LabLook";
 import { LabRoomShell } from "./lab/LabRoomShell";
 import { ShelfUnitLook, SideBenchLook, StoolLook, WorkBenchLook } from "./lab/LabFurniture";
@@ -429,72 +430,9 @@ function Teacher({ config, palette }: { config: TeacherConfig; palette: LabRoomP
       }
     >
       <group rotation={[0, rotation, 0]}>
-        {[-0.11, 0.11].map((x) => (
-          <mesh key={x} position={[x, 0.36, 0]} castShadow>
-            <cylinderGeometry args={[0.075, 0.065, 0.64, 16]} />
-            <meshStandardMaterial color="#334155" roughness={0.8} />
-          </mesh>
-        ))}
-        {[-0.11, 0.11].map((x) => (
-          <mesh key={`shoe-${x}`} position={[x, 0.055, 0.07]} castShadow>
-            <boxGeometry args={[0.16, 0.09, 0.28]} />
-            <meshStandardMaterial color="#1e293b" roughness={0.7} />
-          </mesh>
-        ))}
-        <mesh position={[0, 0.99, 0]} castShadow>
-          <cylinderGeometry args={[0.28, 0.34, 0.82, 24]} />
-          <meshStandardMaterial color="#f8fafc" roughness={0.72} />
-        </mesh>
-        <mesh position={[0, 1.31, 0.255]} rotation={[0, 0, 0]}>
-          <boxGeometry args={[0.12, 0.5, 0.02]} />
-          <meshStandardMaterial color={palette.accent} roughness={0.7} />
-        </mesh>
-        <mesh position={[0.11, 1.17, 0.29]}>
-          <circleGeometry args={[0.025, 16]} />
-          <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
-        </mesh>
-        <mesh position={[-0.11, 1.17, 0.29]}>
-          <circleGeometry args={[0.025, 16]} />
-          <meshStandardMaterial color="#e2e8f0" roughness={0.5} />
-        </mesh>
-        <mesh position={[0, 1.43, 0.36]} rotation={[0, 0, 0]}>
-          <boxGeometry args={[0.1, 0.18, 0.015]} />
-          <meshStandardMaterial color="#f8fafc" roughness={0.6} />
-        </mesh>
-        <mesh position={[-0.36, 1.16, 0]} rotation={[0, 0, -0.18]} castShadow>
-          <cylinderGeometry args={[0.07, 0.06, 0.64, 16]} />
-          <meshStandardMaterial color="#f8fafc" roughness={0.72} />
-        </mesh>
-        <mesh position={[0.38, 1.28, 0.1]} rotation={[0.2, 0, 0.45]} castShadow>
-          <cylinderGeometry args={[0.06, 0.05, 0.56, 16]} />
-          <meshStandardMaterial color="#f8fafc" roughness={0.72} />
-        </mesh>
-        <mesh position={[0.55, 1.42, 0.28]} rotation={[0.55, 0, 0.18]}>
-          <cylinderGeometry args={[0.012, 0.018, 0.62, 10]} />
-          <meshStandardMaterial color="#b45309" roughness={0.55} />
-        </mesh>
-        <mesh position={[0, 1.62, 0]} castShadow>
-          <sphereGeometry args={[0.2, 24, 18]} />
-          <meshStandardMaterial color="#8a5a3b" roughness={0.62} />
-        </mesh>
-        <mesh position={[0, 1.67, -0.01]} scale={[1.06, 0.8, 1.02]} castShadow>
-          <sphereGeometry args={[0.205, 24, 18, 0, Math.PI * 2, 0, Math.PI * 0.56]} />
-          <meshStandardMaterial color="#231b18" roughness={0.8} />
-        </mesh>
-        <mesh position={[0, 1.6, 0.17]}>
-          <boxGeometry args={[0.2, 0.025, 0.025]} />
-          <meshStandardMaterial color="#0f172a" metalness={0.2} roughness={0.4} />
-        </mesh>
-        {[-0.075, 0.075].map((x) => (
-          <mesh key={x} position={[x, 1.6, 0.185]}>
-            <boxGeometry args={[0.07, 0.055, 0.012]} />
-            <meshStandardMaterial color="#dbeafe" transparent opacity={0.55} roughness={0.2} />
-          </mesh>
-        ))}
-        <mesh position={[0, 1.48, 0.19]}>
-          <boxGeometry args={[0.06, 0.015, 0.015]} />
-          <meshStandardMaterial color="#7f1d1d" roughness={0.6} />
-        </mesh>
+        <Suspense fallback={null}>
+          <TeacherModel />
+        </Suspense>
       </group>
       {showSpeech ? (
         <sprite ref={speech} position={speechBase} scale={[baseScaleX, baseScaleY, 1]} renderOrder={8}>

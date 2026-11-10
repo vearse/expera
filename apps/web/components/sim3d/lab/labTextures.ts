@@ -197,6 +197,70 @@ function buildPlaster(size: number, anisotropy: number, tint: [number, number, n
   return finish(`plaster-${tint.join(",")}`, canvas, rough.canvas, height, size, anisotropy, 3, 1.6);
 }
 
+/** World size of one texture tile: two 450×225 mm sandcrete blocks wide, four courses high. */
+export const BLOCK_TILE_METERS = 0.9;
+
+function buildBlockWall(size: number, anisotropy: number): PbrMaps {
+  const { canvas, ctx } = makeCanvas(size);
+  const rough = makeCanvas(size);
+  if (!ctx || !rough.ctx) throw new Error("canvas");
+  const height = new Float32Array(size * size);
+  const img = ctx.createImageData(size, size);
+  const rimg = rough.ctx.createImageData(size, size);
+  const courses = 4;
+  const blocksPerRow = 2;
+  const courseH = size / courses;
+  const blockW = size / blocksPerRow;
+  const joint = Math.max(1, Math.round(size * 0.006));
+
+  for (let y = 0; y < size; y += 1) {
+    const course = Math.floor(y / courseH);
+    const offset = course % 2 === 0 ? 0 : blockW / 2;
+    const inCourseY = y - course * courseH;
+    for (let x = 0; x < size; x += 1) {
+      const i = (y * size + x) * 4;
+      const bx = (x + offset) % size;
+      const block = Math.floor(bx / blockW);
+      const inBlockX = bx - block * blockW;
+      const edge = Math.min(inCourseY, courseH - inCourseY, inBlockX, blockW - inBlockX);
+      const inJoint = edge < joint;
+      const jointSoft = smoothEdge(edge, joint, joint * 2.4);
+
+      const pores = fbm(x / 6, y / 6, 2);
+      const roller = fbm(x / 140, y / 22, 3);
+      const blotch = fbm(x / 260 + course * 1.7, y / 260 + block * 2.3, 3);
+      const faceTone = (hash(block + course * 7, course + 3) - 0.5) * 6;
+      const stain = Math.max(0, fbm(x / 210 + 13, y / 170 + 4, 3) - 0.64) * 46;
+
+      let shade = 1 - (1 - jointSoft) * 0.055 + (roller - 0.5) * 0.05 + (blotch - 0.5) * 0.06;
+      if (pores > 0.8) shade -= 0.035;
+      img.data[i] = Math.round(236 * shade + faceTone - stain);
+      img.data[i + 1] = Math.round(240 * shade + faceTone - stain * 0.75);
+      img.data[i + 2] = Math.round(229 * shade + faceTone - stain * 0.55);
+      img.data[i + 3] = 255;
+
+      const r = inJoint ? 228 : 210 + pores * 20 + roller * 14;
+      rimg.data[i] = r;
+      rimg.data[i + 1] = r;
+      rimg.data[i + 2] = r;
+      rimg.data[i + 3] = 255;
+
+      const bulge = jointSoft * (0.62 + (blotch - 0.5) * 0.08);
+      height[y * size + x] = bulge + pores * 0.035 + roller * 0.03;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  rough.ctx.putImageData(rimg, 0, 0);
+  const maps = finish("blockwall", canvas, rough.canvas, height, size, anisotropy, 1, 2.2);
+  for (const t of [maps.map, maps.roughnessMap, maps.normalMap]) t.repeat.set(1 / BLOCK_TILE_METERS, 1 / BLOCK_TILE_METERS);
+  return maps;
+}
+
+function smoothEdge(x: number, e0: number, e1: number) {
+  const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0)));
+  return t * t * (3 - 2 * t);
+}
+
 function buildWood(size: number, anisotropy: number): PbrMaps {
   const { canvas, ctx } = makeCanvas(size);
   const rough = makeCanvas(size);
@@ -336,24 +400,39 @@ export function getLabTextures(quality: LabQuality, maxAniso: number) {
   const aniso = anisotropyFor(quality, maxAniso);
   const key = `${quality}-${size}-${aniso}`;
   const hit = cache.get(`pack-${key}`);
-  if (hit) return { floor: cache.get("floor")!, plaster: cache.get("plaster-232,242,237")!, wood: cache.get("wood")!, epoxy: cache.get("epoxy")!, laminate: cache.get("laminate")!, paper: cache.get("paper")! };
+  if (hit) {
+    return {
+      floor: cache.get("floor")!,
+      plaster: cache.get("plaster-232,242,237")!,
+      blockWall: cache.get("blockwall")!,
+      wood: cache.get("wood")!,
+      epoxy: cache.get("epoxy")!,
+      laminate: cache.get("laminate")!,
+      paper: cache.get("paper")!,
+    };
+  }
 
   const floor = cache.get("floor") ?? buildFloor(size, aniso);
   const plaster = cache.get("plaster-232,242,237") ?? buildPlaster(size, aniso, [232, 242, 237]);
+  const blockWall = cache.get("blockwall") ?? buildBlockWall(size, aniso);
   const wood = cache.get("wood") ?? buildWood(size, aniso);
   const epoxy = cache.get("epoxy") ?? buildEpoxy(size, aniso);
   const laminate = cache.get("laminate") ?? buildLaminate(size, aniso);
   const paper = cache.get("paper") ?? buildPaper(Math.min(size, 512), aniso);
   cache.set(`pack-${key}`, floor);
-  return { floor, plaster, wood, epoxy, laminate, paper };
+  return { floor, plaster, blockWall, wood, epoxy, laminate, paper };
 }
 
-export function pbrProps(maps: PbrMaps, extra?: { roughness?: number; metalness?: number; envMapIntensity?: number }) {
+export function pbrProps(
+  maps: PbrMaps,
+  extra?: { roughness?: number; metalness?: number; envMapIntensity?: number; normalScale?: number },
+) {
+  const ns = extra?.normalScale ?? 0.55;
   return {
     map: maps.map,
     roughnessMap: maps.roughnessMap,
     normalMap: maps.normalMap,
-    normalScale: new THREE.Vector2(0.55, 0.55),
+    normalScale: new THREE.Vector2(ns, ns),
     roughness: extra?.roughness ?? 1,
     metalness: extra?.metalness ?? 0,
     envMapIntensity: extra?.envMapIntensity ?? 0.45,

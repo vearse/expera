@@ -14,6 +14,8 @@ import {
   type PendulumLabState,
 } from "@/lib/sim/pendulumStore";
 import { formatStopwatch } from "@/lib/engine/physics/pendulum";
+import { LabMenu } from "@/components/lab/LabMenu";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 
 const PIVOT_Y = 4.62;
 const LENGTH_SCALE = 1.72;
@@ -308,8 +310,13 @@ export type PendulumRigProps = {
 export default function PendulumRig({ state }: PendulumRigProps) {
   const [preset, setPreset] = useState<CameraPreset>("room");
   const [webgl] = useState(() => detectWebGL());
+  const markReady = useLabReadySignal();
   const bob = currentBob(state);
   const gravity = currentGravity(state);
+
+  useEffect(() => {
+    if (!webgl) markReady?.();
+  }, [markReady, webgl]);
 
   if (!webgl) {
     return (
@@ -322,8 +329,15 @@ export default function PendulumRig({ state }: PendulumRigProps) {
 
   return (
     <div className="relative overflow-hidden rounded-2xl border border-slate-300 bg-[#d9e7f0] shadow-lg" aria-label="Interactive 3D simple pendulum laboratory. Select the pendulum to focus the camera. All controls are also available below.">
-      <div className="h-[430px] w-full sm:h-[560px]">
-        <Canvas orthographic camera={{ position: [7.4, 6.2, 7.6], zoom: 36, near: 0.1, far: 100 }} dpr={[1, 1.6]} shadows gl={{ antialias: true }}>
+      <div className="h-[clamp(300px,60vh,560px)] w-full">
+        <Canvas
+          orthographic
+          camera={{ position: [7.4, 6.2, 7.6], zoom: 36, near: 0.1, far: 100 }}
+          onCreated={() => markReady?.()}
+          dpr={[1, 1.6]}
+          shadows
+          gl={{ antialias: true }}
+        >
           <Scene state={state} preset={preset} onFocus={() => setPreset("rig")} />
         </Canvas>
       </div>
@@ -342,22 +356,27 @@ export default function PendulumRig({ state }: PendulumRigProps) {
             </div>
           </div>
         </div>
-        <div className="pointer-events-auto flex gap-1.5">
-          {([
-            ["room", "Whole lab", "grid_view"],
-            ["rig", "Pendulum", "timer"],
-          ] as const).map(([value, label, icon]) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setPreset(value)}
-              className={`material-symbols-outlined min-h-9 rounded-lg px-3 text-sm font-semibold shadow-sm transition ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-              title={label}
-              aria-label={`Camera: ${label}`}
-            >
-              {icon}
-            </button>
-          ))}
+        <div className="pointer-events-auto">
+          <LabMenu label="Camera controls">
+            <div className="flex flex-col items-stretch gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+              {([
+                ["room", "Whole lab", "grid_view"],
+                ["rig", "Pendulum", "timer"],
+              ] as const).map(([value, label, icon]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreset(value)}
+                  className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold shadow-sm transition sm:min-h-9 sm:w-auto ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+                  title={label}
+                  aria-label={`Camera: ${label}`}
+                >
+                  <span className="material-symbols-outlined mr-1.5 align-middle text-base sm:mr-0">{icon}</span>
+                  <span className="sm:hidden">{label}</span>
+                </button>
+              ))}
+            </div>
+          </LabMenu>
         </div>
       </div>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">

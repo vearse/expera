@@ -230,6 +230,34 @@ body {
   animation: meniscusPulse 3s ease-in-out infinite;
 }
 
+@keyframes experaLoadingSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(320%);
+  }
+}
+
+.expera-loading-sweep {
+  animation: experaLoadingSweep 1.5s ease-in-out infinite;
+}
+
+@keyframes experaRotateHint {
+  0%,
+  18% {
+    transform: rotate(0deg);
+  }
+  55%,
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+.expera-rotate-hint {
+  animation: experaRotateHint 2.6s ease-in-out infinite;
+}
+
 .reality-stack-card {
   position: relative;
 }

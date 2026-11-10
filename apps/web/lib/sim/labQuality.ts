@@ -57,7 +57,7 @@ export function loadLabQualityChoice(): LabQualityChoice {
   } catch {
     /* ignore */
   }
-  return "auto";
+  return "medium";
 }
 
 export function saveLabQualityChoice(choice: LabQualityChoice) {

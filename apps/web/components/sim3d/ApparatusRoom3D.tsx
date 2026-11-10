@@ -27,6 +27,8 @@ import { BenchNote, type BenchNoteData } from "./BenchNote";
 import { GuidedPointer } from "./GuidedPointer";
 import { LabQualityProvider, useLabQuality } from "./lab/LabQualityContext";
 import { LabQualityControl } from "./lab/LabQualityControl";
+import { LabMenu } from "@/components/lab/LabMenu";
+import { useLabReadySignal } from "@/components/lab/LabExperience";
 
 type Preset = "room" | "shelves" | "bench" | "top" | "custom";
 type ControlsLike = { enabled: boolean; target: THREE.Vector3; update?: () => void };
@@ -474,17 +476,23 @@ function ApparatusRoomView(props: RoomProps) {
   const fullscreen = props.fullscreen ?? false;
   const noteOpen = props.noteOpen ?? false;
   const noteAnchorRef = useRef<HTMLDivElement>(null);
+  const markReady = useLabReadySignal();
 
   useEffect(() => {
     if (!props.guidedView || viewLocked) return;
     setPreset(props.guidedView);
   }, [props.guidedStageKey, props.guidedView, viewLocked]);
 
+  useEffect(() => {
+    if (!webgl) markReady?.();
+  }, [markReady, webgl]);
+
   const roomInner = (
     <>
-      <div className={`relative ${fullscreen ? "h-full min-h-[480px] w-full" : "h-[560px] w-full"}`}>
+      <div className={`relative ${fullscreen ? "h-full min-h-[480px] w-full" : "h-[clamp(320px,62vh,560px)] w-full"}`}>
         <Canvas
           camera={{ position: [0, 4.2, 9.4], fov: 44 }}
+          onCreated={() => markReady?.()}
           dpr={quality === "low" ? 1 : quality === "medium" ? [1, 1.35] : [1, 1.6]}
           shadows={quality !== "low"}
           gl={{
@@ -522,27 +530,55 @@ function ApparatusRoomView(props: RoomProps) {
             <p className="truncate text-xs font-semibold text-slate-900">{props.stageLabel}</p>
           </div>
         ) : null}
-        <div className="pointer-events-auto ml-auto flex flex-wrap justify-end gap-1.5">
-          {props.noteContent ? (
-            <button
-              type="button"
-              onClick={() => props.onNoteOpenChange?.(!noteOpen)}
-              aria-pressed={noteOpen}
-              className={`min-h-9 rounded-lg px-3 text-xs font-semibold shadow-sm transition ${noteOpen ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-            >
-              {noteOpen ? "Hide note" : "Note view"}
-            </button>
-          ) : null}
-          {(["room", "shelves", "bench", "top"] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setPreset(value)}
-              className={`min-h-9 rounded-lg px-3 text-xs font-semibold capitalize shadow-sm transition ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-            >
-              {value === "room" ? "Room" : value === "shelves" ? "Shelves" : value === "bench" ? "Bench" : "Top"}
-            </button>
-          ))}
+        <div className="pointer-events-auto ml-auto">
+          <LabMenu label="Laboratory controls">
+            <div className="flex flex-col items-stretch gap-1.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
+              {props.noteContent ? (
+                <button
+                  type="button"
+                  onClick={() => props.onNoteOpenChange?.(!noteOpen)}
+                  aria-pressed={noteOpen}
+                  className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold shadow-sm transition sm:min-h-9 sm:w-auto ${noteOpen ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+                >
+                  {noteOpen ? "Hide note" : "Note view"}
+                </button>
+              ) : null}
+              {(["room", "shelves", "bench", "top"] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setPreset(value)}
+                  className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold capitalize shadow-sm transition sm:min-h-9 sm:w-auto ${preset === value ? "bg-sky-700 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+                >
+                  {value === "room" ? "Room" : value === "shelves" ? "Shelves" : value === "bench" ? "Bench" : "Top"}
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => props.onViewLockedChange?.(!viewLocked)}
+                className={`min-h-10 w-full justify-center rounded-lg px-3 text-xs font-semibold shadow-sm sm:min-h-9 sm:w-auto ${viewLocked ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
+              >
+                {viewLocked ? "Unlock view" : "Lock view"}
+              </button>
+              <button
+                type="button"
+                onClick={() => props.onFullscreenChange?.(!fullscreen)}
+                className="min-h-10 w-full justify-center rounded-lg bg-white/90 px-3 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white sm:min-h-9 sm:w-auto"
+              >
+                {fullscreen ? "Exit full view" : "Full view"}
+              </button>
+              {props.bench.length > 0 ? (
+                <button
+                  type="button"
+                  onClick={props.onClearBench}
+                  className="min-h-10 w-full justify-center rounded-lg bg-white/90 px-3 text-xs font-semibold text-rose-700 shadow-sm hover:bg-white sm:min-h-9 sm:w-auto"
+                >
+                  Clear bench
+                </button>
+              ) : null}
+              <LabQualityControl />
+            </div>
+          </LabMenu>
         </div>
       </div>
 
@@ -563,28 +599,6 @@ function ApparatusRoomView(props: RoomProps) {
           <span className="font-semibold text-slate-900">{props.bench.length}</span> on the bench
           {props.selectedId ? <span className="ml-2 text-slate-500"> · selected: {props.items.find((item) => item.id === props.selectedId)?.name}</span> : null}
           {viewLocked ? <span className="ml-2 font-semibold text-amber-800"> · view locked</span> : null}
-        </div>
-        <div className="pointer-events-auto flex flex-wrap justify-end gap-1.5">
-          <LabQualityControl />
-          <button
-            type="button"
-            onClick={() => props.onViewLockedChange?.(!viewLocked)}
-            className={`min-h-9 rounded-lg px-3 text-xs font-semibold shadow-sm ${viewLocked ? "bg-amber-600 text-white" : "bg-white/90 text-slate-700 hover:bg-white"}`}
-          >
-            {viewLocked ? "Unlock view" : "Lock view"}
-          </button>
-          <button
-            type="button"
-            onClick={() => props.onFullscreenChange?.(!fullscreen)}
-            className="min-h-9 rounded-lg bg-white/90 px-3 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white"
-          >
-            {fullscreen ? "Exit full view" : "Full view"}
-          </button>
-          {props.bench.length > 0 ? (
-            <button type="button" onClick={props.onClearBench} className="min-h-9 rounded-lg bg-white/90 px-3 text-xs font-semibold text-rose-700 shadow-sm hover:bg-white">
-              Clear bench
-            </button>
-          ) : null}
         </div>
       </div>
     </>
